@@ -1,0 +1,8 @@
+framework module Digiyo {
+    umbrella header "Digiyo.h"
+
+    export *
+    module * { export * }
+
+    use Foundation
+}
