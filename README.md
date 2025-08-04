@@ -21,22 +21,25 @@ Este SDK emplea inteligencia artificial para la detección precisa y eficiente d
 
 ### Android
 
-El SDK requiere un mínimo de **API 24**. Para instalar la librería en una aplicación Android, agrega la siguiente dependencia en el archivo `build.gradle` de tu módulo:
+El SDK requiere un mínimo de **API 24**. Para instalar la librería en una aplicación Android, agrega la siguiente dependencia en el archivo `build.gradle` o `build.gradle.kts` de tu módulo App:
 
 ```groovy
-implementation "com.roshka:digiyocore:1.0.18"
-implementation "com.roshka:digiyo:1.0.18"
+implementation "com.roshka:digiyocore:{versión del sdk}"
+implementation "com.roshka:digiyo{versión del sdk}"
 ```
-En el `build.gradle` de la proyecto, se configura el repositorio Maven apuntando a GithubPackages de la siguiente manera:
+En el `build.gradle` (`settings.gradle` o `settings.gradle.kts`) del proyecto, se configura el repositorio Maven apuntando a GithubPackages de la siguiente manera:
 
 ```groovy
  //Github Packages
-    maven {
-        name = "GitHubPackages"
-        url = uri("https://maven.pkg.github.com/digiyoid/digiyo-mobile-sdk")
-        credentials {
-            username = System.getenv("GITHUB_USER") // Tu usuario de Github
-            password = System.getenv("GITHUB_PAT") // TU Personal Access Token
+    dependencyResolutionManagement {
+        ...
+        repositories {
+            ...
+             maven {
+                name = "GitHubPackages"
+                url = uri("https://maven.pkg.github.com/digiyoid/identiasdk")
+            }
+            ...
         }
     }
 ```
@@ -52,7 +55,7 @@ implementation 'com.google.guava:guava:32.1.2-android'
 En iOS, puedes instalar Digiyo SDK utilizando **Swift Package Manager**. Para ello, agrega la siguiente URL a tu proyecto:
 
 ```
-https://github.com/digiyoid/identiasdk-ios
+git@github.com:Digiyoid/identiasdk.git
 ```
 
 ---
