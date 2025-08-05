@@ -38,11 +38,17 @@ En el `build.gradle` (`settings.gradle` o `settings.gradle.kts`) del proyecto, s
              maven {
                 name = "GitHubPackages"
                 url = uri("https://maven.pkg.github.com/digiyoid/identiasdk")
+                credentials {
+                    username = System.getenv("GITHUB_USER") // tu usuario de Github
+                    password = System.getenv("GITHUB_PAT") // tu Personal Access Token
+                }
             }
             ...
         }
     }
 ```
+Nota: Maven Registry en Github Packages necesita autenticación para acceder a la lista de paquetes incluso cuando son públicos, por ello, el Username y un Personal Access Token de Github son necesarios. 
+Se recomienda definir ambos como variables de entorno.
 
 Si encuentras errores relacionados con **CameraX**, también incluye la siguiente dependencia:
 
