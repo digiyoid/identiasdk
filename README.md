@@ -1,5 +1,7 @@
 # Guía Completa: Digiyo SDK - Kotlin Multiplatform
 
+![GitHub Release](https://img.shields.io/github/v/release/digiyoid/identiasdk)
+
 ## ¿Qué es Digiyo SDK?
 
 Digiyo SDK es una solución para integrar funcionalidades de identificación digital en aplicaciones móviles. Se compone de dos módulos principales:
