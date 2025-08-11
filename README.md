@@ -1,5 +1,7 @@
 # Guía Completa: Digiyo SDK - Kotlin Multiplatform
 
+![GitHub Release](https://img.shields.io/github/v/release/digiyoid/identiasdk)
+
 ## ¿Qué es Digiyo SDK?
 
 Digiyo SDK es una solución para integrar funcionalidades de identificación digital en aplicaciones móviles. Se compone de dos módulos principales:
@@ -30,7 +32,7 @@ implementation "com.roshka:digiyo{versión del sdk}"
 En el `build.gradle` (`settings.gradle` o `settings.gradle.kts`) del proyecto, se configura el repositorio Maven apuntando a GithubPackages de la siguiente manera:
 
 ```groovy
- //Github Packages
+    //Github Packages
     dependencyResolutionManagement {
         ...
         repositories {
@@ -47,8 +49,9 @@ En el `build.gradle` (`settings.gradle` o `settings.gradle.kts`) del proyecto, s
         }
     }
 ```
-Nota: Maven Registry en Github Packages necesita autenticación para acceder a la lista de paquetes incluso cuando son públicos, por ello, el Username y un Personal Access Token de Github son necesarios. 
+**Nota**: Maven Registry en Github Packages necesita autenticación para acceder a la lista de paquetes incluso cuando son públicos, por ello, el Username y un Personal Access Token de Github son necesarios. 
 Se recomienda definir ambos como variables de entorno.
+___
 
 Si encuentras errores relacionados con **CameraX**, también incluye la siguiente dependencia:
 
@@ -281,9 +284,18 @@ DigiyoSDK.getDia(diaId: DigiyoSDK.getSavedDia()?.diaId ?? "") { [weak self] res 
 - Este método debe llamarse periódicamente (por ejemplo, cada segundo) hasta que el estado deje de ser "STARTED" o "PENDING".
 
 - Los siguientes campos dentro del objeto 'ResultModel' estarán disponibles en Camel Case dentro de la respuesta:
-![alt text](task.png)
 
-Ejemplo: fingers_read => fingersRead
+    `ValidationFlags`
+
+    Campo del Response | Campo del model (SDK) 
+    --- | ---
+    "ci_es_real" | `isDocumentReal`
+    "ci_no_expeirado" | `documentNotExpired`
+    "selfie_es_real" | `isSelfieReal`
+    "ci_numero_validado" | `documentNumberVerified`
+    "prueba_de_vida_aprobada" | `proofOfLifeApproved`
+    "fecha_de_nacimiento_valida" | `birthDateVerified`
+
 
 ---
 
