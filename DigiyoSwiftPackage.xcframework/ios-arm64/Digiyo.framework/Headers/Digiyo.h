@@ -817,7 +817,7 @@ __attribute__((objc_subclassing_restricted))
 __attribute__((swift_name("DocumentCameraView_iosKt")))
 @interface DigiyoDocumentCameraView_iosKt : DigiyoBase
 + (BOOL)calculateSizeValidCentralRect:(DigiyoUi_geometryRect *)centralRect boxDetected:(DigiyoUi_geometryRect *)boxDetected __attribute__((swift_name("calculateSizeValid(centralRect:boxDetected:)")));
-+ (UIImage *)cropImageImageData:(void * _Nullable)imageData smartCropEnabled:(BOOL)smartCropEnabled observation:(VNRectangleObservation * _Nullable)observation defaultRect:(DigiyoUi_geometryRect *)defaultRect __attribute__((swift_name("cropImage(imageData:smartCropEnabled:observation:defaultRect:)")));
++ (UIImage *)cropImageImageData:(void * _Nullable)imageData smartCropEnabled:(BOOL)smartCropEnabled observation:(VNRectangleObservation * _Nullable)observation __attribute__((swift_name("cropImage(imageData:smartCropEnabled:observation:)")));
 @end
 
 __attribute__((objc_subclassing_restricted))
