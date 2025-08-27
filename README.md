@@ -295,6 +295,7 @@ DigiyoSDK.getDia(diaId: DigiyoSDK.getSavedDia()?.diaId ?? "") { [weak self] res 
     "ci_numero_validado" | `documentNumberVerified`
     "prueba_de_vida_aprobada" | `proofOfLifeApproved`
     "fecha_de_nacimiento_valida" | `birthDateVerified`
+    "is_cedula_temporal" | `isDocumentTemporary`
 
 
 ---
@@ -1180,6 +1181,9 @@ if let entry = inDataEntry {
 - #### DocumentCameraConfig:
   - **`showDetectedObjectRect`** (*Boolean*): Permite activar o desactivar el dibujado de un rectángulo alrededor del objeto detectado.
   - **`smartCropEnabled`** (*Boolean*): Permite activar o desactivar el recorte de la imagen usando el rectángulo detectado. Si se encuentra desactivado, la referencia es el recuadro guía presente en la pantalla de cámara.
+  - **`shutterSoundEnabled`** (*Boolean*): Permite activar o desactivar el sonido del obsturador de la cámara.
+- #### SelfieCameraConfig:
+  - **`shutterSoundEnabled`** (*Boolean*): Permite activar o desactivar el sonido del obsturador de la cámara.
 - #### HelpConfig:
   - **`imageShouldFollowColorScheme`** (*Boolean*): Permite manejar si la imagen agregada debe ser o no coloreada con respecto al colorScheme.
 - #### SuccessAlertConfig
@@ -1209,3 +1213,48 @@ Agrupa las imágenes e iconos presentes en el SDK:
 - NoGlassesImage
 
 ---
+
+### Proguard (Android)
+
+A continuación se detallan las excepciones para la ofuscación de código en Proguard, en caso de que sean necesarias:
+
+```
+# Author: Guillermo Sevilla.
+
+# :white_check_mark: Digiyo | Identia SDK
+-keep class com.roshka.** { *; }
+
+# :white_check_mark: Flutter + Plugins (No aplica para Android Nativo)
+-keep class io.flutter.** { *; }
+-keep class io.flutter.plugins.** { *; }
+
+# :white_check_mark: Jetpack Compose + @Composable
+-keep class androidx.compose.** { *; }
+-keepclassmembers class ** {
+    @androidx.compose.runtime.Composable <methods>;
+}
+
+# :white_check_mark: Kotlin coroutines y lifecycle
+-keep class kotlinx.coroutines.** { *; }
+-dontwarn kotlinx.coroutines.**
+-keep class androidx.lifecycle.DefaultLifecycleObserver
+
+# :white_check_mark: Google Play Core (deferred components)
+-keep class com.google.android.play.** { *; }
+-dontwarn com.google.android.play.**
+
+# :white_check_mark: ML Kit y Mediapipe
+-keep class com.google.mediapipe.** { *; }
+-keep class com.google.mlkit.** { *; }
+-keep class com.google.android.gms.tasks.** { *; }
+-dontwarn com.google.**
+
+# :white_check_mark: Conservar todos los campos (previene errores por reflexión)
+-keepclassmembers class * { <fields>; }
+
+# :white_check_mark: Silenciar warnings innecesarios
+-dontwarn java.awt.**
+-dontwarn javax.lang.model.**
+-dontwarn javax.swing.**
+-dontwarn org.slf4j.impl.**
+```
