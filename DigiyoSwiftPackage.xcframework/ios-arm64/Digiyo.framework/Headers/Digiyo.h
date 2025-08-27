@@ -417,8 +417,8 @@ __attribute__((swift_name("DigiYoColorScheme.Companion")))
 __attribute__((objc_subclassing_restricted))
 __attribute__((swift_name("DocumentCameraConfig")))
 @interface DigiyoDocumentCameraConfig : DigiyoBase
-- (instancetype)initWithCameraTitle:(NSString *)cameraTitle documentType:(DigiyoDocumentType *)documentType colorScheme:(DigiyoDigiYoColorScheme * _Nullable)colorScheme successAlertConfig:(DigiyoSuccessAlertConfig * _Nullable)successAlertConfig showCloseButton:(DigiyoBoolean * _Nullable)showCloseButton captureModeConfig:(DigiyoCaptureModeConfig *)captureModeConfig showDetectedObjectRect:(BOOL)showDetectedObjectRect smartCropEnabled:(BOOL)smartCropEnabled __attribute__((swift_name("init(cameraTitle:documentType:colorScheme:successAlertConfig:showCloseButton:captureModeConfig:showDetectedObjectRect:smartCropEnabled:)"))) __attribute__((objc_designated_initializer));
-- (DigiyoDocumentCameraConfig *)doCopyCameraTitle:(NSString *)cameraTitle documentType:(DigiyoDocumentType *)documentType colorScheme:(DigiyoDigiYoColorScheme * _Nullable)colorScheme successAlertConfig:(DigiyoSuccessAlertConfig * _Nullable)successAlertConfig showCloseButton:(DigiyoBoolean * _Nullable)showCloseButton captureModeConfig:(DigiyoCaptureModeConfig *)captureModeConfig showDetectedObjectRect:(BOOL)showDetectedObjectRect smartCropEnabled:(BOOL)smartCropEnabled __attribute__((swift_name("doCopy(cameraTitle:documentType:colorScheme:successAlertConfig:showCloseButton:captureModeConfig:showDetectedObjectRect:smartCropEnabled:)")));
+- (instancetype)initWithCameraTitle:(NSString *)cameraTitle documentType:(DigiyoDocumentType *)documentType colorScheme:(DigiyoDigiYoColorScheme * _Nullable)colorScheme successAlertConfig:(DigiyoSuccessAlertConfig * _Nullable)successAlertConfig showCloseButton:(DigiyoBoolean * _Nullable)showCloseButton captureModeConfig:(DigiyoCaptureModeConfig *)captureModeConfig showDetectedObjectRect:(BOOL)showDetectedObjectRect smartCropEnabled:(BOOL)smartCropEnabled shutterSoundEnabled:(BOOL)shutterSoundEnabled __attribute__((swift_name("init(cameraTitle:documentType:colorScheme:successAlertConfig:showCloseButton:captureModeConfig:showDetectedObjectRect:smartCropEnabled:shutterSoundEnabled:)"))) __attribute__((objc_designated_initializer));
+- (DigiyoDocumentCameraConfig *)doCopyCameraTitle:(NSString *)cameraTitle documentType:(DigiyoDocumentType *)documentType colorScheme:(DigiyoDigiYoColorScheme * _Nullable)colorScheme successAlertConfig:(DigiyoSuccessAlertConfig * _Nullable)successAlertConfig showCloseButton:(DigiyoBoolean * _Nullable)showCloseButton captureModeConfig:(DigiyoCaptureModeConfig *)captureModeConfig showDetectedObjectRect:(BOOL)showDetectedObjectRect smartCropEnabled:(BOOL)smartCropEnabled shutterSoundEnabled:(BOOL)shutterSoundEnabled __attribute__((swift_name("doCopy(cameraTitle:documentType:colorScheme:successAlertConfig:showCloseButton:captureModeConfig:showDetectedObjectRect:smartCropEnabled:shutterSoundEnabled:)")));
 - (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
 - (NSUInteger)hash __attribute__((swift_name("hash()")));
 - (NSString *)description __attribute__((swift_name("description()")));
@@ -428,6 +428,7 @@ __attribute__((swift_name("DocumentCameraConfig")))
 @property (readonly) DigiyoDocumentType *documentType __attribute__((swift_name("documentType")));
 @property (readonly) DigiyoBoolean * _Nullable showCloseButton __attribute__((swift_name("showCloseButton")));
 @property (readonly) BOOL showDetectedObjectRect __attribute__((swift_name("showDetectedObjectRect")));
+@property (readonly) BOOL shutterSoundEnabled __attribute__((swift_name("shutterSoundEnabled")));
 @property (readonly) BOOL smartCropEnabled __attribute__((swift_name("smartCropEnabled")));
 @property (readonly) DigiyoSuccessAlertConfig * _Nullable successAlertConfig __attribute__((swift_name("successAlertConfig")));
 @end
@@ -435,8 +436,8 @@ __attribute__((swift_name("DocumentCameraConfig")))
 __attribute__((objc_subclassing_restricted))
 __attribute__((swift_name("SelfieCameraConfig")))
 @interface DigiyoSelfieCameraConfig : DigiyoBase
-- (instancetype)initWithCameraTitle:(NSString *)cameraTitle colorScheme:(DigiyoDigiYoColorScheme * _Nullable)colorScheme successAlertConfig:(DigiyoSuccessAlertConfig * _Nullable)successAlertConfig showCloseButton:(DigiyoBoolean * _Nullable)showCloseButton captureModeConfig:(DigiyoCaptureModeConfig *)captureModeConfig __attribute__((swift_name("init(cameraTitle:colorScheme:successAlertConfig:showCloseButton:captureModeConfig:)"))) __attribute__((objc_designated_initializer));
-- (DigiyoSelfieCameraConfig *)doCopyCameraTitle:(NSString *)cameraTitle colorScheme:(DigiyoDigiYoColorScheme * _Nullable)colorScheme successAlertConfig:(DigiyoSuccessAlertConfig * _Nullable)successAlertConfig showCloseButton:(DigiyoBoolean * _Nullable)showCloseButton captureModeConfig:(DigiyoCaptureModeConfig *)captureModeConfig __attribute__((swift_name("doCopy(cameraTitle:colorScheme:successAlertConfig:showCloseButton:captureModeConfig:)")));
+- (instancetype)initWithCameraTitle:(NSString *)cameraTitle colorScheme:(DigiyoDigiYoColorScheme * _Nullable)colorScheme successAlertConfig:(DigiyoSuccessAlertConfig * _Nullable)successAlertConfig showCloseButton:(DigiyoBoolean * _Nullable)showCloseButton captureModeConfig:(DigiyoCaptureModeConfig *)captureModeConfig shutterSoundEnabled:(BOOL)shutterSoundEnabled __attribute__((swift_name("init(cameraTitle:colorScheme:successAlertConfig:showCloseButton:captureModeConfig:shutterSoundEnabled:)"))) __attribute__((objc_designated_initializer));
+- (DigiyoSelfieCameraConfig *)doCopyCameraTitle:(NSString *)cameraTitle colorScheme:(DigiyoDigiYoColorScheme * _Nullable)colorScheme successAlertConfig:(DigiyoSuccessAlertConfig * _Nullable)successAlertConfig showCloseButton:(DigiyoBoolean * _Nullable)showCloseButton captureModeConfig:(DigiyoCaptureModeConfig *)captureModeConfig shutterSoundEnabled:(BOOL)shutterSoundEnabled __attribute__((swift_name("doCopy(cameraTitle:colorScheme:successAlertConfig:showCloseButton:captureModeConfig:shutterSoundEnabled:)")));
 - (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
 - (NSUInteger)hash __attribute__((swift_name("hash()")));
 - (NSString *)description __attribute__((swift_name("description()")));
@@ -444,6 +445,7 @@ __attribute__((swift_name("SelfieCameraConfig")))
 @property (readonly) DigiyoCaptureModeConfig *captureModeConfig __attribute__((swift_name("captureModeConfig")));
 @property (readonly) DigiyoDigiYoColorScheme * _Nullable colorScheme __attribute__((swift_name("colorScheme")));
 @property (readonly) DigiyoBoolean * _Nullable showCloseButton __attribute__((swift_name("showCloseButton")));
+@property (readonly) BOOL shutterSoundEnabled __attribute__((swift_name("shutterSoundEnabled")));
 @property (readonly) DigiyoSuccessAlertConfig * _Nullable successAlertConfig __attribute__((swift_name("successAlertConfig")));
 @end
 
@@ -475,6 +477,7 @@ __attribute__((swift_name("DigiYoIcons")))
 @property (readonly) NSString *DocFrontImage __attribute__((swift_name("DocFrontImage")));
 @property (readonly) NSString *ErrorImage __attribute__((swift_name("ErrorImage")));
 @property (readonly) NSString *ErrorImageInverted __attribute__((swift_name("ErrorImageInverted")));
+@property (readonly) NSString *InfoGlyph __attribute__((swift_name("InfoGlyph")));
 @property (readonly) NSString *NoGlassesImage __attribute__((swift_name("NoGlassesImage")));
 @property (readonly) NSString *ProfileImage __attribute__((swift_name("ProfileImage")));
 @property (readonly) NSString *SelfieImage __attribute__((swift_name("SelfieImage")));
@@ -571,7 +574,7 @@ __attribute__((swift_name("DocumentDetectorStatus")))
 @property (class, readonly) NSArray<DigiyoDocumentDetectorStatus *> *entries __attribute__((swift_name("entries")));
 - (uint64_t)getColorPrimaryColor:(uint64_t)primaryColor __attribute__((swift_name("getColor(primaryColor:)")));
 - (uint64_t)getColorPrimaryColor:(uint64_t)primaryColor neutralColor:(id _Nullable)neutralColor __attribute__((swift_name("getColor(primaryColor:neutralColor:)")));
-- (NSString *)getMessage __attribute__((swift_name("getMessage()")));
+- (NSString *)getMessageManualMode:(BOOL)manualMode __attribute__((swift_name("getMessage(manualMode:)")));
 @end
 
 __attribute__((objc_subclassing_restricted))
@@ -616,7 +619,7 @@ __attribute__((swift_name("SelfieDetectorStatus")))
 - (uint64_t)getColorPrimaryColor:(uint64_t)primaryColor __attribute__((swift_name("getColor(primaryColor:)")));
 - (uint64_t)getColorPrimaryColor:(uint64_t)primaryColor neutralColor:(id _Nullable)neutralColor __attribute__((swift_name("getColor(primaryColor:neutralColor:)")));
 - (uint64_t)getFrameColorPrimaryColor:(uint64_t)primaryColor neutralColor:(id _Nullable)neutralColor __attribute__((swift_name("getFrameColor(primaryColor:neutralColor:)")));
-- (NSString *)getMessage __attribute__((swift_name("getMessage()")));
+- (NSString *)getMessageManualMode:(BOOL)manualMode __attribute__((swift_name("getMessage(manualMode:)")));
 @end
 
 __attribute__((objc_subclassing_restricted))
@@ -638,7 +641,7 @@ __attribute__((swift_name("VideoDetectorStatus")))
 - (uint64_t)getColorPrimaryColor:(uint64_t)primaryColor __attribute__((swift_name("getColor(primaryColor:)")));
 - (uint64_t)getColorPrimaryColor:(uint64_t)primaryColor neutralColor:(id _Nullable)neutralColor __attribute__((swift_name("getColor(primaryColor:neutralColor:)")));
 - (uint64_t)getFrameColorPrimaryColor:(uint64_t)primaryColor neutralColor:(id _Nullable)neutralColor __attribute__((swift_name("getFrameColor(primaryColor:neutralColor:)")));
-- (NSString *)getMessage __attribute__((swift_name("getMessage()")));
+- (NSString *)getMessageAmountOfFingers:(DigiyoInt * _Nullable)amountOfFingers __attribute__((swift_name("getMessage(amountOfFingers:)")));
 @end
 
 __attribute__((objc_subclassing_restricted))
@@ -2366,9 +2369,9 @@ __attribute__((swift_name("DigiyocoreCisefDetails")))
 __attribute__((objc_subclassing_restricted))
 __attribute__((swift_name("DigiyocoreValidationFlags")))
 @interface DigiyoDigiyocoreValidationFlags : DigiyoBase <DigiyoDigiyocoreJavaSerializable>
-- (instancetype)initWithIsDocumentReal:(DigiyoBoolean * _Nullable)isDocumentReal documentNotExpired:(DigiyoBoolean * _Nullable)documentNotExpired isSelfieReal:(DigiyoBoolean * _Nullable)isSelfieReal documentNumberVerified:(DigiyoBoolean * _Nullable)documentNumberVerified proofOfLifeApproved:(DigiyoBoolean * _Nullable)proofOfLifeApproved birthDateVerified:(DigiyoBoolean * _Nullable)birthDateVerified __attribute__((swift_name("init(isDocumentReal:documentNotExpired:isSelfieReal:documentNumberVerified:proofOfLifeApproved:birthDateVerified:)"))) __attribute__((objc_designated_initializer));
+- (instancetype)initWithIsDocumentReal:(DigiyoBoolean * _Nullable)isDocumentReal documentNotExpired:(DigiyoBoolean * _Nullable)documentNotExpired isSelfieReal:(DigiyoBoolean * _Nullable)isSelfieReal documentNumberVerified:(DigiyoBoolean * _Nullable)documentNumberVerified proofOfLifeApproved:(DigiyoBoolean * _Nullable)proofOfLifeApproved birthDateVerified:(DigiyoBoolean * _Nullable)birthDateVerified isDocumentTemporary:(DigiyoBoolean * _Nullable)isDocumentTemporary __attribute__((swift_name("init(isDocumentReal:documentNotExpired:isSelfieReal:documentNumberVerified:proofOfLifeApproved:birthDateVerified:isDocumentTemporary:)"))) __attribute__((objc_designated_initializer));
 @property (class, readonly, getter=companion) DigiyoDigiyocoreValidationFlagsCompanion *companion __attribute__((swift_name("companion")));
-- (DigiyoDigiyocoreValidationFlags *)doCopyIsDocumentReal:(DigiyoBoolean * _Nullable)isDocumentReal documentNotExpired:(DigiyoBoolean * _Nullable)documentNotExpired isSelfieReal:(DigiyoBoolean * _Nullable)isSelfieReal documentNumberVerified:(DigiyoBoolean * _Nullable)documentNumberVerified proofOfLifeApproved:(DigiyoBoolean * _Nullable)proofOfLifeApproved birthDateVerified:(DigiyoBoolean * _Nullable)birthDateVerified __attribute__((swift_name("doCopy(isDocumentReal:documentNotExpired:isSelfieReal:documentNumberVerified:proofOfLifeApproved:birthDateVerified:)")));
+- (DigiyoDigiyocoreValidationFlags *)doCopyIsDocumentReal:(DigiyoBoolean * _Nullable)isDocumentReal documentNotExpired:(DigiyoBoolean * _Nullable)documentNotExpired isSelfieReal:(DigiyoBoolean * _Nullable)isSelfieReal documentNumberVerified:(DigiyoBoolean * _Nullable)documentNumberVerified proofOfLifeApproved:(DigiyoBoolean * _Nullable)proofOfLifeApproved birthDateVerified:(DigiyoBoolean * _Nullable)birthDateVerified isDocumentTemporary:(DigiyoBoolean * _Nullable)isDocumentTemporary __attribute__((swift_name("doCopy(isDocumentReal:documentNotExpired:isSelfieReal:documentNumberVerified:proofOfLifeApproved:birthDateVerified:isDocumentTemporary:)")));
 - (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
 - (NSUInteger)hash __attribute__((swift_name("hash()")));
 - (NSString *)description __attribute__((swift_name("description()")));
@@ -2376,6 +2379,7 @@ __attribute__((swift_name("DigiyocoreValidationFlags")))
 @property (readonly) DigiyoBoolean * _Nullable documentNotExpired __attribute__((swift_name("documentNotExpired")));
 @property (readonly) DigiyoBoolean * _Nullable documentNumberVerified __attribute__((swift_name("documentNumberVerified")));
 @property (readonly) DigiyoBoolean * _Nullable isDocumentReal __attribute__((swift_name("isDocumentReal")));
+@property (readonly) DigiyoBoolean * _Nullable isDocumentTemporary __attribute__((swift_name("isDocumentTemporary")));
 @property (readonly) DigiyoBoolean * _Nullable isSelfieReal __attribute__((swift_name("isSelfieReal")));
 @property (readonly) DigiyoBoolean * _Nullable proofOfLifeApproved __attribute__((swift_name("proofOfLifeApproved")));
 @end
