@@ -114,6 +114,7 @@ let DigiyoSDK = DigiyoSDK(config: DigiyocoreDigiyoConfig(
 - [commitDia](#commitdia)
 - [verifyTasksAndCommit](#verifytasksandcommit)
 - [getDia](#getdia)
+- [cancelDia](#canceldia)
 - [sendImage](#sendimage)
 - [sendImageAsynchronously](#sendimageasynchronously)
 - [sendVideo](#sendvideo)
@@ -130,6 +131,7 @@ let DigiyoSDK = DigiyoSDK(config: DigiyocoreDigiyoConfig(
 - [getInData](#getindata)
 - [Nuevos Parámetros Agregados](#nuevos-parámetros-agregados)
 - [DigiYoIcons](#digiyoicons)
+- [Proguard](#proguard-android)
 
 ---
 
@@ -297,6 +299,46 @@ DigiyoSDK.getDia(diaId: DigiyoSDK.getSavedDia()?.diaId ?? "") { [weak self] res 
     "fecha_de_nacimiento_valida" | `birthDateVerified`
     "is_cedula_temporal" | `isDocumentTemporary`
 
+
+---
+
+---
+
+### `cancelDia`
+
+Cancela el DIA especificado mediante su diaId.
+
+#### Android
+
+```kotlin
+Digiyo.cancelDia(
+    diaId = Digiyo.getSavedDia()?.diaId ?: "",
+    onSuccess = { res ->
+        res?.let {
+            // Cancelacion exitosa
+        } ?: run {
+            // Error en la respuesta
+        }
+    },
+    onError = { error ->
+        // Error
+    }
+)
+```
+
+#### iOS
+
+```swift
+DigiyoSDK.cancelDia(diaId: DigiyoSDK.getSavedDia()?.diaId ?? "") { [weak self] res in
+    // Cancelacion exitosa
+} onError: { [weak self] error in
+    // Error
+}
+```
+
+**Parámetros**
+
+- **`diaId`** (*String*): ID del DIA que se desea procesar.
 
 ---
 
