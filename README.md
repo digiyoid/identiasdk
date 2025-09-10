@@ -29,10 +29,11 @@ El SDK requiere un mínimo de **API 24**. Para instalar la librería en una apli
 implementation "com.roshka:digiyocore:{versión del sdk}"
 implementation "com.roshka:digiyo{versión del sdk}"
 ```
+
 En el `build.gradle` (`settings.gradle` o `settings.gradle.kts`) del proyecto, se configura el repositorio Maven apuntando a GithubPackages de la siguiente manera:
 
 ```groovy
-    //Github Packages
+    //Github Packages con Variables de Entorno
     dependencyResolutionManagement {
         ...
         repositories {
@@ -40,17 +41,29 @@ En el `build.gradle` (`settings.gradle` o `settings.gradle.kts`) del proyecto, s
              maven {
                 name = "GitHubPackages"
                 url = uri("https://maven.pkg.github.com/digiyoid/identiasdk")
-                credentials {
-                    username = System.getenv("GITHUB_USER") // tu usuario de Github
-                    password = System.getenv("GITHUB_PAT") // tu Personal Access Token
+                credentials {`~
+                    username = System.getenv("GITHUB_USER") // Variable de entorno que contiene el usuario de Github
+                    password = System.getenv("GITHUB_PAT") // Variable de Entorno que contiene el Personal Access Token
                 }
             }
             ...
         }
     }
 ```
+
+En el archivo `.bashrc` (o equivalente en Macos, Linux u otros de tipo Unix), definir las variables de entorno de las siguiente manera:
+
+```bash
+#.bashrc de tu S.O.
+
+export GITHUB_USER="tu usuario de Github"
+export GITHUB_PAT="tu Personal Access Token"
+
+```
+
 **Nota**: Maven Registry en Github Packages necesita autenticación para acceder a la lista de paquetes incluso cuando son públicos, por ello, el Username y un Personal Access Token de Github son necesarios. 
 Se recomienda definir ambos como variables de entorno.
+
 ___
 
 Si encuentras errores relacionados con **CameraX**, también incluye la siguiente dependencia:
