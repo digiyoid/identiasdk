@@ -19,7 +19,45 @@ Este SDK emplea inteligencia artificial para la detección precisa y eficiente d
 
 ---
 
-## Instalación del SDK
+## Tabla de Contenido
+
+### [Instalación del SDK](#instalación-del-sdk)
+### [Configuración e inicialización](#configuración-e-inicialización)
+### [Métodos principales](#métodos-principales)
+- [createDia](#createdia)
+- [getDia](#getdia)
+- [cancelDia](#canceldia)
+- [sendImage](#sendimage)
+- [sendImageAsynchronously](#sendimageasynchronously)
+- [sendVideo](#sendvideo)
+- [sendVideoAsynchronously](#sendvideoasynchronously)
+- [sendTextData](#sendtextdata)
+- [sendJsonData](#sendjsondata)
+- [getInData](#getindata)
+- [commitDia](#commitdia)
+- [verifyTasksAndCommit](#verifytasksandcommit)
+### [Personlización y estilos](#personalización-y-estilos)
+- [CaptureModeConfig](#capturemodeconfig)
+- [DigiyoColorScheme](#digiyocolorscheme)
+- [ButtonConfig](#buttonconfig)
+- [DigiYoShape](#digiyoshape)
+- [DigiYoButtonStyle](#digiyobuttonstyle)
+- [CaptureButtonType](#capturebuttontype)
+- [InfoBoxConfig](#infoboxconfig)
+- [DigiYoIcons](#digiyoicons)
+### [Componentes de UI](#componentes-de-ui-1)
+- [DocumentCameraView](#documentcameraview)
+- [SelfieCameraView](#selfiecameraview)
+- [VideoCameraView](#videocameraview)
+- [HelpScreenView](#helpscreenview)
+- [MediaPreviewScreen](#mediapreviewscreen)
+### Otros
+- [Nuevos Parámetros Agregados](#nuevos-parámetros-agregados)
+- [Proguard](#proguard-android)
+
+---
+
+## `Instalación del SDK`
 
 ### Android
 
@@ -82,7 +120,7 @@ git@github.com:Digiyoid/identiasdk.git
 
 ---
 
-## Configuración e inicialización
+## `Configuración e inicialización`
 
 Una vez inicializado con `DigiyoConfig`, en inicializaciones posteriores puedes pasar `null` (en Android) porque la configuración se almacena localmente y se recupera automáticamente.
 
@@ -120,41 +158,7 @@ let digiyoSdk = DigiYoSDK(config: DigiyocoreDigiyoConfig(
 
 ---
 
-## Índice
-
-### Métodos principales
-- [createDia](#createdia)
-- [getDia](#getdia)
-- [cancelDia](#canceldia)
-- [sendImage](#sendimage)
-- [sendImageAsynchronously](#sendimageasynchronously)
-- [sendVideo](#sendvideo)
-- [sendVideoAsynchronously](#sendvideoasynchronously)
-- [sendTextData](#sendtextdata)
-- [sendJsonData](#sendjsondata)
-- [getInData](#getindata)
-- [commitDia](#commitdia)
-- [verifyTasksAndCommit](#verifytasksandcommit)
-### [Personlización y estilos](#personalización-y-estilos)
-- [CaptureModeConfig](#capturemodeconfig)
-- [DigiyoColorScheme](#digiyocolorscheme)
-- [ButtonConfig](#buttonconfig)
-- [DigiYoShape](#digiyoshape)
-- [DigiYoButtonStyle](#digiyobuttonstyle)
-- [CaptureButtonType](#capturebuttontype)
-- [InfoBoxConfig](#infoboxconfig)
-- [DigiYoIcons](#digiyoicons)
-### [Componentes de UI](#componentes-de-ui-1)
-- [DocumentCameraView](#documentcameraview)
-- [SelfieCameraView](#selfiecameraview)
-- [VideoCameraView](#videocameraview)
-- [HelpScreenView](#helpscreenview)
-- [MediaPreviewScreen](#mediapreviewscreen)
-### Otros
-- [Nuevos Parámetros Agregados](#nuevos-parámetros-agregados)
-- [Proguard](#proguard-android)
-
----
+## `Métodos principales`
 
 ### `createDia`
 
@@ -831,6 +835,7 @@ digiyoSdk.DocumentCameraView(
                 disabledContentColor = null
             ),
             buttonType = CaptureButtonType.Default,
+            buttonBehavior = null,
             infoBoxConfig = null
         ),
     ),
@@ -865,6 +870,7 @@ digiyoSdk.getDocumentCameraViewController(
                 disabledContentColor: nil
             ),
             buttonType: CaptureButtonType.defaultbutton,
+            buttonBehavior: nil,
             infoBoxConfig: nil
         ),
     ),
@@ -883,6 +889,7 @@ digiyoSdk.getDocumentCameraViewController(
 - **`automaticModeTimeoutMillis`** (*Long?*): Si no es nulo, define el tiempo en milisegundos en que la captura automática estrá activada antes de pasar a modo manual.
 - **`buttonConfig`** (*ButtonConfig?*): Corresponde a la configuración de personalización del botón, incluyendo el título.
 - **`buttonType`** (*CaptureButtenType?*): Corresponde al tipo de botón.
+- **`buttonBehavior`** (*CaptureButtonBehavior?*): Corresponde al comportamiento del botón al capturar la foto o el video. Por defecto, el botón queda desactivado.
 - **`infoBoxConfig`** (*InfoBoxConfig?*): Corresponde a la configuración de personalización de la información que se despliega en la captura.
 
 ---
@@ -940,6 +947,17 @@ Tipo de botón. Tiene prioridad sobre el estilo del botón.
 - **`DefaultButton`** : Botón normal.
 - **`ShutterButtonType1`** : Botón tipo shutter.
 - **`ShutterButtonType2`** : Botón tipo shutter (estilo alternativo).
+
+---
+
+### `CaptureButtonBehavior`
+
+Comportamiento del botón al tomar la foto o el video.
+
+**Tipos**
+
+- **`DisplayLoadingOnShoot`** : Muestra el activity indicator del botón al capturar.
+- **`DisableButtonOnShoot`** : Desactiva el botón al capturar.
 
 ---
 
