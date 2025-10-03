@@ -314,9 +314,9 @@ __attribute__((swift_name("HelpConfig")))
 __attribute__((objc_subclassing_restricted))
 __attribute__((swift_name("LiveValidationsText")))
 @interface DigiyoLiveValidationsText : DigiyoBase
-- (instancetype)initWithFaceEyeCheckText:(NSString * _Nullable)faceEyeCheckText faceSmileCheckText:(NSString * _Nullable)faceSmileCheckText idOnFaceCheckText:(NSString * _Nullable)idOnFaceCheckText fingerCheckText:(NSString * _Nullable)fingerCheckText __attribute__((swift_name("init(faceEyeCheckText:faceSmileCheckText:idOnFaceCheckText:fingerCheckText:)"))) __attribute__((objc_designated_initializer));
+- (instancetype)initWithLookLeftRightText:(NSString * _Nullable)lookLeftRightText lookUpDownText:(NSString * _Nullable)lookUpDownText openCloseMouthText:(NSString * _Nullable)openCloseMouthText faceEyeCheckText:(NSString * _Nullable)faceEyeCheckText faceSmileCheckText:(NSString * _Nullable)faceSmileCheckText idOnFaceCheckText:(NSString * _Nullable)idOnFaceCheckText fingerCheckText:(NSString * _Nullable)fingerCheckText __attribute__((swift_name("init(lookLeftRightText:lookUpDownText:openCloseMouthText:faceEyeCheckText:faceSmileCheckText:idOnFaceCheckText:fingerCheckText:)"))) __attribute__((objc_designated_initializer));
 @property (class, readonly, getter=companion) DigiyoLiveValidationsTextCompanion *companion __attribute__((swift_name("companion")));
-- (DigiyoLiveValidationsText *)doCopyFaceEyeCheckText:(NSString * _Nullable)faceEyeCheckText faceSmileCheckText:(NSString * _Nullable)faceSmileCheckText idOnFaceCheckText:(NSString * _Nullable)idOnFaceCheckText fingerCheckText:(NSString * _Nullable)fingerCheckText __attribute__((swift_name("doCopy(faceEyeCheckText:faceSmileCheckText:idOnFaceCheckText:fingerCheckText:)")));
+- (DigiyoLiveValidationsText *)doCopyLookLeftRightText:(NSString * _Nullable)lookLeftRightText lookUpDownText:(NSString * _Nullable)lookUpDownText openCloseMouthText:(NSString * _Nullable)openCloseMouthText faceEyeCheckText:(NSString * _Nullable)faceEyeCheckText faceSmileCheckText:(NSString * _Nullable)faceSmileCheckText idOnFaceCheckText:(NSString * _Nullable)idOnFaceCheckText fingerCheckText:(NSString * _Nullable)fingerCheckText __attribute__((swift_name("doCopy(lookLeftRightText:lookUpDownText:openCloseMouthText:faceEyeCheckText:faceSmileCheckText:idOnFaceCheckText:fingerCheckText:)")));
 - (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
 - (NSUInteger)hash __attribute__((swift_name("hash()")));
 - (void)setActiveTextLiveValidationOptions:(DigiyoDigiyocoreLiveValidationOptions *)liveValidationOptions __attribute__((swift_name("setActiveText(liveValidationOptions:)")));
@@ -327,6 +327,9 @@ __attribute__((swift_name("LiveValidationsText")))
 @property (readonly) NSString * _Nullable faceSmileCheckText __attribute__((swift_name("faceSmileCheckText")));
 @property (readonly) NSString * _Nullable fingerCheckText __attribute__((swift_name("fingerCheckText")));
 @property (readonly) NSString * _Nullable idOnFaceCheckText __attribute__((swift_name("idOnFaceCheckText")));
+@property (readonly) NSString * _Nullable lookLeftRightText __attribute__((swift_name("lookLeftRightText")));
+@property (readonly) NSString * _Nullable lookUpDownText __attribute__((swift_name("lookUpDownText")));
+@property (readonly) NSString * _Nullable openCloseMouthText __attribute__((swift_name("openCloseMouthText")));
 @end
 
 __attribute__((objc_subclassing_restricted))
@@ -1247,9 +1250,9 @@ __attribute__((swift_name("DigiyocoreLogLevel")))
 __attribute__((objc_subclassing_restricted))
 __attribute__((swift_name("DigiyocoreLiveValidationOptions")))
 @interface DigiyoDigiyocoreLiveValidationOptions : DigiyoBase <DigiyoDigiyocoreJavaSerializable>
-- (instancetype)initWithFaceEyeCheck:(BOOL)faceEyeCheck faceSmileCheck:(BOOL)faceSmileCheck idOnFaceCheck:(BOOL)idOnFaceCheck fingerCheck:(BOOL)fingerCheck __attribute__((swift_name("init(faceEyeCheck:faceSmileCheck:idOnFaceCheck:fingerCheck:)"))) __attribute__((objc_designated_initializer));
+- (instancetype)initWithLookLeftRight:(BOOL)lookLeftRight lookUpDown:(BOOL)lookUpDown openCloseMouth:(BOOL)openCloseMouth faceEyeCheck:(BOOL)faceEyeCheck faceSmileCheck:(BOOL)faceSmileCheck idOnFaceCheck:(BOOL)idOnFaceCheck fingerCheck:(BOOL)fingerCheck __attribute__((swift_name("init(lookLeftRight:lookUpDown:openCloseMouth:faceEyeCheck:faceSmileCheck:idOnFaceCheck:fingerCheck:)"))) __attribute__((objc_designated_initializer));
 @property (class, readonly, getter=companion) DigiyoDigiyocoreLiveValidationOptionsCompanion *companion __attribute__((swift_name("companion")));
-- (DigiyoDigiyocoreLiveValidationOptions *)doCopyFaceEyeCheck:(BOOL)faceEyeCheck faceSmileCheck:(BOOL)faceSmileCheck idOnFaceCheck:(BOOL)idOnFaceCheck fingerCheck:(BOOL)fingerCheck __attribute__((swift_name("doCopy(faceEyeCheck:faceSmileCheck:idOnFaceCheck:fingerCheck:)")));
+- (DigiyoDigiyocoreLiveValidationOptions *)doCopyLookLeftRight:(BOOL)lookLeftRight lookUpDown:(BOOL)lookUpDown openCloseMouth:(BOOL)openCloseMouth faceEyeCheck:(BOOL)faceEyeCheck faceSmileCheck:(BOOL)faceSmileCheck idOnFaceCheck:(BOOL)idOnFaceCheck fingerCheck:(BOOL)fingerCheck __attribute__((swift_name("doCopy(lookLeftRight:lookUpDown:openCloseMouth:faceEyeCheck:faceSmileCheck:idOnFaceCheck:fingerCheck:)")));
 - (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
 - (NSUInteger)hash __attribute__((swift_name("hash()")));
 - (NSDictionary<NSString *, DigiyoBoolean *> *)toMap __attribute__((swift_name("toMap()")));
@@ -1278,6 +1281,24 @@ __attribute__((swift_name("DigiyocoreLiveValidationOptions")))
  *   kotlinx.serialization.SerialName(value="id_on_face_check")
 */
 @property (readonly) BOOL idOnFaceCheck __attribute__((swift_name("idOnFaceCheck")));
+
+/**
+ * @note annotations
+ *   kotlinx.serialization.SerialName(value="look_left_right")
+*/
+@property (readonly) BOOL lookLeftRight __attribute__((swift_name("lookLeftRight")));
+
+/**
+ * @note annotations
+ *   kotlinx.serialization.SerialName(value="look_up_down")
+*/
+@property (readonly) BOOL lookUpDown __attribute__((swift_name("lookUpDown")));
+
+/**
+ * @note annotations
+ *   kotlinx.serialization.SerialName(value="open_close_mouth")
+*/
+@property (readonly) BOOL openCloseMouth __attribute__((swift_name("openCloseMouth")));
 @end
 
 __attribute__((swift_name("KotlinThrowable")))
