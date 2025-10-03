@@ -306,6 +306,9 @@ digiyoSdk.sendImage(
     filePath = filePath,
     inDataName = "ID_CARD_FRONT", // Ejemplo
     liveValidationOptions = LiveValidationOptions(
+        lookLeftRight = false,
+        lookUpDown = false,
+        openCloseMouth = false,
         faceEyeCheck = false,
         faceSmileCheck = false,
         idOnFaceCheck = false,
@@ -328,6 +331,9 @@ digiyoSdk.sendImage(
     filePath: filePath,
     inDataName: "ID_CARD_FRONT", // Ejemplo
     liveValidationOptions: LiveValidationOptions(
+        lookLeftRight: false,
+        lookUpDown: false,
+        openCloseMouth: false,
         faceEyeCheck: false,
         faceSmileCheck: false,
         idOnFaceCheck: false,
@@ -360,6 +366,9 @@ digiyoSdk.sendImageAsynchronously(
     filePath = filePath,
     inDataName = "ID_CARD_FRONT", // Ejemplo
     liveValidationOptions = LiveValidationOptions(
+        lookLeftRight = false,
+        lookUpDown = false,
+        openCloseMouth = false,
         faceEyeCheck = false,
         faceSmileCheck = false,
         idOnFaceCheck = false,
@@ -376,6 +385,9 @@ digiyoSdk.sendImageAsynchronously(
     filePath: filePath,
     inDataName: "ID_CARD_FRONT", // Ejemplo
     liveValidationOptions: LiveValidationOptions(
+        lookLeftRight: false,
+        lookUpDown: false,
+        openCloseMouth: false,
         faceEyeCheck: false,
         faceSmileCheck: false,
         idOnFaceCheck: false,
@@ -413,6 +425,9 @@ digiyoSdk.sendVideo(
     filePath = filePath,
     inData = finalData,
     liveValidationOptions = LiveValidationOptions(
+        lookLeftRight = false,
+        lookUpDown = false,
+        openCloseMouth = false,
         faceEyeCheck = false,
         faceSmileCheck = false,
         idOnFaceCheck = false,
@@ -444,6 +459,9 @@ digiyoSdk.sendVideo(
     filePath: filePath,
     inData: finalData,
     liveValidationOptions: LiveValidationOptions(
+        lookLeftRight: false,
+        lookUpDown: false,
+        openCloseMouth: false,
         faceEyeCheck: false,
         faceSmileCheck: false,
         idOnFaceCheck: false,
@@ -486,6 +504,9 @@ digiyoSdk.sendVideoAsynchronously(
     filePath = filePath,
     inData = finalData,
     liveValidationOptions = LiveValidationOptions(
+        lookLeftRight = false,
+        lookUpDown = false,
+        openCloseMouth = false,
         faceEyeCheck = false,
         faceSmileCheck = false,
         idOnFaceCheck = false,
@@ -511,6 +532,9 @@ digiyoSdk.sendVideoAsynchronously(
     filePath: filePath,
     inData: finalData,
     liveValidationOptions: LiveValidationOptions(
+        lookLeftRight: false,
+        lookUpDown: false,
+        openCloseMouth: false,
         faceEyeCheck: false,
         faceSmileCheck: false,
         idOnFaceCheck: false,
