@@ -6,9 +6,9 @@
 #import <Foundation/NSString.h>
 #import <Foundation/NSValue.h>
 
-@class DigiyoDigiyocoreDigiYoConfig, DigiyoDigiyocoreDigiYoError, DigiyoDigiyocoreDiaModel, DigiyoDigiyocoreInDataEntryModel, DigiyoDigiyocoreLogLevel, DigiyoDigiyocoreLiveValidationOptions, DigiyoDigiyocoreDigiYoCore, DigiyoDigiYoHelper, DigiyoDigiYoSDK, DigiyoDigiYo, UIViewController, DigiyoDocumentCameraConfig, DigiyoHelpConfig, DigiyoMediaPreviewConfig, DigiyoSelfieCameraConfig, DigiyoVideoCameraConfig, DigiyoRes, DigiyoKotlinByteArray, DigiyoResArray, DigiyoResDrawable, DigiyoResFont, DigiyoResPlurals, DigiyoResString, DigiyoDigiYoRGBCompanion, DigiyoDigiYoRGB, DigiyoErrorAlertConfig, DigiyoDigiYoImageAsset, DigiyoDigiYoColorScheme, DigiyoHelpBulletPoint, DigiyoKotlinPair<__covariant A, __covariant B>, DigiyoLiveValidationsTextCompanion, DigiyoLiveValidationsText, DigiyoSuccessAlertConfig, DigiyoKotlinEnumCompanion, DigiyoKotlinEnum<E>, DigiyoCaptureButtonBehavior, DigiyoKotlinArray<T>, DigiyoCaptureButtonType, DigiyoButtonConfig, DigiyoInfoBoxConfig, DigiyoCaptureModeConfigCompanion, DigiyoCaptureModeConfig, DigiyoDigiYoColorSchemeCompanion, DigiyoDocumentType, DigiyoDigiYoShape, DigiyoDigiYoButtonStyle, DigiyoButtonConfigCompanion, DigiyoDigiYoButtonStyleDefault, DigiyoDigiYoButtonStyleTextOnlyEnd, DigiyoDigiYoButtonStyleTextOnlyStart, DigiyoDigiYoShapeCircle, DigiyoDigiYoShapeSquare, DigiyoInfoBoxStyle, DigiyoInfoBoxConfigCompanion, DigiyoDigiYoIcons, DigiyoCameraMode, DigiyoCaptureArea, DigiyoDigiYoImageAssetCompanion, DigiyoDigiYoSDKUtils, DigiyoDocumentDetectorStatus, DigiyoLensFacingType, DigiyoSelfieDetectorStatus, DigiyoVideoDetectorStatus, DigiyoVideoValidationType, DigiyoUi_geometryRectCompanion, DigiyoUi_geometryRect, DigiyoKotlinCValue<T>, DigiyoLibraryDrawableResource, DigiyoLibraryFontResource, DigiyoLibraryPluralStringResource, DigiyoLibraryStringArrayResource, DigiyoLibraryStringResource, UIImage, DigiyoUiImageVector, VNRectangleObservation, DigiyoKotlinIntRange, NSData, VNFaceLandmarkRegion2D, DigiyoDigiyocoreDigiYoConfigEntity, DigiyoDigiyocoreDigiYoErrorCompanion, DigiyoDigiyocoreMetaModel, DigiyoDigiyocoreDataRequireModel, DigiyoDigiyocoreTaskModel, DigiyoDigiyocoreDiaModelCompanion, DigiyoDigiyocoreInDataEntryModelCompanion, DigiyoDigiyocoreLiveValidationOptionsCompanion, DigiyoKotlinThrowable, DigiyoKotlinException, DigiyoKotlinRuntimeException, DigiyoKotlinIllegalStateException, DigiyoKotlinByteIterator, DigiyoUi_graphicsOutline, DigiyoUi_unitLayoutDirection, DigiyoKotlinIntArray, DigiyoUi_graphicsColorSpace, DigiyoKotlinAutofreeScope, DigiyoKotlinCValuesRef<T>, DigiyoKotlinCValues<T>, DigiyoLibraryResource, DigiyoLibraryResourceItem, DigiyoUiImageVectorCompanion, DigiyoUiVectorGroup, DigiyoKotlinIntProgressionCompanion, DigiyoKotlinIntIterator, DigiyoKotlinIntProgression, DigiyoKotlinIntRangeCompanion, DigiyoDigiyocoreDigiYoConfigEntityCompanion, DigiyoDigiyocorePartnerModel, DigiyoDigiyocoreMetaModelCompanion, DigiyoDigiyocoreInDataConfigModel, DigiyoDigiyocoreDataRequireModelCompanion, DigiyoDigiyocoreResultModel, DigiyoDigiyocoreTaskModelCompanion, DigiyoUi_unitDpRect, DigiyoKotlinFloatArray, DigiyoKotlinDeferScope, DigiyoUiVectorNode, DigiyoUi_graphicsPathNode, DigiyoDigiyocorePartnerModelCompanion, DigiyoDigiyocoreInDataConfigModelCompanion, DigiyoDigiyocoreScoresModel, DigiyoDigiyocoreIdInfoModel, DigiyoDigiyocorePolDetails, DigiyoDigiyocoreCisefDetails, DigiyoDigiyocoreValidationFlags, DigiyoDigiyocoreConductorDetails, DigiyoDigiyocoreResultModelCompanion, DigiyoUi_unitDpRectCompanion, DigiyoKotlinFloatIterator, DigiyoKotlinx_serialization_coreSerializersModule, DigiyoKotlinx_serialization_coreSerialKind, DigiyoKotlinNothing, DigiyoDigiyocoreScoresModelCompanion, DigiyoDigiyocoreIdInfoModelCompanion, DigiyoDigiyocorePolDetailsCompanion, DigiyoDigiyocoreCisefDetailsCompanion, DigiyoDigiyocoreValidationFlagsCompanion, DigiyoDigiyocoreConductorDetailsCompanion;
+@class DigiyoButtonConfig, DigiyoButtonConfigCompanion, DigiyoCameraMode, DigiyoCaptureArea, DigiyoCaptureButtonBehavior, DigiyoCaptureButtonType, DigiyoCaptureModeConfig, DigiyoCaptureModeConfigCompanion, DigiyoDigiYo, DigiyoDigiYoButtonStyle, DigiyoDigiYoButtonStyleDefault, DigiyoDigiYoButtonStyleTextOnlyEnd, DigiyoDigiYoButtonStyleTextOnlyStart, DigiyoDigiYoColorScheme, DigiyoDigiYoColorSchemeCompanion, DigiyoDigiYoHelper, DigiyoDigiYoIcons, DigiyoDigiYoImageAsset, DigiyoDigiYoImageAssetCompanion, DigiyoDigiYoRGB, DigiyoDigiYoRGBCompanion, DigiyoDigiYoSDK, DigiyoDigiYoSDKUtils, DigiyoDigiYoShape, DigiyoDigiYoShapeCircle, DigiyoDigiYoShapeSquare, DigiyoDigiyocoreCisefDetails, DigiyoDigiyocoreCisefDetailsCompanion, DigiyoDigiyocoreConductorDetails, DigiyoDigiyocoreConductorDetailsCompanion, DigiyoDigiyocoreDataRequireModel, DigiyoDigiyocoreDataRequireModelCompanion, DigiyoDigiyocoreDiaModel, DigiyoDigiyocoreDiaModelCompanion, DigiyoDigiyocoreDigiYoConfig, DigiyoDigiyocoreDigiYoConfigEntity, DigiyoDigiyocoreDigiYoConfigEntityCompanion, DigiyoDigiyocoreDigiYoCore, DigiyoDigiyocoreDigiYoError, DigiyoDigiyocoreDigiYoErrorCompanion, DigiyoDigiyocoreIdInfoModel, DigiyoDigiyocoreIdInfoModelCompanion, DigiyoDigiyocoreInDataConfigModel, DigiyoDigiyocoreInDataConfigModelCompanion, DigiyoDigiyocoreInDataEntryModel, DigiyoDigiyocoreInDataEntryModelCompanion, DigiyoDigiyocoreLiveValidationOptions, DigiyoDigiyocoreLiveValidationOptionsCompanion, DigiyoDigiyocoreLogLevel, DigiyoDigiyocoreMetaModel, DigiyoDigiyocoreMetaModelCompanion, DigiyoDigiyocorePartnerModel, DigiyoDigiyocorePartnerModelCompanion, DigiyoDigiyocorePolDetails, DigiyoDigiyocorePolDetailsCompanion, DigiyoDigiyocoreResultModel, DigiyoDigiyocoreResultModelCompanion, DigiyoDigiyocoreScoresModel, DigiyoDigiyocoreScoresModelCompanion, DigiyoDigiyocoreTaskModel, DigiyoDigiyocoreTaskModelCompanion, DigiyoDigiyocoreValidationFlags, DigiyoDigiyocoreValidationFlagsCompanion, DigiyoDocumentCameraConfig, DigiyoDocumentDetectorStatus, DigiyoDocumentType, DigiyoErrorAlertConfig, DigiyoHelpBulletPoint, DigiyoHelpConfig, DigiyoInfoBoxConfig, DigiyoInfoBoxConfigCompanion, DigiyoInfoBoxStyle, DigiyoKotlinArray<T>, DigiyoKotlinAutofreeScope, DigiyoKotlinByteArray, DigiyoKotlinByteIterator, DigiyoKotlinCValue<T>, DigiyoKotlinCValues<T>, DigiyoKotlinCValuesRef<T>, DigiyoKotlinDeferScope, DigiyoKotlinEnum<E>, DigiyoKotlinEnumCompanion, DigiyoKotlinException, DigiyoKotlinFloatArray, DigiyoKotlinFloatIterator, DigiyoKotlinIllegalStateException, DigiyoKotlinIntArray, DigiyoKotlinIntIterator, DigiyoKotlinIntProgression, DigiyoKotlinIntProgressionCompanion, DigiyoKotlinIntRange, DigiyoKotlinIntRangeCompanion, DigiyoKotlinNothing, DigiyoKotlinPair<__covariant A, __covariant B>, DigiyoKotlinRuntimeException, DigiyoKotlinThrowable, DigiyoKotlinx_serialization_coreSerialKind, DigiyoKotlinx_serialization_coreSerializersModule, DigiyoLensFacingType, DigiyoLibraryDrawableResource, DigiyoLibraryFontResource, DigiyoLibraryPluralStringResource, DigiyoLibraryResource, DigiyoLibraryResourceItem, DigiyoLibraryStringArrayResource, DigiyoLibraryStringResource, DigiyoLiveValidationsText, DigiyoLiveValidationsTextCompanion, DigiyoMediaPreviewConfig, DigiyoRes, DigiyoResArray, DigiyoResDrawable, DigiyoResFont, DigiyoResPlurals, DigiyoResString, DigiyoSelfieCameraConfig, DigiyoSelfieDetectorStatus, DigiyoSuccessAlertConfig, DigiyoUiImageVector, DigiyoUiImageVectorCompanion, DigiyoUiVectorGroup, DigiyoUiVectorNode, DigiyoUi_geometryRect, DigiyoUi_geometryRectCompanion, DigiyoUi_graphicsColorSpace, DigiyoUi_graphicsOutline, DigiyoUi_graphicsPathNode, DigiyoUi_unitDpRect, DigiyoUi_unitDpRectCompanion, DigiyoUi_unitLayoutDirection, DigiyoVideoCameraConfig, DigiyoVideoDetectorStatus, DigiyoVideoValidationType, NSData, UIImage, UIViewController, VNFaceLandmarkRegion2D, VNRectangleObservation;
 
-@protocol DigiyoKotlinComparable, DigiyoUi_graphicsShape, DigiyoUi_graphicsImageBitmap, DigiyoUiModifier, DigiyoDigiyocoreJavaSerializable, DigiyoKotlinIterator, DigiyoUi_unitDensity, DigiyoUiModifierElement, DigiyoKotlinIterable, DigiyoKotlinClosedRange, DigiyoKotlinOpenEndRange, DigiyoLibrary_baseDeleteable, DigiyoLibrary_baseBaseRealmObject, DigiyoLibrary_baseTypedRealmObject, DigiyoLibrary_baseRealmObject, DigiyoKotlinx_serialization_coreKSerializer, DigiyoUi_unitFontScalingLinear, DigiyoKotlinNativePlacement, DigiyoLibraryQualifier, DigiyoKotlinx_serialization_coreEncoder, DigiyoKotlinx_serialization_coreSerialDescriptor, DigiyoKotlinx_serialization_coreSerializationStrategy, DigiyoKotlinx_serialization_coreDecoder, DigiyoKotlinx_serialization_coreDeserializationStrategy, DigiyoKotlinx_serialization_coreCompositeEncoder, DigiyoKotlinAnnotation, DigiyoKotlinx_serialization_coreCompositeDecoder, DigiyoKotlinx_serialization_coreSerializersModuleCollector, DigiyoKotlinKClass, DigiyoKotlinKDeclarationContainer, DigiyoKotlinKAnnotatedElement, DigiyoKotlinKClassifier;
+@protocol DigiyoDigiyocoreJavaSerializable, DigiyoKotlinAnnotation, DigiyoKotlinClosedRange, DigiyoKotlinComparable, DigiyoKotlinIterable, DigiyoKotlinIterator, DigiyoKotlinKAnnotatedElement, DigiyoKotlinKClass, DigiyoKotlinKClassifier, DigiyoKotlinKDeclarationContainer, DigiyoKotlinNativePlacement, DigiyoKotlinOpenEndRange, DigiyoKotlinx_serialization_coreCompositeDecoder, DigiyoKotlinx_serialization_coreCompositeEncoder, DigiyoKotlinx_serialization_coreDecoder, DigiyoKotlinx_serialization_coreDeserializationStrategy, DigiyoKotlinx_serialization_coreEncoder, DigiyoKotlinx_serialization_coreKSerializer, DigiyoKotlinx_serialization_coreSerialDescriptor, DigiyoKotlinx_serialization_coreSerializationStrategy, DigiyoKotlinx_serialization_coreSerializersModuleCollector, DigiyoLibraryQualifier, DigiyoLibrary_baseBaseRealmObject, DigiyoLibrary_baseDeleteable, DigiyoLibrary_baseRealmObject, DigiyoLibrary_baseTypedRealmObject, DigiyoUiModifier, DigiyoUiModifierElement, DigiyoUi_graphicsImageBitmap, DigiyoUi_graphicsShape, DigiyoUi_unitDensity, DigiyoUi_unitFontScalingLinear;
 
 NS_ASSUME_NONNULL_BEGIN
 #pragma clang diagnostic push
@@ -2429,66 +2429,16 @@ __attribute__((swift_name("Kotlinx_serialization_coreEncoder")))
 __attribute__((swift_name("Kotlinx_serialization_coreSerialDescriptor")))
 @protocol DigiyoKotlinx_serialization_coreSerialDescriptor
 @required
-
-/**
- * @note annotations
- *   kotlinx.serialization.ExperimentalSerializationApi
-*/
 - (NSArray<id<DigiyoKotlinAnnotation>> *)getElementAnnotationsIndex:(int32_t)index __attribute__((swift_name("getElementAnnotations(index:)")));
-
-/**
- * @note annotations
- *   kotlinx.serialization.ExperimentalSerializationApi
-*/
 - (id<DigiyoKotlinx_serialization_coreSerialDescriptor>)getElementDescriptorIndex:(int32_t)index __attribute__((swift_name("getElementDescriptor(index:)")));
-
-/**
- * @note annotations
- *   kotlinx.serialization.ExperimentalSerializationApi
-*/
 - (int32_t)getElementIndexName:(NSString *)name __attribute__((swift_name("getElementIndex(name:)")));
-
-/**
- * @note annotations
- *   kotlinx.serialization.ExperimentalSerializationApi
-*/
 - (NSString *)getElementNameIndex:(int32_t)index __attribute__((swift_name("getElementName(index:)")));
-
-/**
- * @note annotations
- *   kotlinx.serialization.ExperimentalSerializationApi
-*/
 - (BOOL)isElementOptionalIndex:(int32_t)index __attribute__((swift_name("isElementOptional(index:)")));
-
-/**
- * @note annotations
- *   kotlinx.serialization.ExperimentalSerializationApi
-*/
 @property (readonly) NSArray<id<DigiyoKotlinAnnotation>> *annotations __attribute__((swift_name("annotations")));
-
-/**
- * @note annotations
- *   kotlinx.serialization.ExperimentalSerializationApi
-*/
 @property (readonly) int32_t elementsCount __attribute__((swift_name("elementsCount")));
 @property (readonly) BOOL isInline __attribute__((swift_name("isInline")));
-
-/**
- * @note annotations
- *   kotlinx.serialization.ExperimentalSerializationApi
-*/
 @property (readonly) BOOL isNullable __attribute__((swift_name("isNullable")));
-
-/**
- * @note annotations
- *   kotlinx.serialization.ExperimentalSerializationApi
-*/
 @property (readonly) DigiyoKotlinx_serialization_coreSerialKind *kind __attribute__((swift_name("kind")));
-
-/**
- * @note annotations
- *   kotlinx.serialization.ExperimentalSerializationApi
-*/
 @property (readonly) NSString *serialName __attribute__((swift_name("serialName")));
 @end
 
@@ -2976,11 +2926,6 @@ __attribute__((swift_name("KotlinAnnotation")))
 @required
 @end
 
-
-/**
- * @note annotations
- *   kotlinx.serialization.ExperimentalSerializationApi
-*/
 __attribute__((swift_name("Kotlinx_serialization_coreSerialKind")))
 @interface DigiyoKotlinx_serialization_coreSerialKind : DigiyoBase
 - (NSUInteger)hash __attribute__((swift_name("hash()")));

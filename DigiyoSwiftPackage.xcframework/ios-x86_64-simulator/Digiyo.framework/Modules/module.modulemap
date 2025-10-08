@@ -1,4 +1,4 @@
-framework module Digiyo {
+framework module "Digiyo" {
     umbrella header "Digiyo.h"
 
     export *
