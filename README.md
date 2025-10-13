@@ -99,7 +99,7 @@ export GITHUB_PAT="tu Personal Access Token"
 
 ```
 
-**Nota**: Maven Registry en Github Packages necesita autenticación para acceder a la lista de paquetes incluso cuando son públicos, por ello, el Username y un Personal Access Token de Github son necesarios. 
+**Nota**: Maven Registry en Github Packages necesita autenticación para acceder a la lista de paquetes incluso cuando son públicos, por ello, el Username y un Personal Access Token de Github son necesarios.
 Se recomienda definir ambos como variables de entorno.
 
 ___
@@ -241,7 +241,7 @@ digiyoSdk.getDia(diaId: digiyoSdk.getSavedDia()?.diaId ?? "") { [weak self] res 
 
     `ValidationFlags`
 
-    Campo del Response | Campo del model (SDK) 
+    Campo del Response | Campo del model (SDK)
     --- | ---
     "ci_es_real" | `isDocumentReal`
     "ci_no_expeirado" | `documentNotExpired`
@@ -416,7 +416,18 @@ val finalData = InDataEntryModel(
     data = DataRequireModel(
         value = data.data?.value,
         contentType = data.data?.contentType,
-        config = InDataConfigModel(versusArray = listOf(2))
+        config = InDataConfigModel(
+          versusArray = listOf(2),
+          liveValidations = LiveValidationOptions(
+              lookLeftRight = false,
+              lookUpDown = false,
+              openCloseMouth = false,
+              faceEyeCheck = false,
+              faceSmileCheck = false,
+              idOnFaceCheck = false,
+              fingerCheck = false
+          ).toMap()
+        )
     )
 )
 
@@ -424,15 +435,6 @@ digiyoSdk.sendVideo(
     diaId = digiyoSdk.getSavedDia()?.diaId ?: "",
     filePath = filePath,
     inData = finalData,
-    liveValidationOptions = LiveValidationOptions(
-        lookLeftRight = false,
-        lookUpDown = false,
-        openCloseMouth = false,
-        faceEyeCheck = false,
-        faceSmileCheck = false,
-        idOnFaceCheck = false,
-        fingerCheck = false
-    ), 
     onSuccess = {
         // Success
     },
@@ -450,23 +452,25 @@ var finalData = DigiyocoreInDataEntryModel(
     data: DigiyocoreDataRequireModel(
         value: data.data?.value,
         contentType: data.data?.contentType,
-        config: DigiyocoreInDataConfigModel(versusArray: [2])
+        config: DigiyocoreInDataConfigModel(
+            versusArray: [2],
+            liveValidations: LiveValidationOptions(
+                lookLeftRight: false,
+                lookUpDown: false,
+                openCloseMouth: false,
+                faceEyeCheck: false,
+                faceSmileCheck: false,
+                idOnFaceCheck: false,
+                fingerCheck: false
+            ).toMap()
+        )
     )
 )
 
 digiyoSdk.sendVideo(
     diaId: digiyoSdk.getSavedDia()?.diaId ?? "",
     filePath: filePath,
-    inData: finalData,
-    liveValidationOptions: LiveValidationOptions(
-        lookLeftRight: false,
-        lookUpDown: false,
-        openCloseMouth: false,
-        faceEyeCheck: false,
-        faceSmileCheck: false,
-        idOnFaceCheck: false,
-        fingerCheck: false
-    ), 
+    inData: finalData
 ) { status in
     // Success
 } onError: { error in
@@ -479,7 +483,8 @@ digiyoSdk.sendVideo(
 - **`inData`** (*InDataEntryModel*): Configuración del video. El campo `versusArray` indica cuántos dedos se deben detectar.
 - **`diaId`** (*String*): ID del DIA asociado.
 - **`filePath`** (*String*): Ruta al archivo de video.
-- **`liveValidationOptions`** es un campo de configuración de las validaciones a realizar a la imagen: ojos, sonrisa, documento y dedos (El campo es opcional y solamente debe ser enviado en caso de ser necesario).
+
+**Observación:** El campo de configuración de las validaciones a realizar a la imagen: ojos, sonrisa, documento y dedos es incluido dentro de la estructura del `InDataEntryModel` (El campo es opcional y solamente debe ser enviado en caso de ser necesario).
 
 ---
 
@@ -495,23 +500,25 @@ val finalData = InDataEntryModel(
     data = DataRequireModel(
         value = data.data?.value,
         contentType = data.data?.contentType,
-        config = InDataConfigModel(versusArray = listOf(2))
+        config = InDataConfigModel(
+            versusArray = listOf(2),
+            liveValidations = LiveValidationOptions(
+                lookLeftRight = false,
+                lookUpDown = false,
+                openCloseMouth = false,
+                faceEyeCheck = false,
+                faceSmileCheck = false,
+                idOnFaceCheck = false,
+                fingerCheck = false
+            ).toMap()
+        )
     )
 )
 
 digiyoSdk.sendVideoAsynchronously(
     diaId = digiyoSdk.getSavedDia()?.diaId ?: "",
     filePath = filePath,
-    inData = finalData,
-    liveValidationOptions = LiveValidationOptions(
-        lookLeftRight = false,
-        lookUpDown = false,
-        openCloseMouth = false,
-        faceEyeCheck = false,
-        faceSmileCheck = false,
-        idOnFaceCheck = false,
-        fingerCheck = false
-    )
+    inData = finalData
 )
 ```
 
@@ -523,23 +530,25 @@ var finalData = DigiyocoreInDataEntryModel(
     data: DigiyocoreDataRequireModel(
         value: data.data?.value,
         contentType: data.data?.contentType,
-        config: DigiyocoreInDataConfigModel(versusArray: [2])
+        config: DigiyocoreInDataConfigModel(
+            versusArray: [2],
+            liveValidations: LiveValidationOptions(
+                lookLeftRight: false,
+                lookUpDown: false,
+                openCloseMouth: false,
+                faceEyeCheck: false,
+                faceSmileCheck: false,
+                idOnFaceCheck: false,
+                fingerCheck: false
+            ).toMap()
+        )
     )
 )
 
 digiyoSdk.sendVideoAsynchronously(
     diaId: digiyoSdk.getSavedDia()?.diaId ?? "",
     filePath: filePath,
-    inData: finalData,
-    liveValidationOptions: LiveValidationOptions(
-        lookLeftRight: false,
-        lookUpDown: false,
-        openCloseMouth: false,
-        faceEyeCheck: false,
-        faceSmileCheck: false,
-        idOnFaceCheck: false,
-        fingerCheck: false
-    ) 
+    inData: finalData
 )
 ```
 
@@ -548,7 +557,8 @@ digiyoSdk.sendVideoAsynchronously(
 - **`inData`** (*InDataEntryModel*): Configuración del video. El campo `versusArray` indica cuántos dedos se deben detectar.
 - **`diaId`** (*String*): ID del DIA asociado.
 - **`filePath`** (*String*): Ruta al archivo de video.
-- **`liveValidationOptions`** es un campo de configuración de las validaciones a realizar a la imagen: ojos, sonrisa, documento y dedos (El campo es opcional y solamente debe ser enviado en caso de ser necesario).
+
+**Observación:** El campo de configuración de las validaciones a realizar a la imagen: ojos, sonrisa, documento y dedos es incluido dentro de la estructura del `InDataEntryModel` (El campo es opcional y solamente debe ser enviado en caso de ser necesario).
 
 ---
 
@@ -848,7 +858,7 @@ digiyoSdk.DocumentCameraView(
             automaticModeTimeoutMillis = 8000,
             buttonConfig = ButtonConfig(
                 label = "Capturar documento",
-                shape = DigiYoShape.Rounded(Dimen24dp),
+                shape = DigiYoShape.Rounded(24.0f),
                 buttonStyle = DigiYoButtonStyle.Default,
                 isLoading = false,
                 contentPadding = 32,
@@ -925,7 +935,7 @@ Configuración de personalización de botones.
 **Parámetros**
 
 - **`label`** (*String*): Título del botón.
-- **`shape`** (*DigiYoShape*): Forma del botón. 
+- **`shape`** (*DigiYoShape*): Forma del botón.
 - **`buttonStyle`** (*DigiYoButtonStyle*): Corresponde al estilo del botón.
 - **`isLoading`** (*Boolean*): Utilizado para activar y desactivar el activity indicator del botón.
 - **`debounceIntervalMs`** (*Long?*): Corresponde al tiempo de espera del botón antes de volver a aceptar otra interacción. Si es nulo su valor es de 2 segundos.
@@ -992,11 +1002,11 @@ Configuración de personalización de la información desplegada durante la capt
 **Parámetros**
 
 - **`icon`** (*DigiYoImageAsset?*): Icono del cuadro de texto. Si es nulo, usa un valor predeterminado.
-- **`iconColor`** (*DigiYoRGB*): Color del icono. Si es nulo, usa un valor predeterminado. 
-- **`borderColor`** (*DigiYoRGB*): Color del borde. Si es nulo, no se aplica. 
+- **`iconColor`** (*DigiYoRGB*): Color del icono. Si es nulo, usa un valor predeterminado.
+- **`borderColor`** (*DigiYoRGB*): Color del borde. Si es nulo, no se aplica.
 - **`borderRadius`** (*Int?*): Radio de la esquina del cuadro. Si es nulo, no se aplica.
 - **`backgroundColor`** (*DigiYoRGB?*): Color del cuadro de texto. Si es nulo, usa un valor predeterminado.
-- **`contentColor`** (*DigiYoRGB?*): Color del texto. Si es nulo, usa un valor predeterminado. 
+- **`contentColor`** (*DigiYoRGB?*): Color del texto. Si es nulo, usa un valor predeterminado.
 - **`infoBoxStyle`** (*InfoBoxStyle*): Corresponde al layout del contenido del cuadro. Puede ser `InfoBoxStyle.Vertical` o `InfoBoxStyle.Horizontal`
 
 ---
