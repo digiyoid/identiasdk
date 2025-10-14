@@ -484,7 +484,7 @@ digiyoSdk.sendVideo(
 - **`diaId`** (*String*): ID del DIA asociado.
 - **`filePath`** (*String*): Ruta al archivo de video.
 
-**Observación:** El campo de configuración de las validaciones a realizar a la imagen: ojos, sonrisa, documento y dedos es incluido dentro de la estructura del `InDataEntryModel` (El campo es opcional y solamente debe ser enviado en caso de ser necesario).
+**Observación:** Tanto el campo de la cantidad de dedos `versusArray`, como campo de configuración de las validaciones `liveValidations` están incluidos dentro de la estructura del `InDataEntryModel -> InDataConfigModel` (Es opcional y solamente debe ser enviado en caso de ser necesario, caso contrario deberá setearse como `null | nil`).
 
 ---
 
@@ -558,7 +558,7 @@ digiyoSdk.sendVideoAsynchronously(
 - **`diaId`** (*String*): ID del DIA asociado.
 - **`filePath`** (*String*): Ruta al archivo de video.
 
-**Observación:** El campo de configuración de las validaciones a realizar a la imagen: ojos, sonrisa, documento y dedos es incluido dentro de la estructura del `InDataEntryModel` (El campo es opcional y solamente debe ser enviado en caso de ser necesario).
+**Observación:** Tanto el campo de la cantidad de dedos `versusArray`, como campo de configuración de las validaciones `liveValidations` están incluidos dentro de la estructura del `InDataEntryModel -> InDataConfigModel` (Es opcional y solamente debe ser enviado en caso de ser necesario, caso contrario deberá setearse como `null | nil`).
 
 ---
 
