@@ -126,6 +126,8 @@ Una vez inicializado con `DigiyoConfig`, en inicializaciones posteriores puedes 
 
 ### Android
 
+#### `Configuración`
+
 ```kotlin
 import DigiyoSDK
 
@@ -136,24 +138,61 @@ private val config = DigiyoConfig(
     enforceSslPinning: null,                // Cuando el valor no es asignado explícitamente, el SSL Pinning es activado por defecto.
     requestTimeoutInMillis = null           // Timeout opcional (Cuando no es definida usa el valor por defecto de 60 segundos)
 )
+```
 
+#### `Inicialización directa de la instancia`
+
+```kotlin
 //El Context es requerido para poder acceder al directorio de las fotografías y videos una vez que el flujo haya terminado.
+
 // Instancia de DigiyoSDK
 private val digiyoSdk = DigiYoSDK(context, config)
 ```
 
+#### `Inicialización mediante DigiYoHelper (Recomendada)`
+
+```kotlin
+//El Context es requerido para poder acceder al directorio de las fotografías y videos una vez que el flujo haya terminado.
+
+DigiYoHelper.initialize(
+    applicationContext,
+    config
+)
+
+// Obtener instancia de DigiyoSDK
+private val digiyoSdk = DigiYoHelper.sdk
+```
+
 ### iOS
+
+#### `Configuración`
 
 ```swift
 import Digiyo
 
 // Configuración del SDK
-let digiyoSdk = DigiYoSDK(config: DigiyocoreDigiyoConfig(
+let digiyoConfig = DigiyocoreDigiyoConfig(
     baseUrl: ProcessInfo.processInfo.environment["Digiyo_BASE_URL"],
     apiKey: ProcessInfo.processInfo.environment["Digiyo_API_KEY"],
     enforceSslPinning: nil,
     requestTimeoutInMillis: nil
-))
+)
+```
+
+#### `Inicialización directa de la instancia`
+
+```swift
+// Instancia del SDK
+let digiyoSdk = DigiYoSDK(config: digiyoConfig)
+```
+
+#### `Inicialización mediante DigiYoHelper (Recomendada)`
+
+```swift
+DigiYoHelper.shared.initialize(config: digiyoConfig)
+
+//Obtener la instancia del SDK
+let digiyoSdk = DigiYoHelper.shared.sdk
 ```
 
 ---
