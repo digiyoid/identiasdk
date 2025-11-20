@@ -909,7 +909,8 @@ digiyoSdk.DocumentCameraView(
             ),
             buttonType = CaptureButtonType.Default,
             buttonBehavior = null,
-            infoBoxConfig = null
+            infoBoxConfig = null,
+            overwriteDefaultTextWith = null
         ),
     ),
     onClose = {
@@ -944,7 +945,8 @@ digiyoSdk.getDocumentCameraViewController(
             ),
             buttonType: CaptureButtonType.defaultbutton,
             buttonBehavior: nil,
-            infoBoxConfig: nil
+            infoBoxConfig: nil,
+            overwriteDefaultTextWith: nil
         ),
     ),
     onResult = { imageCropped, imageFull in
@@ -964,6 +966,7 @@ digiyoSdk.getDocumentCameraViewController(
 - **`buttonType`** (*CaptureButtenType?*): Corresponde al tipo de botón.
 - **`buttonBehavior`** (*CaptureButtonBehavior?*): Corresponde al comportamiento del botón al capturar la foto o el video. Por defecto, el botón queda desactivado.
 - **`infoBoxConfig`** (*InfoBoxConfig?*): Corresponde a la configuración de personalización de la información que se despliega en la captura.
+- **`overwriteDefaultTextWith`** (String?): Permite reemplazar el texto por defecto del infoBox. (Si existen validaciones activas, el texto de las validaciones tienen prioridad, por lo que deben de personalizarse desde `customLiveValidationsText` en la configuración correspondiente)
 
 ---
 
@@ -1356,7 +1359,8 @@ digiyoSdk.VideoCameraView(
             buttonType = CaptureButtonType.Default,
             infoBoxConfig = null
         ),
-        customLiveValidationsText = null
+        customLiveValidationsText = null,
+        cameraSoundEnabled = false
     ),
     onResult = { path ->
         viewModel.patchVideo(filePath = path)
@@ -1412,7 +1416,8 @@ digiyoSdk.getVideoCameraViewViewController(
             buttonType: CaptureButtonType.defaultbutton,
             infoBoxConfig: nil
         ),
-        customLiveValidationsText: nil
+        customLiveValidationsText: nil,
+        cameraSoundEnabled: false
     )
 ) { path in
     viewModel.patchVideo(filePath: path)
@@ -1581,6 +1586,7 @@ viewModel.digiyoSdk.getMediaPreviewScreenViewController(
   - **`customLiveValidationsText`** (*LiveValidationsText?*): Permite personalizar el texto de los diferentes desafíos presentados para la validación de prueba de vida.
 - #### VideoCameraConfig:
   - **`customLiveValidationsText`** (*LiveValidationsText?*): Permite personalizar el texto de los diferentes desafíos presentados para la validación de prueba de vida.
+  - **`cameraSoundEnabled`** (*Boolean*): Permite activar o desactivar el sonido de la cámara que alerta del inicio y final de la grabación.
 - #### HelpConfig:
   - **`imageShouldFollowColorScheme`** (*Boolean*): Permite manejar si la imagen agregada debe ser o no coloreada con respecto al colorScheme.
 - #### SuccessAlertConfig
