@@ -6,7 +6,7 @@
 #import <Foundation/NSString.h>
 #import <Foundation/NSValue.h>
 
-@class DigiyoButtonConfig, DigiyoButtonConfigCompanion, DigiyoCameraMode, DigiyoCaptureArea, DigiyoCaptureButtonBehavior, DigiyoCaptureButtonType, DigiyoCaptureModeConfig, DigiyoCaptureModeConfigCompanion, DigiyoDigiYo, DigiyoDigiYoButtonStyle, DigiyoDigiYoButtonStyleDefault, DigiyoDigiYoButtonStyleTextOnlyEnd, DigiyoDigiYoButtonStyleTextOnlyStart, DigiyoDigiYoColorScheme, DigiyoDigiYoColorSchemeCompanion, DigiyoDigiYoHelper, DigiyoDigiYoIcons, DigiyoDigiYoImageAsset, DigiyoDigiYoImageAssetCompanion, DigiyoDigiYoRGB, DigiyoDigiYoRGBCompanion, DigiyoDigiYoSDK, DigiyoDigiYoSDKUtils, DigiyoDigiYoShape, DigiyoDigiYoShapeCircle, DigiyoDigiYoShapeSquare, DigiyoDigiyocoreCisefDetails, DigiyoDigiyocoreCisefDetailsCompanion, DigiyoDigiyocoreConductorDetails, DigiyoDigiyocoreConductorDetailsCompanion, DigiyoDigiyocoreDataRequireModel, DigiyoDigiyocoreDataRequireModelCompanion, DigiyoDigiyocoreDiaModel, DigiyoDigiyocoreDiaModelCompanion, DigiyoDigiyocoreDigiYoConfig, DigiyoDigiyocoreDigiYoConfigEntity, DigiyoDigiyocoreDigiYoConfigEntityCompanion, DigiyoDigiyocoreDigiYoCore, DigiyoDigiyocoreDigiYoError, DigiyoDigiyocoreDigiYoErrorCompanion, DigiyoDigiyocoreIdInfoModel, DigiyoDigiyocoreIdInfoModelCompanion, DigiyoDigiyocoreInDataConfigModel, DigiyoDigiyocoreInDataConfigModelCompanion, DigiyoDigiyocoreInDataEntryModel, DigiyoDigiyocoreInDataEntryModelCompanion, DigiyoDigiyocoreLiveValidationOptions, DigiyoDigiyocoreLiveValidationOptionsCompanion, DigiyoDigiyocoreLogLevel, DigiyoDigiyocoreMetaModel, DigiyoDigiyocoreMetaModelCompanion, DigiyoDigiyocorePartnerModel, DigiyoDigiyocorePartnerModelCompanion, DigiyoDigiyocorePolDetails, DigiyoDigiyocorePolDetailsCompanion, DigiyoDigiyocoreResultModel, DigiyoDigiyocoreResultModelCompanion, DigiyoDigiyocoreScoresModel, DigiyoDigiyocoreScoresModelCompanion, DigiyoDigiyocoreTaskModel, DigiyoDigiyocoreTaskModelCompanion, DigiyoDigiyocoreValidationFlags, DigiyoDigiyocoreValidationFlagsCompanion, DigiyoDocumentCameraConfig, DigiyoDocumentDetectorStatus, DigiyoDocumentType, DigiyoErrorAlertConfig, DigiyoHelpBulletPoint, DigiyoHelpConfig, DigiyoInfoBoxConfig, DigiyoInfoBoxConfigCompanion, DigiyoInfoBoxStyle, DigiyoKotlinArray<T>, DigiyoKotlinAutofreeScope, DigiyoKotlinByteArray, DigiyoKotlinByteIterator, DigiyoKotlinCValue<T>, DigiyoKotlinCValues<T>, DigiyoKotlinCValuesRef<T>, DigiyoKotlinDeferScope, DigiyoKotlinEnum<E>, DigiyoKotlinEnumCompanion, DigiyoKotlinException, DigiyoKotlinFloatArray, DigiyoKotlinFloatIterator, DigiyoKotlinIllegalStateException, DigiyoKotlinIntArray, DigiyoKotlinIntIterator, DigiyoKotlinIntProgression, DigiyoKotlinIntProgressionCompanion, DigiyoKotlinIntRange, DigiyoKotlinIntRangeCompanion, DigiyoKotlinNothing, DigiyoKotlinPair<__covariant A, __covariant B>, DigiyoKotlinRuntimeException, DigiyoKotlinThrowable, DigiyoKotlinx_serialization_coreSerialKind, DigiyoKotlinx_serialization_coreSerializersModule, DigiyoLensFacingType, DigiyoLibraryDrawableResource, DigiyoLibraryFontResource, DigiyoLibraryPluralStringResource, DigiyoLibraryResource, DigiyoLibraryResourceItem, DigiyoLibraryStringArrayResource, DigiyoLibraryStringResource, DigiyoLiveValidationsText, DigiyoLiveValidationsTextCompanion, DigiyoMediaPreviewConfig, DigiyoRes, DigiyoResArray, DigiyoResDrawable, DigiyoResFont, DigiyoResPlurals, DigiyoResString, DigiyoSelfieCameraConfig, DigiyoSelfieDetectorStatus, DigiyoSuccessAlertConfig, DigiyoUiImageVector, DigiyoUiImageVectorCompanion, DigiyoUiVectorGroup, DigiyoUiVectorNode, DigiyoUi_geometryRect, DigiyoUi_geometryRectCompanion, DigiyoUi_graphicsColorSpace, DigiyoUi_graphicsOutline, DigiyoUi_graphicsPathNode, DigiyoUi_unitDpRect, DigiyoUi_unitDpRectCompanion, DigiyoUi_unitLayoutDirection, DigiyoVideoCameraConfig, DigiyoVideoDetectorStatus, DigiyoVideoValidationType, NSData, UIImage, UIViewController, VNFaceLandmarkRegion2D, VNRectangleObservation;
+@class DigiyoButtonConfig, DigiyoButtonConfigCompanion, DigiyoCameraMode, DigiyoCaptureArea, DigiyoCaptureButtonBehavior, DigiyoCaptureButtonType, DigiyoCaptureModeConfig, DigiyoCaptureModeConfigCompanion, DigiyoDigiYo, DigiyoDigiYoButtonStyle, DigiyoDigiYoButtonStyleDefault, DigiyoDigiYoButtonStyleTextOnlyEnd, DigiyoDigiYoButtonStyleTextOnlyStart, DigiyoDigiYoColorScheme, DigiyoDigiYoColorSchemeCompanion, DigiyoDigiYoHelper, DigiyoDigiYoIcons, DigiyoDigiYoImageAsset, DigiyoDigiYoImageAssetCompanion, DigiyoDigiYoRGB, DigiyoDigiYoRGBCompanion, DigiyoDigiYoSDK, DigiyoDigiYoSDKUtils, DigiyoDigiYoShape, DigiyoDigiYoShapeCircle, DigiyoDigiYoShapeSquare, DigiyoDigiyocoreCisefDetails, DigiyoDigiyocoreCisefDetailsCompanion, DigiyoDigiyocoreConductorDetails, DigiyoDigiyocoreConductorDetailsCompanion, DigiyoDigiyocoreDataRequireModel, DigiyoDigiyocoreDataRequireModelCompanion, DigiyoDigiyocoreDiaModel, DigiyoDigiyocoreDiaModelCompanion, DigiyoDigiyocoreDigiYoConfig, DigiyoDigiyocoreDigiYoConfigEntity, DigiyoDigiyocoreDigiYoConfigEntityCompanion, DigiyoDigiyocoreDigiYoCore, DigiyoDigiyocoreDigiYoError, DigiyoDigiyocoreDigiYoErrorCompanion, DigiyoDigiyocoreIdInfoModel, DigiyoDigiyocoreIdInfoModelCompanion, DigiyoDigiyocoreInDataConfigModel, DigiyoDigiyocoreInDataConfigModelCompanion, DigiyoDigiyocoreInDataEntryModel, DigiyoDigiyocoreInDataEntryModelCompanion, DigiyoDigiyocoreLiveValidationOptions, DigiyoDigiyocoreLiveValidationOptionsCompanion, DigiyoDigiyocoreLogLevel, DigiyoDigiyocoreMetaModel, DigiyoDigiyocoreMetaModelCompanion, DigiyoDigiyocorePartnerModel, DigiyoDigiyocorePartnerModelCompanion, DigiyoDigiyocorePolDetails, DigiyoDigiyocorePolDetailsCompanion, DigiyoDigiyocoreResultModel, DigiyoDigiyocoreResultModelCompanion, DigiyoDigiyocoreScoresModel, DigiyoDigiyocoreScoresModelCompanion, DigiyoDigiyocoreTaskModel, DigiyoDigiyocoreTaskModelCompanion, DigiyoDigiyocoreValidationFlags, DigiyoDigiyocoreValidationFlagsCompanion, DigiyoDocumentCameraConfig, DigiyoDocumentDetectorStatus, DigiyoDocumentStatusMapperCompanion, DigiyoDocumentType, DigiyoErrorAlertConfig, DigiyoHelpBulletPoint, DigiyoHelpConfig, DigiyoInfoBoxConfig, DigiyoInfoBoxConfigCompanion, DigiyoInfoBoxStyle, DigiyoKotlinArray<T>, DigiyoKotlinAutofreeScope, DigiyoKotlinByteArray, DigiyoKotlinByteIterator, DigiyoKotlinCValue<T>, DigiyoKotlinCValues<T>, DigiyoKotlinCValuesRef<T>, DigiyoKotlinDeferScope, DigiyoKotlinEnum<E>, DigiyoKotlinEnumCompanion, DigiyoKotlinException, DigiyoKotlinFloatArray, DigiyoKotlinFloatIterator, DigiyoKotlinIllegalStateException, DigiyoKotlinIntArray, DigiyoKotlinIntIterator, DigiyoKotlinIntProgression, DigiyoKotlinIntProgressionCompanion, DigiyoKotlinIntRange, DigiyoKotlinIntRangeCompanion, DigiyoKotlinNothing, DigiyoKotlinPair<__covariant A, __covariant B>, DigiyoKotlinRuntimeException, DigiyoKotlinThrowable, DigiyoKotlinx_serialization_coreSerialKind, DigiyoKotlinx_serialization_coreSerializersModule, DigiyoLensFacingType, DigiyoLibraryDrawableResource, DigiyoLibraryFontResource, DigiyoLibraryPluralStringResource, DigiyoLibraryResource, DigiyoLibraryResourceItem, DigiyoLibraryStringArrayResource, DigiyoLibraryStringResource, DigiyoLiveValidationsAssets, DigiyoLiveValidationsText, DigiyoLiveValidationsTextCompanion, DigiyoMediaPreviewConfig, DigiyoRes, DigiyoResArray, DigiyoResDrawable, DigiyoResFont, DigiyoResPlurals, DigiyoResString, DigiyoSelfieCameraConfig, DigiyoSelfieDetectorStatus, DigiyoSelfieStatusMapperCompanion, DigiyoSuccessAlertConfig, DigiyoUiImageVector, DigiyoUiImageVectorCompanion, DigiyoUiVectorGroup, DigiyoUiVectorNode, DigiyoUi_geometryRect, DigiyoUi_geometryRectCompanion, DigiyoUi_graphicsColorSpace, DigiyoUi_graphicsOutline, DigiyoUi_graphicsPathNode, DigiyoUi_unitDpRect, DigiyoUi_unitDpRectCompanion, DigiyoUi_unitLayoutDirection, DigiyoVideoCameraConfig, DigiyoVideoDetectorStatus, DigiyoVideoStatusMapperCompanion, DigiyoVideoValidationType, NSData, UIImage, UIViewController, VNFaceLandmarkRegion2D, VNRectangleObservation;
 
 @protocol DigiyoDigiyocoreJavaSerializable, DigiyoKotlinAnnotation, DigiyoKotlinClosedRange, DigiyoKotlinComparable, DigiyoKotlinIterable, DigiyoKotlinIterator, DigiyoKotlinKAnnotatedElement, DigiyoKotlinKClass, DigiyoKotlinKClassifier, DigiyoKotlinKDeclarationContainer, DigiyoKotlinNativePlacement, DigiyoKotlinOpenEndRange, DigiyoKotlinx_serialization_coreCompositeDecoder, DigiyoKotlinx_serialization_coreCompositeEncoder, DigiyoKotlinx_serialization_coreDecoder, DigiyoKotlinx_serialization_coreDeserializationStrategy, DigiyoKotlinx_serialization_coreEncoder, DigiyoKotlinx_serialization_coreKSerializer, DigiyoKotlinx_serialization_coreSerialDescriptor, DigiyoKotlinx_serialization_coreSerializationStrategy, DigiyoKotlinx_serialization_coreSerializersModuleCollector, DigiyoLibraryQualifier, DigiyoLibrary_baseBaseRealmObject, DigiyoLibrary_baseDeleteable, DigiyoLibrary_baseRealmObject, DigiyoLibrary_baseTypedRealmObject, DigiyoUiModifier, DigiyoUiModifierElement, DigiyoUi_graphicsImageBitmap, DigiyoUi_graphicsShape, DigiyoUi_unitDensity, DigiyoUi_unitFontScalingLinear;
 
@@ -295,20 +295,37 @@ __attribute__((swift_name("ErrorAlertConfig")))
 __attribute__((objc_subclassing_restricted))
 __attribute__((swift_name("HelpConfig")))
 @interface DigiyoHelpConfig : DigiyoBase
-- (instancetype)initWithHelpScreenTitle:(NSString *)helpScreenTitle helpScreenImage:(DigiyoDigiYoImageAsset * _Nullable)helpScreenImage colorScheme:(DigiyoDigiYoColorScheme * _Nullable)colorScheme imageShouldFollowColorScheme:(BOOL)imageShouldFollowColorScheme bulletAndAdvices:(NSArray<DigiyoKotlinPair<DigiyoHelpBulletPoint *, NSString *> *> *)bulletAndAdvices continueButtonTitle:(NSString *)continueButtonTitle customTitleTextColor:(DigiyoDigiYoRGB * _Nullable)customTitleTextColor customContinueButtonColor:(DigiyoDigiYoRGB * _Nullable)customContinueButtonColor displayDefaultActivityIndicator:(BOOL)displayDefaultActivityIndicator __attribute__((swift_name("init(helpScreenTitle:helpScreenImage:colorScheme:imageShouldFollowColorScheme:bulletAndAdvices:continueButtonTitle:customTitleTextColor:customContinueButtonColor:displayDefaultActivityIndicator:)"))) __attribute__((objc_designated_initializer));
-- (DigiyoHelpConfig *)doCopyHelpScreenTitle:(NSString *)helpScreenTitle helpScreenImage:(DigiyoDigiYoImageAsset * _Nullable)helpScreenImage colorScheme:(DigiyoDigiYoColorScheme * _Nullable)colorScheme imageShouldFollowColorScheme:(BOOL)imageShouldFollowColorScheme bulletAndAdvices:(NSArray<DigiyoKotlinPair<DigiyoHelpBulletPoint *, NSString *> *> *)bulletAndAdvices continueButtonTitle:(NSString *)continueButtonTitle customTitleTextColor:(DigiyoDigiYoRGB * _Nullable)customTitleTextColor customContinueButtonColor:(DigiyoDigiYoRGB * _Nullable)customContinueButtonColor displayDefaultActivityIndicator:(BOOL)displayDefaultActivityIndicator __attribute__((swift_name("doCopy(helpScreenTitle:helpScreenImage:colorScheme:imageShouldFollowColorScheme:bulletAndAdvices:continueButtonTitle:customTitleTextColor:customContinueButtonColor:displayDefaultActivityIndicator:)")));
+- (instancetype)initWithHelpScreenTitle:(NSString *)helpScreenTitle helpScreenImage:(DigiyoDigiYoImageAsset * _Nullable)helpScreenImage colorScheme:(DigiyoDigiYoColorScheme * _Nullable)colorScheme imageShouldFollowColorScheme:(BOOL)imageShouldFollowColorScheme bulletAndAdvices:(NSArray<DigiyoKotlinPair<DigiyoHelpBulletPoint *, NSString *> *> *)bulletAndAdvices customTitleTextColor:(DigiyoDigiYoRGB * _Nullable)customTitleTextColor buttonConfig:(DigiyoButtonConfig * _Nullable)buttonConfig __attribute__((swift_name("init(helpScreenTitle:helpScreenImage:colorScheme:imageShouldFollowColorScheme:bulletAndAdvices:customTitleTextColor:buttonConfig:)"))) __attribute__((objc_designated_initializer));
+- (DigiyoHelpConfig *)doCopyHelpScreenTitle:(NSString *)helpScreenTitle helpScreenImage:(DigiyoDigiYoImageAsset * _Nullable)helpScreenImage colorScheme:(DigiyoDigiYoColorScheme * _Nullable)colorScheme imageShouldFollowColorScheme:(BOOL)imageShouldFollowColorScheme bulletAndAdvices:(NSArray<DigiyoKotlinPair<DigiyoHelpBulletPoint *, NSString *> *> *)bulletAndAdvices customTitleTextColor:(DigiyoDigiYoRGB * _Nullable)customTitleTextColor buttonConfig:(DigiyoButtonConfig * _Nullable)buttonConfig __attribute__((swift_name("doCopy(helpScreenTitle:helpScreenImage:colorScheme:imageShouldFollowColorScheme:bulletAndAdvices:customTitleTextColor:buttonConfig:)")));
 - (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
 - (NSUInteger)hash __attribute__((swift_name("hash()")));
 - (NSString *)description __attribute__((swift_name("description()")));
 @property (readonly) NSArray<DigiyoKotlinPair<DigiyoHelpBulletPoint *, NSString *> *> *bulletAndAdvices __attribute__((swift_name("bulletAndAdvices")));
+@property (readonly) DigiyoButtonConfig * _Nullable buttonConfig __attribute__((swift_name("buttonConfig")));
 @property (readonly) DigiyoDigiYoColorScheme * _Nullable colorScheme __attribute__((swift_name("colorScheme")));
-@property (readonly) NSString *continueButtonTitle __attribute__((swift_name("continueButtonTitle")));
-@property (readonly) DigiyoDigiYoRGB * _Nullable customContinueButtonColor __attribute__((swift_name("customContinueButtonColor")));
 @property (readonly) DigiyoDigiYoRGB * _Nullable customTitleTextColor __attribute__((swift_name("customTitleTextColor")));
-@property (readonly) BOOL displayDefaultActivityIndicator __attribute__((swift_name("displayDefaultActivityIndicator")));
 @property (readonly) DigiyoDigiYoImageAsset * _Nullable helpScreenImage __attribute__((swift_name("helpScreenImage")));
 @property (readonly) NSString *helpScreenTitle __attribute__((swift_name("helpScreenTitle")));
 @property (readonly) BOOL imageShouldFollowColorScheme __attribute__((swift_name("imageShouldFollowColorScheme")));
+@end
+
+__attribute__((objc_subclassing_restricted))
+__attribute__((swift_name("LiveValidationsAssets")))
+@interface DigiyoLiveValidationsAssets : DigiyoBase
+- (instancetype)initWithLookLeftRightAsset:(DigiyoDigiYoImageAsset * _Nullable)lookLeftRightAsset lookUpDownAsset:(DigiyoDigiYoImageAsset * _Nullable)lookUpDownAsset openCloseMouthAsset:(DigiyoDigiYoImageAsset * _Nullable)openCloseMouthAsset faceEyeCheckAsset:(DigiyoDigiYoImageAsset * _Nullable)faceEyeCheckAsset faceSmileCheckAsset:(DigiyoDigiYoImageAsset * _Nullable)faceSmileCheckAsset idOnFaceCheckAsset:(DigiyoDigiYoImageAsset * _Nullable)idOnFaceCheckAsset fingerCheckAsset:(DigiyoDigiYoImageAsset * _Nullable)fingerCheckAsset __attribute__((swift_name("init(lookLeftRightAsset:lookUpDownAsset:openCloseMouthAsset:faceEyeCheckAsset:faceSmileCheckAsset:idOnFaceCheckAsset:fingerCheckAsset:)"))) __attribute__((objc_designated_initializer));
+- (DigiyoLiveValidationsAssets *)doCopyLookLeftRightAsset:(DigiyoDigiYoImageAsset * _Nullable)lookLeftRightAsset lookUpDownAsset:(DigiyoDigiYoImageAsset * _Nullable)lookUpDownAsset openCloseMouthAsset:(DigiyoDigiYoImageAsset * _Nullable)openCloseMouthAsset faceEyeCheckAsset:(DigiyoDigiYoImageAsset * _Nullable)faceEyeCheckAsset faceSmileCheckAsset:(DigiyoDigiYoImageAsset * _Nullable)faceSmileCheckAsset idOnFaceCheckAsset:(DigiyoDigiYoImageAsset * _Nullable)idOnFaceCheckAsset fingerCheckAsset:(DigiyoDigiYoImageAsset * _Nullable)fingerCheckAsset __attribute__((swift_name("doCopy(lookLeftRightAsset:lookUpDownAsset:openCloseMouthAsset:faceEyeCheckAsset:faceSmileCheckAsset:idOnFaceCheckAsset:fingerCheckAsset:)")));
+- (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
+- (DigiyoDigiYoImageAsset * _Nullable)getActiveValidationAssetValidationName:(NSString *)validationName __attribute__((swift_name("getActiveValidationAsset(validationName:)")));
+- (NSUInteger)hash __attribute__((swift_name("hash()")));
+- (NSDictionary<NSString *, id> *)toMap __attribute__((swift_name("toMap()")));
+- (NSString *)description __attribute__((swift_name("description()")));
+@property (readonly) DigiyoDigiYoImageAsset * _Nullable faceEyeCheckAsset __attribute__((swift_name("faceEyeCheckAsset")));
+@property (readonly) DigiyoDigiYoImageAsset * _Nullable faceSmileCheckAsset __attribute__((swift_name("faceSmileCheckAsset")));
+@property (readonly) DigiyoDigiYoImageAsset * _Nullable fingerCheckAsset __attribute__((swift_name("fingerCheckAsset")));
+@property (readonly) DigiyoDigiYoImageAsset * _Nullable idOnFaceCheckAsset __attribute__((swift_name("idOnFaceCheckAsset")));
+@property (readonly) DigiyoDigiYoImageAsset * _Nullable lookLeftRightAsset __attribute__((swift_name("lookLeftRightAsset")));
+@property (readonly) DigiyoDigiYoImageAsset * _Nullable lookUpDownAsset __attribute__((swift_name("lookUpDownAsset")));
+@property (readonly) DigiyoDigiYoImageAsset * _Nullable openCloseMouthAsset __attribute__((swift_name("openCloseMouthAsset")));
 @end
 
 __attribute__((objc_subclassing_restricted))
@@ -345,23 +362,20 @@ __attribute__((swift_name("LiveValidationsText.Companion")))
 __attribute__((objc_subclassing_restricted))
 __attribute__((swift_name("MediaPreviewConfig")))
 @interface DigiyoMediaPreviewConfig : DigiyoBase
-- (instancetype)initWithPreviewScreenTitle:(NSString *)previewScreenTitle previewSubtitle:(NSString * _Nullable)previewSubtitle previewMediaPath:(NSString * _Nullable)previewMediaPath isMediaAVideo:(BOOL)isMediaAVideo colorScheme:(DigiyoDigiYoColorScheme * _Nullable)colorScheme bulletAndAdvices:(NSArray<DigiyoKotlinPair<DigiyoHelpBulletPoint *, NSString *> *> * _Nullable)bulletAndAdvices primaryButtonTitle:(NSString *)primaryButtonTitle customPrimaryButtonColor:(DigiyoDigiYoRGB * _Nullable)customPrimaryButtonColor secondaryButtonTitle:(NSString *)secondaryButtonTitle customSecondaryButtonColor:(DigiyoDigiYoRGB * _Nullable)customSecondaryButtonColor customTitleTextColor:(DigiyoDigiYoRGB * _Nullable)customTitleTextColor displayDefaultActivityIndicator:(BOOL)displayDefaultActivityIndicator __attribute__((swift_name("init(previewScreenTitle:previewSubtitle:previewMediaPath:isMediaAVideo:colorScheme:bulletAndAdvices:primaryButtonTitle:customPrimaryButtonColor:secondaryButtonTitle:customSecondaryButtonColor:customTitleTextColor:displayDefaultActivityIndicator:)"))) __attribute__((objc_designated_initializer));
-- (DigiyoMediaPreviewConfig *)doCopyPreviewScreenTitle:(NSString *)previewScreenTitle previewSubtitle:(NSString * _Nullable)previewSubtitle previewMediaPath:(NSString * _Nullable)previewMediaPath isMediaAVideo:(BOOL)isMediaAVideo colorScheme:(DigiyoDigiYoColorScheme * _Nullable)colorScheme bulletAndAdvices:(NSArray<DigiyoKotlinPair<DigiyoHelpBulletPoint *, NSString *> *> * _Nullable)bulletAndAdvices primaryButtonTitle:(NSString *)primaryButtonTitle customPrimaryButtonColor:(DigiyoDigiYoRGB * _Nullable)customPrimaryButtonColor secondaryButtonTitle:(NSString *)secondaryButtonTitle customSecondaryButtonColor:(DigiyoDigiYoRGB * _Nullable)customSecondaryButtonColor customTitleTextColor:(DigiyoDigiYoRGB * _Nullable)customTitleTextColor displayDefaultActivityIndicator:(BOOL)displayDefaultActivityIndicator __attribute__((swift_name("doCopy(previewScreenTitle:previewSubtitle:previewMediaPath:isMediaAVideo:colorScheme:bulletAndAdvices:primaryButtonTitle:customPrimaryButtonColor:secondaryButtonTitle:customSecondaryButtonColor:customTitleTextColor:displayDefaultActivityIndicator:)")));
+- (instancetype)initWithPreviewScreenTitle:(NSString *)previewScreenTitle previewSubtitle:(NSString * _Nullable)previewSubtitle previewMediaPath:(NSString * _Nullable)previewMediaPath isMediaAVideo:(BOOL)isMediaAVideo colorScheme:(DigiyoDigiYoColorScheme * _Nullable)colorScheme bulletAndAdvices:(NSArray<DigiyoKotlinPair<DigiyoHelpBulletPoint *, NSString *> *> * _Nullable)bulletAndAdvices primaryButtonConfig:(DigiyoButtonConfig * _Nullable)primaryButtonConfig secondaryButtonConfig:(DigiyoButtonConfig * _Nullable)secondaryButtonConfig customTitleTextColor:(DigiyoDigiYoRGB * _Nullable)customTitleTextColor __attribute__((swift_name("init(previewScreenTitle:previewSubtitle:previewMediaPath:isMediaAVideo:colorScheme:bulletAndAdvices:primaryButtonConfig:secondaryButtonConfig:customTitleTextColor:)"))) __attribute__((objc_designated_initializer));
+- (DigiyoMediaPreviewConfig *)doCopyPreviewScreenTitle:(NSString *)previewScreenTitle previewSubtitle:(NSString * _Nullable)previewSubtitle previewMediaPath:(NSString * _Nullable)previewMediaPath isMediaAVideo:(BOOL)isMediaAVideo colorScheme:(DigiyoDigiYoColorScheme * _Nullable)colorScheme bulletAndAdvices:(NSArray<DigiyoKotlinPair<DigiyoHelpBulletPoint *, NSString *> *> * _Nullable)bulletAndAdvices primaryButtonConfig:(DigiyoButtonConfig * _Nullable)primaryButtonConfig secondaryButtonConfig:(DigiyoButtonConfig * _Nullable)secondaryButtonConfig customTitleTextColor:(DigiyoDigiYoRGB * _Nullable)customTitleTextColor __attribute__((swift_name("doCopy(previewScreenTitle:previewSubtitle:previewMediaPath:isMediaAVideo:colorScheme:bulletAndAdvices:primaryButtonConfig:secondaryButtonConfig:customTitleTextColor:)")));
 - (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
 - (NSUInteger)hash __attribute__((swift_name("hash()")));
 - (NSString *)description __attribute__((swift_name("description()")));
 @property (readonly) NSArray<DigiyoKotlinPair<DigiyoHelpBulletPoint *, NSString *> *> * _Nullable bulletAndAdvices __attribute__((swift_name("bulletAndAdvices")));
 @property (readonly) DigiyoDigiYoColorScheme * _Nullable colorScheme __attribute__((swift_name("colorScheme")));
-@property (readonly) DigiyoDigiYoRGB * _Nullable customPrimaryButtonColor __attribute__((swift_name("customPrimaryButtonColor")));
-@property (readonly) DigiyoDigiYoRGB * _Nullable customSecondaryButtonColor __attribute__((swift_name("customSecondaryButtonColor")));
 @property (readonly) DigiyoDigiYoRGB * _Nullable customTitleTextColor __attribute__((swift_name("customTitleTextColor")));
-@property (readonly) BOOL displayDefaultActivityIndicator __attribute__((swift_name("displayDefaultActivityIndicator")));
 @property (readonly) BOOL isMediaAVideo __attribute__((swift_name("isMediaAVideo")));
 @property (readonly) NSString * _Nullable previewMediaPath __attribute__((swift_name("previewMediaPath")));
 @property (readonly) NSString *previewScreenTitle __attribute__((swift_name("previewScreenTitle")));
 @property (readonly) NSString * _Nullable previewSubtitle __attribute__((swift_name("previewSubtitle")));
-@property (readonly) NSString *primaryButtonTitle __attribute__((swift_name("primaryButtonTitle")));
-@property (readonly) NSString *secondaryButtonTitle __attribute__((swift_name("secondaryButtonTitle")));
+@property (readonly) DigiyoButtonConfig * _Nullable primaryButtonConfig __attribute__((swift_name("primaryButtonConfig")));
+@property (readonly) DigiyoButtonConfig * _Nullable secondaryButtonConfig __attribute__((swift_name("secondaryButtonConfig")));
 @end
 
 __attribute__((objc_subclassing_restricted))
@@ -427,9 +441,9 @@ __attribute__((swift_name("CaptureButtonType")))
 __attribute__((objc_subclassing_restricted))
 __attribute__((swift_name("CaptureModeConfig")))
 @interface DigiyoCaptureModeConfig : DigiyoBase
-- (instancetype)initWithAutomaticReadingEnabled:(BOOL)automaticReadingEnabled automaticModeTimeoutMillis:(DigiyoLong * _Nullable)automaticModeTimeoutMillis cameraButtonConfig:(DigiyoButtonConfig * _Nullable)cameraButtonConfig buttonType:(DigiyoCaptureButtonType *)buttonType buttonBehavior:(DigiyoCaptureButtonBehavior * _Nullable)buttonBehavior infoBoxConfig:(DigiyoInfoBoxConfig * _Nullable)infoBoxConfig __attribute__((swift_name("init(automaticReadingEnabled:automaticModeTimeoutMillis:cameraButtonConfig:buttonType:buttonBehavior:infoBoxConfig:)"))) __attribute__((objc_designated_initializer));
+- (instancetype)initWithAutomaticReadingEnabled:(BOOL)automaticReadingEnabled automaticModeTimeoutMillis:(DigiyoLong * _Nullable)automaticModeTimeoutMillis cameraButtonConfig:(DigiyoButtonConfig * _Nullable)cameraButtonConfig buttonType:(DigiyoCaptureButtonType *)buttonType buttonBehavior:(DigiyoCaptureButtonBehavior * _Nullable)buttonBehavior infoBoxConfig:(DigiyoInfoBoxConfig * _Nullable)infoBoxConfig overwriteDefaultTextWith:(NSString * _Nullable)overwriteDefaultTextWith __attribute__((swift_name("init(automaticReadingEnabled:automaticModeTimeoutMillis:cameraButtonConfig:buttonType:buttonBehavior:infoBoxConfig:overwriteDefaultTextWith:)"))) __attribute__((objc_designated_initializer));
 @property (class, readonly, getter=companion) DigiyoCaptureModeConfigCompanion *companion __attribute__((swift_name("companion")));
-- (DigiyoCaptureModeConfig *)doCopyAutomaticReadingEnabled:(BOOL)automaticReadingEnabled automaticModeTimeoutMillis:(DigiyoLong * _Nullable)automaticModeTimeoutMillis cameraButtonConfig:(DigiyoButtonConfig * _Nullable)cameraButtonConfig buttonType:(DigiyoCaptureButtonType *)buttonType buttonBehavior:(DigiyoCaptureButtonBehavior * _Nullable)buttonBehavior infoBoxConfig:(DigiyoInfoBoxConfig * _Nullable)infoBoxConfig __attribute__((swift_name("doCopy(automaticReadingEnabled:automaticModeTimeoutMillis:cameraButtonConfig:buttonType:buttonBehavior:infoBoxConfig:)")));
+- (DigiyoCaptureModeConfig *)doCopyAutomaticReadingEnabled:(BOOL)automaticReadingEnabled automaticModeTimeoutMillis:(DigiyoLong * _Nullable)automaticModeTimeoutMillis cameraButtonConfig:(DigiyoButtonConfig * _Nullable)cameraButtonConfig buttonType:(DigiyoCaptureButtonType *)buttonType buttonBehavior:(DigiyoCaptureButtonBehavior * _Nullable)buttonBehavior infoBoxConfig:(DigiyoInfoBoxConfig * _Nullable)infoBoxConfig overwriteDefaultTextWith:(NSString * _Nullable)overwriteDefaultTextWith __attribute__((swift_name("doCopy(automaticReadingEnabled:automaticModeTimeoutMillis:cameraButtonConfig:buttonType:buttonBehavior:infoBoxConfig:overwriteDefaultTextWith:)")));
 - (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
 - (NSUInteger)hash __attribute__((swift_name("hash()")));
 - (NSString *)description __attribute__((swift_name("description()")));
@@ -439,6 +453,7 @@ __attribute__((swift_name("CaptureModeConfig")))
 @property (readonly) DigiyoCaptureButtonType *buttonType __attribute__((swift_name("buttonType")));
 @property (readonly) DigiyoButtonConfig * _Nullable cameraButtonConfig __attribute__((swift_name("cameraButtonConfig")));
 @property (readonly) DigiyoInfoBoxConfig * _Nullable infoBoxConfig __attribute__((swift_name("infoBoxConfig")));
+@property (readonly) NSString * _Nullable overwriteDefaultTextWith __attribute__((swift_name("overwriteDefaultTextWith")));
 @end
 
 __attribute__((objc_subclassing_restricted))
@@ -529,11 +544,12 @@ __attribute__((swift_name("SelfieCameraConfig")))
 __attribute__((objc_subclassing_restricted))
 __attribute__((swift_name("VideoCameraConfig")))
 @interface DigiyoVideoCameraConfig : DigiyoBase
-- (instancetype)initWithCameraTitle:(NSString *)cameraTitle colorScheme:(DigiyoDigiYoColorScheme * _Nullable)colorScheme successAlertConfig:(DigiyoSuccessAlertConfig * _Nullable)successAlertConfig errorAlertConfig:(DigiyoErrorAlertConfig * _Nullable)errorAlertConfig showCloseButton:(DigiyoBoolean * _Nullable)showCloseButton captureModeConfig:(DigiyoCaptureModeConfig *)captureModeConfig customLiveValidationsText:(DigiyoLiveValidationsText * _Nullable)customLiveValidationsText __attribute__((swift_name("init(cameraTitle:colorScheme:successAlertConfig:errorAlertConfig:showCloseButton:captureModeConfig:customLiveValidationsText:)"))) __attribute__((objc_designated_initializer));
-- (DigiyoVideoCameraConfig *)doCopyCameraTitle:(NSString *)cameraTitle colorScheme:(DigiyoDigiYoColorScheme * _Nullable)colorScheme successAlertConfig:(DigiyoSuccessAlertConfig * _Nullable)successAlertConfig errorAlertConfig:(DigiyoErrorAlertConfig * _Nullable)errorAlertConfig showCloseButton:(DigiyoBoolean * _Nullable)showCloseButton captureModeConfig:(DigiyoCaptureModeConfig *)captureModeConfig customLiveValidationsText:(DigiyoLiveValidationsText * _Nullable)customLiveValidationsText __attribute__((swift_name("doCopy(cameraTitle:colorScheme:successAlertConfig:errorAlertConfig:showCloseButton:captureModeConfig:customLiveValidationsText:)")));
+- (instancetype)initWithCameraTitle:(NSString *)cameraTitle colorScheme:(DigiyoDigiYoColorScheme * _Nullable)colorScheme successAlertConfig:(DigiyoSuccessAlertConfig * _Nullable)successAlertConfig errorAlertConfig:(DigiyoErrorAlertConfig * _Nullable)errorAlertConfig showCloseButton:(DigiyoBoolean * _Nullable)showCloseButton captureModeConfig:(DigiyoCaptureModeConfig *)captureModeConfig customLiveValidationsText:(DigiyoLiveValidationsText * _Nullable)customLiveValidationsText cameraSoundEnabled:(DigiyoBoolean * _Nullable)cameraSoundEnabled __attribute__((swift_name("init(cameraTitle:colorScheme:successAlertConfig:errorAlertConfig:showCloseButton:captureModeConfig:customLiveValidationsText:cameraSoundEnabled:)"))) __attribute__((objc_designated_initializer));
+- (DigiyoVideoCameraConfig *)doCopyCameraTitle:(NSString *)cameraTitle colorScheme:(DigiyoDigiYoColorScheme * _Nullable)colorScheme successAlertConfig:(DigiyoSuccessAlertConfig * _Nullable)successAlertConfig errorAlertConfig:(DigiyoErrorAlertConfig * _Nullable)errorAlertConfig showCloseButton:(DigiyoBoolean * _Nullable)showCloseButton captureModeConfig:(DigiyoCaptureModeConfig *)captureModeConfig customLiveValidationsText:(DigiyoLiveValidationsText * _Nullable)customLiveValidationsText cameraSoundEnabled:(DigiyoBoolean * _Nullable)cameraSoundEnabled __attribute__((swift_name("doCopy(cameraTitle:colorScheme:successAlertConfig:errorAlertConfig:showCloseButton:captureModeConfig:customLiveValidationsText:cameraSoundEnabled:)")));
 - (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
 - (NSUInteger)hash __attribute__((swift_name("hash()")));
 - (NSString *)description __attribute__((swift_name("description()")));
+@property (readonly) DigiyoBoolean * _Nullable cameraSoundEnabled __attribute__((swift_name("cameraSoundEnabled")));
 @property (readonly) NSString *cameraTitle __attribute__((swift_name("cameraTitle")));
 @property (readonly) DigiyoCaptureModeConfig *captureModeConfig __attribute__((swift_name("captureModeConfig")));
 @property (readonly) DigiyoDigiYoColorScheme * _Nullable colorScheme __attribute__((swift_name("colorScheme")));
@@ -571,7 +587,10 @@ __attribute__((swift_name("ButtonConfig.Companion")))
 + (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
 + (instancetype)companion __attribute__((swift_name("init()")));
 @property (class, readonly, getter=shared) DigiyoButtonConfigCompanion *shared __attribute__((swift_name("shared")));
+- (DigiyoButtonConfig *)defaultWithLabelLabel:(NSString *)label __attribute__((swift_name("defaultWithLabel(label:)")));
+- (DigiyoButtonConfig *)secondaryWithLabelLabel:(NSString *)label __attribute__((swift_name("secondaryWithLabel(label:)")));
 @property (readonly) DigiyoButtonConfig *DEFAULT __attribute__((swift_name("DEFAULT")));
+@property (readonly) DigiyoButtonConfig *SECONDARY __attribute__((swift_name("SECONDARY")));
 @property (readonly) DigiyoButtonConfig *SHUTTER __attribute__((swift_name("SHUTTER")));
 @end
 
@@ -632,6 +651,12 @@ __attribute__((swift_name("DigiYoShape.Circle")))
 + (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
 + (instancetype)circle __attribute__((swift_name("init()")));
 @property (class, readonly, getter=shared) DigiyoDigiYoShapeCircle *shared __attribute__((swift_name("shared")));
+@end
+
+__attribute__((objc_subclassing_restricted))
+__attribute__((swift_name("DigiYoShape.Outlined")))
+@interface DigiyoDigiYoShapeOutlined : DigiyoDigiYoShape
+- (instancetype)initWithCornerRadius:(float)cornerRadius __attribute__((swift_name("init(cornerRadius:)"))) __attribute__((objc_designated_initializer));
 @end
 
 __attribute__((objc_subclassing_restricted))
@@ -799,7 +824,28 @@ __attribute__((swift_name("DocumentDetectorStatus")))
 - (uint64_t)getColorPrimaryColor:(uint64_t)primaryColor __attribute__((swift_name("getColor(primaryColor:)")));
 - (uint64_t)getColorPrimaryColor:(uint64_t)primaryColor neutralColor:(id _Nullable)neutralColor __attribute__((swift_name("getColor(primaryColor:neutralColor:)")));
 - (DigiyoDigiYoRGB *)getColorDigiYoColorPrimaryColor:(DigiyoDigiYoRGB *)primaryColor neutralColor:(DigiyoDigiYoRGB * _Nullable)neutralColor __attribute__((swift_name("getColorDigiYoColor(primaryColor:neutralColor:)")));
-- (NSString *)getMessageManualMode:(BOOL)manualMode __attribute__((swift_name("getMessage(manualMode:)")));
+@end
+
+__attribute__((objc_subclassing_restricted))
+__attribute__((swift_name("DocumentStatusMapper")))
+@interface DigiyoDocumentStatusMapper : DigiyoBase
+- (instancetype)initWithDefaultText:(NSString * _Nullable)defaultText automaticModeText:(NSString *)automaticModeText messageMap:(NSDictionary<DigiyoDocumentDetectorStatus *, NSString *> *)messageMap __attribute__((swift_name("init(defaultText:automaticModeText:messageMap:)"))) __attribute__((objc_designated_initializer));
+@property (class, readonly, getter=companion) DigiyoDocumentStatusMapperCompanion *companion __attribute__((swift_name("companion")));
+- (NSString *)getMessageStatus:(DigiyoDocumentDetectorStatus *)status manualMode:(BOOL)manualMode __attribute__((swift_name("getMessage(status:manualMode:)")));
+@property (readonly) NSString *automaticModeText __attribute__((swift_name("automaticModeText")));
+@property (readonly) NSString * _Nullable defaultText __attribute__((swift_name("defaultText")));
+@property (readonly) NSDictionary<DigiyoDocumentDetectorStatus *, NSString *> *messageMap __attribute__((swift_name("messageMap")));
+@end
+
+__attribute__((objc_subclassing_restricted))
+__attribute__((swift_name("DocumentStatusMapper.Companion")))
+@interface DigiyoDocumentStatusMapperCompanion : DigiyoBase
++ (instancetype)alloc __attribute__((unavailable));
++ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
++ (instancetype)companion __attribute__((swift_name("init()")));
+@property (class, readonly, getter=shared) DigiyoDocumentStatusMapperCompanion *shared __attribute__((swift_name("shared")));
+@property (readonly) NSString *AUTO_MODE_TEXT __attribute__((swift_name("AUTO_MODE_TEXT")));
+@property (readonly) NSDictionary<DigiyoDocumentDetectorStatus *, NSString *> *DEFAULT_MESSAGE_MAP __attribute__((swift_name("DEFAULT_MESSAGE_MAP")));
 @end
 
 __attribute__((objc_subclassing_restricted))
@@ -812,6 +858,14 @@ __attribute__((swift_name("DocumentType")))
 @property (class, readonly) DigiyoDocumentType *ciBack __attribute__((swift_name("ciBack")));
 + (DigiyoKotlinArray<DigiyoDocumentType *> *)values __attribute__((swift_name("values()")));
 @property (class, readonly) NSArray<DigiyoDocumentType *> *entries __attribute__((swift_name("entries")));
+@end
+
+__attribute__((objc_subclassing_restricted))
+__attribute__((swift_name("GifImageAsset")))
+@interface DigiyoGifImageAsset : DigiyoDigiYoImageAsset
+- (instancetype)initWithAssetName:(NSString *)assetName __attribute__((swift_name("init(assetName:)"))) __attribute__((objc_designated_initializer));
+- (instancetype)init __attribute__((swift_name("init()"))) __attribute__((objc_designated_initializer)) __attribute__((unavailable));
++ (instancetype)new __attribute__((unavailable));
 @end
 
 __attribute__((objc_subclassing_restricted))
@@ -849,7 +903,28 @@ __attribute__((swift_name("SelfieDetectorStatus")))
 @property (class, readonly) NSArray<DigiyoSelfieDetectorStatus *> *entries __attribute__((swift_name("entries")));
 - (DigiyoDigiYoRGB *)getDigiYoColorPrimaryColor:(DigiyoDigiYoRGB *)primaryColor neutralColor:(DigiyoDigiYoRGB * _Nullable)neutralColor __attribute__((swift_name("getDigiYoColor(primaryColor:neutralColor:)")));
 - (uint64_t)getFrameColorPrimaryColor:(uint64_t)primaryColor neutralColor:(id _Nullable)neutralColor __attribute__((swift_name("getFrameColor(primaryColor:neutralColor:)")));
-- (NSString *)getMessageManualMode:(BOOL)manualMode __attribute__((swift_name("getMessage(manualMode:)")));
+@end
+
+__attribute__((objc_subclassing_restricted))
+__attribute__((swift_name("SelfieStatusMapper")))
+@interface DigiyoSelfieStatusMapper : DigiyoBase
+- (instancetype)initWithDefaultText:(NSString * _Nullable)defaultText automaticModeText:(NSString *)automaticModeText messageMap:(NSDictionary<DigiyoSelfieDetectorStatus *, NSString *> *)messageMap __attribute__((swift_name("init(defaultText:automaticModeText:messageMap:)"))) __attribute__((objc_designated_initializer));
+@property (class, readonly, getter=companion) DigiyoSelfieStatusMapperCompanion *companion __attribute__((swift_name("companion")));
+- (NSString *)getMessageStatus:(DigiyoSelfieDetectorStatus *)status manualMode:(BOOL)manualMode customValidationText:(NSString * _Nullable)customValidationText __attribute__((swift_name("getMessage(status:manualMode:customValidationText:)")));
+@property (readonly) NSString *automaticModeText __attribute__((swift_name("automaticModeText")));
+@property (readonly) NSString * _Nullable defaultText __attribute__((swift_name("defaultText")));
+@property (readonly) NSDictionary<DigiyoSelfieDetectorStatus *, NSString *> *messageMap __attribute__((swift_name("messageMap")));
+@end
+
+__attribute__((objc_subclassing_restricted))
+__attribute__((swift_name("SelfieStatusMapper.Companion")))
+@interface DigiyoSelfieStatusMapperCompanion : DigiyoBase
++ (instancetype)alloc __attribute__((unavailable));
++ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
++ (instancetype)companion __attribute__((swift_name("init()")));
+@property (class, readonly, getter=shared) DigiyoSelfieStatusMapperCompanion *shared __attribute__((swift_name("shared")));
+@property (readonly) NSString *AUTO_MODE_TEXT __attribute__((swift_name("AUTO_MODE_TEXT")));
+@property (readonly) NSDictionary<DigiyoSelfieDetectorStatus *, NSString *> *DEFAULT_MESSAGE_MAP __attribute__((swift_name("DEFAULT_MESSAGE_MAP")));
 @end
 
 __attribute__((objc_subclassing_restricted))
@@ -872,7 +947,26 @@ __attribute__((swift_name("VideoDetectorStatus")))
 - (uint64_t)getColorPrimaryColor:(uint64_t)primaryColor neutralColor:(id _Nullable)neutralColor __attribute__((swift_name("getColor(primaryColor:neutralColor:)")));
 - (DigiyoDigiYoRGB *)getDigiYoColorPrimaryColor:(DigiyoDigiYoRGB *)primaryColor neutralColor:(DigiyoDigiYoRGB * _Nullable)neutralColor __attribute__((swift_name("getDigiYoColor(primaryColor:neutralColor:)")));
 - (uint64_t)getFrameColorPrimaryColor:(uint64_t)primaryColor neutralColor:(id _Nullable)neutralColor __attribute__((swift_name("getFrameColor(primaryColor:neutralColor:)")));
-- (NSString *)getMessageAmountOfFingers:(DigiyoInt * _Nullable)amountOfFingers __attribute__((swift_name("getMessage(amountOfFingers:)")));
+@end
+
+__attribute__((objc_subclassing_restricted))
+__attribute__((swift_name("VideoStatusMapper")))
+@interface DigiyoVideoStatusMapper : DigiyoBase
+- (instancetype)initWithDefaultText:(NSString * _Nullable)defaultText messageMap:(NSDictionary<DigiyoVideoDetectorStatus *, NSString *> *)messageMap __attribute__((swift_name("init(defaultText:messageMap:)"))) __attribute__((objc_designated_initializer));
+@property (class, readonly, getter=companion) DigiyoVideoStatusMapperCompanion *companion __attribute__((swift_name("companion")));
+- (NSString *)getMessageStatus:(DigiyoVideoDetectorStatus *)status customValidationText:(NSString * _Nullable)customValidationText __attribute__((swift_name("getMessage(status:customValidationText:)")));
+@property (readonly) NSString * _Nullable defaultText __attribute__((swift_name("defaultText")));
+@property (readonly) NSDictionary<DigiyoVideoDetectorStatus *, NSString *> *messageMap __attribute__((swift_name("messageMap")));
+@end
+
+__attribute__((objc_subclassing_restricted))
+__attribute__((swift_name("VideoStatusMapper.Companion")))
+@interface DigiyoVideoStatusMapperCompanion : DigiyoBase
++ (instancetype)alloc __attribute__((unavailable));
++ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
++ (instancetype)companion __attribute__((swift_name("init()")));
+@property (class, readonly, getter=shared) DigiyoVideoStatusMapperCompanion *shared __attribute__((swift_name("shared")));
+@property (readonly) NSDictionary<DigiyoVideoDetectorStatus *, NSString *> *DEFAULT_MESSAGE_MAP __attribute__((swift_name("DEFAULT_MESSAGE_MAP")));
 @end
 
 __attribute__((objc_subclassing_restricted))
@@ -1026,6 +1120,68 @@ __attribute__((swift_name("Ui_geometryRect")))
 @property (readonly) NSDictionary<NSString *, DigiyoLibraryStringResource *> *allStringResources __attribute__((swift_name("allStringResources")));
 @end
 
+__attribute__((swift_name("DigiyocoreJavaSerializable")))
+@protocol DigiyoDigiyocoreJavaSerializable
+@required
+@end
+
+
+/**
+ * @note annotations
+ *   kotlinx.serialization.Serializable
+*/
+__attribute__((objc_subclassing_restricted))
+__attribute__((swift_name("DigiyocoreDiaModel")))
+@interface DigiyoDigiyocoreDiaModel : DigiyoBase <DigiyoDigiyocoreJavaSerializable>
+- (instancetype)initWithDiaId:(NSString * _Nullable)diaId type:(NSString * _Nullable)type status:(NSString * _Nullable)status meta:(DigiyoDigiyocoreMetaModel * _Nullable)meta inData:(NSDictionary<NSString *, DigiyoDigiyocoreDataRequireModel *> * _Nullable)inData task:(DigiyoDigiyocoreTaskModel * _Nullable)task __attribute__((swift_name("init(diaId:type:status:meta:inData:task:)"))) __attribute__((objc_designated_initializer));
+@property (class, readonly, getter=companion) DigiyoDigiyocoreDiaModelCompanion *companion __attribute__((swift_name("companion")));
+- (DigiyoDigiyocoreDiaModel *)doCopyDiaId:(NSString * _Nullable)diaId type:(NSString * _Nullable)type status:(NSString * _Nullable)status meta:(DigiyoDigiyocoreMetaModel * _Nullable)meta inData:(NSDictionary<NSString *, DigiyoDigiyocoreDataRequireModel *> * _Nullable)inData task:(DigiyoDigiyocoreTaskModel * _Nullable)task __attribute__((swift_name("doCopy(diaId:type:status:meta:inData:task:)")));
+- (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
+- (NSUInteger)hash __attribute__((swift_name("hash()")));
+- (NSString *)description __attribute__((swift_name("description()")));
+
+/**
+ * @note annotations
+ *   kotlinx.serialization.SerialName(value="dia_id")
+*/
+@property (readonly) NSString * _Nullable diaId __attribute__((swift_name("diaId")));
+
+/**
+ * @note annotations
+ *   kotlinx.serialization.SerialName(value="in_data")
+*/
+@property (readonly) NSDictionary<NSString *, DigiyoDigiyocoreDataRequireModel *> * _Nullable inData __attribute__((swift_name("inData")));
+@property (readonly) NSArray<DigiyoDigiyocoreInDataEntryModel *> *inDataList __attribute__((swift_name("inDataList")));
+
+/**
+ * @note annotations
+ *   kotlinx.serialization.SerialName(value="meta")
+*/
+@property (readonly) DigiyoDigiyocoreMetaModel * _Nullable meta __attribute__((swift_name("meta")));
+
+/**
+ * @note annotations
+ *   kotlinx.serialization.SerialName(value="status")
+*/
+@property (readonly) NSString * _Nullable status __attribute__((swift_name("status")));
+
+/**
+ * @note annotations
+ *   kotlinx.serialization.SerialName(value="task")
+*/
+@property (readonly) DigiyoDigiyocoreTaskModel * _Nullable task __attribute__((swift_name("task")));
+
+/**
+ * @note annotations
+ *   kotlinx.serialization.SerialName(value="type")
+*/
+@property (readonly) NSString * _Nullable type __attribute__((swift_name("type")));
+@end
+
+@interface DigiyoDigiyocoreDiaModel (Extensions)
+- (NSString * _Nullable)getActiveVideoValidationName __attribute__((swift_name("getActiveVideoValidationName()")));
+@end
+
 @interface DigiyoDigiYoRGB (Extensions)
 - (uint64_t)toColor __attribute__((swift_name("toColor()")));
 @end
@@ -1098,6 +1254,12 @@ __attribute__((swift_name("ExtensionsKt")))
 @end
 
 __attribute__((objc_subclassing_restricted))
+__attribute__((swift_name("GifViewer_iosKt")))
+@interface DigiyoGifViewer_iosKt : DigiyoBase
++ (UIImage * _Nullable)gifImageWithData:(Class)receiver data:(NSData * _Nullable)data __attribute__((swift_name("gifImageWithData(_:data:)")));
+@end
+
+__attribute__((objc_subclassing_restricted))
 __attribute__((swift_name("Ic_cameraKt")))
 @interface DigiyoIc_cameraKt : DigiyoBase
 @property (class, readonly) DigiyoUiImageVector *Ic_camera __attribute__((swift_name("Ic_camera")));
@@ -1150,64 +1312,6 @@ __attribute__((swift_name("DigiyocoreDigiYoError")))
 @property (readonly) NSString * _Nullable code __attribute__((swift_name("code")));
 @property (readonly) NSString * _Nullable detail __attribute__((swift_name("detail")));
 @property (readonly) BOOL userVisible __attribute__((swift_name("userVisible")));
-@end
-
-__attribute__((swift_name("DigiyocoreJavaSerializable")))
-@protocol DigiyoDigiyocoreJavaSerializable
-@required
-@end
-
-
-/**
- * @note annotations
- *   kotlinx.serialization.Serializable
-*/
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("DigiyocoreDiaModel")))
-@interface DigiyoDigiyocoreDiaModel : DigiyoBase <DigiyoDigiyocoreJavaSerializable>
-- (instancetype)initWithDiaId:(NSString * _Nullable)diaId type:(NSString * _Nullable)type status:(NSString * _Nullable)status meta:(DigiyoDigiyocoreMetaModel * _Nullable)meta inData:(NSDictionary<NSString *, DigiyoDigiyocoreDataRequireModel *> * _Nullable)inData task:(DigiyoDigiyocoreTaskModel * _Nullable)task __attribute__((swift_name("init(diaId:type:status:meta:inData:task:)"))) __attribute__((objc_designated_initializer));
-@property (class, readonly, getter=companion) DigiyoDigiyocoreDiaModelCompanion *companion __attribute__((swift_name("companion")));
-- (DigiyoDigiyocoreDiaModel *)doCopyDiaId:(NSString * _Nullable)diaId type:(NSString * _Nullable)type status:(NSString * _Nullable)status meta:(DigiyoDigiyocoreMetaModel * _Nullable)meta inData:(NSDictionary<NSString *, DigiyoDigiyocoreDataRequireModel *> * _Nullable)inData task:(DigiyoDigiyocoreTaskModel * _Nullable)task __attribute__((swift_name("doCopy(diaId:type:status:meta:inData:task:)")));
-- (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
-- (NSUInteger)hash __attribute__((swift_name("hash()")));
-- (NSString *)description __attribute__((swift_name("description()")));
-
-/**
- * @note annotations
- *   kotlinx.serialization.SerialName(value="dia_id")
-*/
-@property (readonly) NSString * _Nullable diaId __attribute__((swift_name("diaId")));
-
-/**
- * @note annotations
- *   kotlinx.serialization.SerialName(value="in_data")
-*/
-@property (readonly) NSDictionary<NSString *, DigiyoDigiyocoreDataRequireModel *> * _Nullable inData __attribute__((swift_name("inData")));
-@property (readonly) NSArray<DigiyoDigiyocoreInDataEntryModel *> *inDataList __attribute__((swift_name("inDataList")));
-
-/**
- * @note annotations
- *   kotlinx.serialization.SerialName(value="meta")
-*/
-@property (readonly) DigiyoDigiyocoreMetaModel * _Nullable meta __attribute__((swift_name("meta")));
-
-/**
- * @note annotations
- *   kotlinx.serialization.SerialName(value="status")
-*/
-@property (readonly) NSString * _Nullable status __attribute__((swift_name("status")));
-
-/**
- * @note annotations
- *   kotlinx.serialization.SerialName(value="task")
-*/
-@property (readonly) DigiyoDigiyocoreTaskModel * _Nullable task __attribute__((swift_name("task")));
-
-/**
- * @note annotations
- *   kotlinx.serialization.SerialName(value="type")
-*/
-@property (readonly) NSString * _Nullable type __attribute__((swift_name("type")));
 @end
 
 
@@ -1543,6 +1647,106 @@ __attribute__((swift_name("LibraryStringResource")))
 
 /**
  * @note annotations
+ *   kotlinx.serialization.Serializable
+*/
+__attribute__((objc_subclassing_restricted))
+__attribute__((swift_name("DigiyocoreMetaModel")))
+@interface DigiyoDigiyocoreMetaModel : DigiyoBase <DigiyoDigiyocoreJavaSerializable>
+- (instancetype)initWithCreated:(NSString * _Nullable)created updated:(NSString * _Nullable)updated partner:(DigiyoDigiyocorePartnerModel * _Nullable)partner __attribute__((swift_name("init(created:updated:partner:)"))) __attribute__((objc_designated_initializer));
+@property (class, readonly, getter=companion) DigiyoDigiyocoreMetaModelCompanion *companion __attribute__((swift_name("companion")));
+- (DigiyoDigiyocoreMetaModel *)doCopyCreated:(NSString * _Nullable)created updated:(NSString * _Nullable)updated partner:(DigiyoDigiyocorePartnerModel * _Nullable)partner __attribute__((swift_name("doCopy(created:updated:partner:)")));
+- (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
+- (NSUInteger)hash __attribute__((swift_name("hash()")));
+- (NSString *)description __attribute__((swift_name("description()")));
+
+/**
+ * @note annotations
+ *   kotlinx.serialization.SerialName(value="created")
+*/
+@property (readonly) NSString * _Nullable created __attribute__((swift_name("created")));
+
+/**
+ * @note annotations
+ *   kotlinx.serialization.SerialName(value="partner")
+*/
+@property (readonly) DigiyoDigiyocorePartnerModel * _Nullable partner __attribute__((swift_name("partner")));
+
+/**
+ * @note annotations
+ *   kotlinx.serialization.SerialName(value="updated")
+*/
+@property (readonly) NSString * _Nullable updated __attribute__((swift_name("updated")));
+@end
+
+
+/**
+ * @note annotations
+ *   kotlinx.serialization.Serializable
+*/
+__attribute__((objc_subclassing_restricted))
+__attribute__((swift_name("DigiyocoreDataRequireModel")))
+@interface DigiyoDigiyocoreDataRequireModel : DigiyoBase <DigiyoDigiyocoreJavaSerializable>
+- (instancetype)initWithValue:(NSString * _Nullable)value contentType:(NSString * _Nullable)contentType config:(DigiyoDigiyocoreInDataConfigModel * _Nullable)config __attribute__((swift_name("init(value:contentType:config:)"))) __attribute__((objc_designated_initializer));
+@property (class, readonly, getter=companion) DigiyoDigiyocoreDataRequireModelCompanion *companion __attribute__((swift_name("companion")));
+- (DigiyoDigiyocoreDataRequireModel *)doCopyValue:(NSString * _Nullable)value contentType:(NSString * _Nullable)contentType config:(DigiyoDigiyocoreInDataConfigModel * _Nullable)config __attribute__((swift_name("doCopy(value:contentType:config:)")));
+- (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
+- (NSUInteger)hash __attribute__((swift_name("hash()")));
+- (NSString *)description __attribute__((swift_name("description()")));
+
+/**
+ * @note annotations
+ *   kotlinx.serialization.SerialName(value="config")
+*/
+@property (readonly) DigiyoDigiyocoreInDataConfigModel * _Nullable config __attribute__((swift_name("config")));
+
+/**
+ * @note annotations
+ *   kotlinx.serialization.SerialName(value="content_type")
+*/
+@property (readonly) NSString * _Nullable contentType __attribute__((swift_name("contentType")));
+
+/**
+ * @note annotations
+ *   kotlinx.serialization.SerialName(value="value")
+*/
+@property (readonly) NSString * _Nullable value __attribute__((swift_name("value")));
+@end
+
+
+/**
+ * @note annotations
+ *   kotlinx.serialization.Serializable
+*/
+__attribute__((objc_subclassing_restricted))
+__attribute__((swift_name("DigiyocoreTaskModel")))
+@interface DigiyoDigiyocoreTaskModel : DigiyoBase <DigiyoDigiyocoreJavaSerializable>
+- (instancetype)initWithResult:(DigiyoDigiyocoreResultModel * _Nullable)result __attribute__((swift_name("init(result:)"))) __attribute__((objc_designated_initializer));
+@property (class, readonly, getter=companion) DigiyoDigiyocoreTaskModelCompanion *companion __attribute__((swift_name("companion")));
+- (DigiyoDigiyocoreTaskModel *)doCopyResult:(DigiyoDigiyocoreResultModel * _Nullable)result __attribute__((swift_name("doCopy(result:)")));
+- (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
+- (NSUInteger)hash __attribute__((swift_name("hash()")));
+- (NSString *)description __attribute__((swift_name("description()")));
+
+/**
+ * @note annotations
+ *   kotlinx.serialization.SerialName(value="result")
+*/
+@property (readonly) DigiyoDigiyocoreResultModel * _Nullable result __attribute__((swift_name("result")));
+@end
+
+__attribute__((objc_subclassing_restricted))
+__attribute__((swift_name("DigiyocoreDiaModel.Companion")))
+@interface DigiyoDigiyocoreDiaModelCompanion : DigiyoBase
++ (instancetype)alloc __attribute__((unavailable));
++ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
++ (instancetype)companion __attribute__((swift_name("init()")));
+@property (class, readonly, getter=shared) DigiyoDigiyocoreDiaModelCompanion *shared __attribute__((swift_name("shared")));
+- (id<DigiyoKotlinx_serialization_coreKSerializer>)serializer __attribute__((swift_name("serializer()")));
+@end
+
+
+/**
+ * @note annotations
  *   androidx.compose.runtime.Immutable
 */
 __attribute__((objc_subclassing_restricted))
@@ -1684,106 +1888,6 @@ __attribute__((swift_name("DigiyocoreDigiYoError.Companion")))
 + (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
 + (instancetype)companion __attribute__((swift_name("init()")));
 @property (class, readonly, getter=shared) DigiyoDigiyocoreDigiYoErrorCompanion *shared __attribute__((swift_name("shared")));
-- (id<DigiyoKotlinx_serialization_coreKSerializer>)serializer __attribute__((swift_name("serializer()")));
-@end
-
-
-/**
- * @note annotations
- *   kotlinx.serialization.Serializable
-*/
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("DigiyocoreMetaModel")))
-@interface DigiyoDigiyocoreMetaModel : DigiyoBase <DigiyoDigiyocoreJavaSerializable>
-- (instancetype)initWithCreated:(NSString * _Nullable)created updated:(NSString * _Nullable)updated partner:(DigiyoDigiyocorePartnerModel * _Nullable)partner __attribute__((swift_name("init(created:updated:partner:)"))) __attribute__((objc_designated_initializer));
-@property (class, readonly, getter=companion) DigiyoDigiyocoreMetaModelCompanion *companion __attribute__((swift_name("companion")));
-- (DigiyoDigiyocoreMetaModel *)doCopyCreated:(NSString * _Nullable)created updated:(NSString * _Nullable)updated partner:(DigiyoDigiyocorePartnerModel * _Nullable)partner __attribute__((swift_name("doCopy(created:updated:partner:)")));
-- (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
-- (NSUInteger)hash __attribute__((swift_name("hash()")));
-- (NSString *)description __attribute__((swift_name("description()")));
-
-/**
- * @note annotations
- *   kotlinx.serialization.SerialName(value="created")
-*/
-@property (readonly) NSString * _Nullable created __attribute__((swift_name("created")));
-
-/**
- * @note annotations
- *   kotlinx.serialization.SerialName(value="partner")
-*/
-@property (readonly) DigiyoDigiyocorePartnerModel * _Nullable partner __attribute__((swift_name("partner")));
-
-/**
- * @note annotations
- *   kotlinx.serialization.SerialName(value="updated")
-*/
-@property (readonly) NSString * _Nullable updated __attribute__((swift_name("updated")));
-@end
-
-
-/**
- * @note annotations
- *   kotlinx.serialization.Serializable
-*/
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("DigiyocoreDataRequireModel")))
-@interface DigiyoDigiyocoreDataRequireModel : DigiyoBase <DigiyoDigiyocoreJavaSerializable>
-- (instancetype)initWithValue:(NSString * _Nullable)value contentType:(NSString * _Nullable)contentType config:(DigiyoDigiyocoreInDataConfigModel * _Nullable)config __attribute__((swift_name("init(value:contentType:config:)"))) __attribute__((objc_designated_initializer));
-@property (class, readonly, getter=companion) DigiyoDigiyocoreDataRequireModelCompanion *companion __attribute__((swift_name("companion")));
-- (DigiyoDigiyocoreDataRequireModel *)doCopyValue:(NSString * _Nullable)value contentType:(NSString * _Nullable)contentType config:(DigiyoDigiyocoreInDataConfigModel * _Nullable)config __attribute__((swift_name("doCopy(value:contentType:config:)")));
-- (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
-- (NSUInteger)hash __attribute__((swift_name("hash()")));
-- (NSString *)description __attribute__((swift_name("description()")));
-
-/**
- * @note annotations
- *   kotlinx.serialization.SerialName(value="config")
-*/
-@property (readonly) DigiyoDigiyocoreInDataConfigModel * _Nullable config __attribute__((swift_name("config")));
-
-/**
- * @note annotations
- *   kotlinx.serialization.SerialName(value="content_type")
-*/
-@property (readonly) NSString * _Nullable contentType __attribute__((swift_name("contentType")));
-
-/**
- * @note annotations
- *   kotlinx.serialization.SerialName(value="value")
-*/
-@property (readonly) NSString * _Nullable value __attribute__((swift_name("value")));
-@end
-
-
-/**
- * @note annotations
- *   kotlinx.serialization.Serializable
-*/
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("DigiyocoreTaskModel")))
-@interface DigiyoDigiyocoreTaskModel : DigiyoBase <DigiyoDigiyocoreJavaSerializable>
-- (instancetype)initWithResult:(DigiyoDigiyocoreResultModel * _Nullable)result __attribute__((swift_name("init(result:)"))) __attribute__((objc_designated_initializer));
-@property (class, readonly, getter=companion) DigiyoDigiyocoreTaskModelCompanion *companion __attribute__((swift_name("companion")));
-- (DigiyoDigiyocoreTaskModel *)doCopyResult:(DigiyoDigiyocoreResultModel * _Nullable)result __attribute__((swift_name("doCopy(result:)")));
-- (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
-- (NSUInteger)hash __attribute__((swift_name("hash()")));
-- (NSString *)description __attribute__((swift_name("description()")));
-
-/**
- * @note annotations
- *   kotlinx.serialization.SerialName(value="result")
-*/
-@property (readonly) DigiyoDigiyocoreResultModel * _Nullable result __attribute__((swift_name("result")));
-@end
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("DigiyocoreDiaModel.Companion")))
-@interface DigiyoDigiyocoreDiaModelCompanion : DigiyoBase
-+ (instancetype)alloc __attribute__((unavailable));
-+ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
-+ (instancetype)companion __attribute__((swift_name("init()")));
-@property (class, readonly, getter=shared) DigiyoDigiyocoreDiaModelCompanion *shared __attribute__((swift_name("shared")));
 - (id<DigiyoKotlinx_serialization_coreKSerializer>)serializer __attribute__((swift_name("serializer()")));
 @end
 
@@ -2050,106 +2154,6 @@ __attribute__((swift_name("LibraryResourceItem")))
 - (NSString *)description __attribute__((swift_name("description()")));
 @end
 
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("UiImageVector.Companion")))
-@interface DigiyoUiImageVectorCompanion : DigiyoBase
-+ (instancetype)alloc __attribute__((unavailable));
-+ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
-+ (instancetype)companion __attribute__((swift_name("init()")));
-@property (class, readonly, getter=shared) DigiyoUiImageVectorCompanion *shared __attribute__((swift_name("shared")));
-@end
-
-__attribute__((swift_name("UiVectorNode")))
-@interface DigiyoUiVectorNode : DigiyoBase
-@end
-
-
-/**
- * @note annotations
- *   androidx.compose.runtime.Immutable
-*/
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("UiVectorGroup")))
-@interface DigiyoUiVectorGroup : DigiyoUiVectorNode <DigiyoKotlinIterable>
-- (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
-- (DigiyoUiVectorNode *)getIndex:(int32_t)index __attribute__((swift_name("get(index:)")));
-- (NSUInteger)hash __attribute__((swift_name("hash()")));
-- (id<DigiyoKotlinIterator>)iterator __attribute__((swift_name("iterator()")));
-@property (readonly) NSArray<DigiyoUi_graphicsPathNode *> *clipPathData __attribute__((swift_name("clipPathData")));
-@property (readonly) NSString *name __attribute__((swift_name("name")));
-@property (readonly) float pivotX __attribute__((swift_name("pivotX")));
-@property (readonly) float pivotY __attribute__((swift_name("pivotY")));
-@property (readonly) float rotation __attribute__((swift_name("rotation")));
-@property (readonly) float scaleX __attribute__((swift_name("scaleX")));
-@property (readonly) float scaleY __attribute__((swift_name("scaleY")));
-@property (readonly) int32_t size __attribute__((swift_name("size")));
-@property (readonly) float translationX __attribute__((swift_name("translationX")));
-@property (readonly) float translationY __attribute__((swift_name("translationY")));
-@end
-
-__attribute__((swift_name("UiModifierElement")))
-@protocol DigiyoUiModifierElement <DigiyoUiModifier>
-@required
-@end
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("KotlinIntProgression.Companion")))
-@interface DigiyoKotlinIntProgressionCompanion : DigiyoBase
-+ (instancetype)alloc __attribute__((unavailable));
-+ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
-+ (instancetype)companion __attribute__((swift_name("init()")));
-@property (class, readonly, getter=shared) DigiyoKotlinIntProgressionCompanion *shared __attribute__((swift_name("shared")));
-- (DigiyoKotlinIntProgression *)fromClosedRangeRangeStart:(int32_t)rangeStart rangeEnd:(int32_t)rangeEnd step:(int32_t)step __attribute__((swift_name("fromClosedRange(rangeStart:rangeEnd:step:)")));
-@end
-
-__attribute__((swift_name("KotlinIntIterator")))
-@interface DigiyoKotlinIntIterator : DigiyoBase <DigiyoKotlinIterator>
-- (instancetype)init __attribute__((swift_name("init()"))) __attribute__((objc_designated_initializer));
-+ (instancetype)new __attribute__((availability(swift, unavailable, message="use object initializers instead")));
-- (DigiyoInt *)next __attribute__((swift_name("next()")));
-- (int32_t)nextInt __attribute__((swift_name("nextInt()")));
-@end
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("KotlinIntRange.Companion")))
-@interface DigiyoKotlinIntRangeCompanion : DigiyoBase
-+ (instancetype)alloc __attribute__((unavailable));
-+ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
-+ (instancetype)companion __attribute__((swift_name("init()")));
-@property (class, readonly, getter=shared) DigiyoKotlinIntRangeCompanion *shared __attribute__((swift_name("shared")));
-@property (readonly) DigiyoKotlinIntRange *EMPTY __attribute__((swift_name("EMPTY")));
-@end
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("DigiyocoreDigiYoConfigEntity.Companion")))
-@interface DigiyoDigiyocoreDigiYoConfigEntityCompanion : DigiyoBase
-+ (instancetype)alloc __attribute__((unavailable));
-+ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
-+ (instancetype)companion __attribute__((swift_name("init()")));
-@property (class, readonly, getter=shared) DigiyoDigiyocoreDigiYoConfigEntityCompanion *shared __attribute__((swift_name("shared")));
-- (id)io_realm_kotlin_newInstance __attribute__((swift_name("io_realm_kotlin_newInstance()")));
-- (id)io_realm_kotlin_schema __attribute__((swift_name("io_realm_kotlin_schema()")));
-@end
-
-__attribute__((swift_name("Kotlinx_serialization_coreSerializationStrategy")))
-@protocol DigiyoKotlinx_serialization_coreSerializationStrategy
-@required
-- (void)serializeEncoder:(id<DigiyoKotlinx_serialization_coreEncoder>)encoder value:(id _Nullable)value __attribute__((swift_name("serialize(encoder:value:)")));
-@property (readonly) id<DigiyoKotlinx_serialization_coreSerialDescriptor> descriptor __attribute__((swift_name("descriptor")));
-@end
-
-__attribute__((swift_name("Kotlinx_serialization_coreDeserializationStrategy")))
-@protocol DigiyoKotlinx_serialization_coreDeserializationStrategy
-@required
-- (id _Nullable)deserializeDecoder:(id<DigiyoKotlinx_serialization_coreDecoder>)decoder __attribute__((swift_name("deserialize(decoder:)")));
-@property (readonly) id<DigiyoKotlinx_serialization_coreSerialDescriptor> descriptor __attribute__((swift_name("descriptor")));
-@end
-
-__attribute__((swift_name("Kotlinx_serialization_coreKSerializer")))
-@protocol DigiyoKotlinx_serialization_coreKSerializer <DigiyoKotlinx_serialization_coreSerializationStrategy, DigiyoKotlinx_serialization_coreDeserializationStrategy>
-@required
-@end
-
 
 /**
  * @note annotations
@@ -2318,6 +2322,106 @@ __attribute__((swift_name("DigiyocoreTaskModel.Companion")))
 - (id<DigiyoKotlinx_serialization_coreKSerializer>)serializer __attribute__((swift_name("serializer()")));
 @end
 
+__attribute__((swift_name("Kotlinx_serialization_coreSerializationStrategy")))
+@protocol DigiyoKotlinx_serialization_coreSerializationStrategy
+@required
+- (void)serializeEncoder:(id<DigiyoKotlinx_serialization_coreEncoder>)encoder value:(id _Nullable)value __attribute__((swift_name("serialize(encoder:value:)")));
+@property (readonly) id<DigiyoKotlinx_serialization_coreSerialDescriptor> descriptor __attribute__((swift_name("descriptor")));
+@end
+
+__attribute__((swift_name("Kotlinx_serialization_coreDeserializationStrategy")))
+@protocol DigiyoKotlinx_serialization_coreDeserializationStrategy
+@required
+- (id _Nullable)deserializeDecoder:(id<DigiyoKotlinx_serialization_coreDecoder>)decoder __attribute__((swift_name("deserialize(decoder:)")));
+@property (readonly) id<DigiyoKotlinx_serialization_coreSerialDescriptor> descriptor __attribute__((swift_name("descriptor")));
+@end
+
+__attribute__((swift_name("Kotlinx_serialization_coreKSerializer")))
+@protocol DigiyoKotlinx_serialization_coreKSerializer <DigiyoKotlinx_serialization_coreSerializationStrategy, DigiyoKotlinx_serialization_coreDeserializationStrategy>
+@required
+@end
+
+__attribute__((objc_subclassing_restricted))
+__attribute__((swift_name("UiImageVector.Companion")))
+@interface DigiyoUiImageVectorCompanion : DigiyoBase
++ (instancetype)alloc __attribute__((unavailable));
++ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
++ (instancetype)companion __attribute__((swift_name("init()")));
+@property (class, readonly, getter=shared) DigiyoUiImageVectorCompanion *shared __attribute__((swift_name("shared")));
+@end
+
+__attribute__((swift_name("UiVectorNode")))
+@interface DigiyoUiVectorNode : DigiyoBase
+@end
+
+
+/**
+ * @note annotations
+ *   androidx.compose.runtime.Immutable
+*/
+__attribute__((objc_subclassing_restricted))
+__attribute__((swift_name("UiVectorGroup")))
+@interface DigiyoUiVectorGroup : DigiyoUiVectorNode <DigiyoKotlinIterable>
+- (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
+- (DigiyoUiVectorNode *)getIndex:(int32_t)index __attribute__((swift_name("get(index:)")));
+- (NSUInteger)hash __attribute__((swift_name("hash()")));
+- (id<DigiyoKotlinIterator>)iterator __attribute__((swift_name("iterator()")));
+@property (readonly) NSArray<DigiyoUi_graphicsPathNode *> *clipPathData __attribute__((swift_name("clipPathData")));
+@property (readonly) NSString *name __attribute__((swift_name("name")));
+@property (readonly) float pivotX __attribute__((swift_name("pivotX")));
+@property (readonly) float pivotY __attribute__((swift_name("pivotY")));
+@property (readonly) float rotation __attribute__((swift_name("rotation")));
+@property (readonly) float scaleX __attribute__((swift_name("scaleX")));
+@property (readonly) float scaleY __attribute__((swift_name("scaleY")));
+@property (readonly) int32_t size __attribute__((swift_name("size")));
+@property (readonly) float translationX __attribute__((swift_name("translationX")));
+@property (readonly) float translationY __attribute__((swift_name("translationY")));
+@end
+
+__attribute__((swift_name("UiModifierElement")))
+@protocol DigiyoUiModifierElement <DigiyoUiModifier>
+@required
+@end
+
+__attribute__((objc_subclassing_restricted))
+__attribute__((swift_name("KotlinIntProgression.Companion")))
+@interface DigiyoKotlinIntProgressionCompanion : DigiyoBase
++ (instancetype)alloc __attribute__((unavailable));
++ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
++ (instancetype)companion __attribute__((swift_name("init()")));
+@property (class, readonly, getter=shared) DigiyoKotlinIntProgressionCompanion *shared __attribute__((swift_name("shared")));
+- (DigiyoKotlinIntProgression *)fromClosedRangeRangeStart:(int32_t)rangeStart rangeEnd:(int32_t)rangeEnd step:(int32_t)step __attribute__((swift_name("fromClosedRange(rangeStart:rangeEnd:step:)")));
+@end
+
+__attribute__((swift_name("KotlinIntIterator")))
+@interface DigiyoKotlinIntIterator : DigiyoBase <DigiyoKotlinIterator>
+- (instancetype)init __attribute__((swift_name("init()"))) __attribute__((objc_designated_initializer));
++ (instancetype)new __attribute__((availability(swift, unavailable, message="use object initializers instead")));
+- (DigiyoInt *)next __attribute__((swift_name("next()")));
+- (int32_t)nextInt __attribute__((swift_name("nextInt()")));
+@end
+
+__attribute__((objc_subclassing_restricted))
+__attribute__((swift_name("KotlinIntRange.Companion")))
+@interface DigiyoKotlinIntRangeCompanion : DigiyoBase
++ (instancetype)alloc __attribute__((unavailable));
++ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
++ (instancetype)companion __attribute__((swift_name("init()")));
+@property (class, readonly, getter=shared) DigiyoKotlinIntRangeCompanion *shared __attribute__((swift_name("shared")));
+@property (readonly) DigiyoKotlinIntRange *EMPTY __attribute__((swift_name("EMPTY")));
+@end
+
+__attribute__((objc_subclassing_restricted))
+__attribute__((swift_name("DigiyocoreDigiYoConfigEntity.Companion")))
+@interface DigiyoDigiyocoreDigiYoConfigEntityCompanion : DigiyoBase
++ (instancetype)alloc __attribute__((unavailable));
++ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
++ (instancetype)companion __attribute__((swift_name("init()")));
+@property (class, readonly, getter=shared) DigiyoDigiyocoreDigiYoConfigEntityCompanion *shared __attribute__((swift_name("shared")));
+- (id)io_realm_kotlin_newInstance __attribute__((swift_name("io_realm_kotlin_newInstance()")));
+- (id)io_realm_kotlin_schema __attribute__((swift_name("io_realm_kotlin_schema()")));
+@end
+
 
 /**
  * @note annotations
@@ -2375,108 +2479,6 @@ __attribute__((swift_name("KotlinFloatArray")))
 __attribute__((swift_name("LibraryQualifier")))
 @protocol DigiyoLibraryQualifier
 @required
-@end
-
-
-/**
- * @note annotations
- *   androidx.compose.runtime.Immutable
-*/
-__attribute__((swift_name("Ui_graphicsPathNode")))
-@interface DigiyoUi_graphicsPathNode : DigiyoBase
-@property (readonly) BOOL isCurve __attribute__((swift_name("isCurve")));
-@property (readonly) BOOL isQuad __attribute__((swift_name("isQuad")));
-@end
-
-__attribute__((swift_name("Kotlinx_serialization_coreEncoder")))
-@protocol DigiyoKotlinx_serialization_coreEncoder
-@required
-- (id<DigiyoKotlinx_serialization_coreCompositeEncoder>)beginCollectionDescriptor:(id<DigiyoKotlinx_serialization_coreSerialDescriptor>)descriptor collectionSize:(int32_t)collectionSize __attribute__((swift_name("beginCollection(descriptor:collectionSize:)")));
-- (id<DigiyoKotlinx_serialization_coreCompositeEncoder>)beginStructureDescriptor:(id<DigiyoKotlinx_serialization_coreSerialDescriptor>)descriptor __attribute__((swift_name("beginStructure(descriptor:)")));
-- (void)encodeBooleanValue:(BOOL)value __attribute__((swift_name("encodeBoolean(value:)")));
-- (void)encodeByteValue:(int8_t)value __attribute__((swift_name("encodeByte(value:)")));
-- (void)encodeCharValue:(unichar)value __attribute__((swift_name("encodeChar(value:)")));
-- (void)encodeDoubleValue:(double)value __attribute__((swift_name("encodeDouble(value:)")));
-- (void)encodeEnumEnumDescriptor:(id<DigiyoKotlinx_serialization_coreSerialDescriptor>)enumDescriptor index:(int32_t)index __attribute__((swift_name("encodeEnum(enumDescriptor:index:)")));
-- (void)encodeFloatValue:(float)value __attribute__((swift_name("encodeFloat(value:)")));
-- (id<DigiyoKotlinx_serialization_coreEncoder>)encodeInlineDescriptor:(id<DigiyoKotlinx_serialization_coreSerialDescriptor>)descriptor __attribute__((swift_name("encodeInline(descriptor:)")));
-- (void)encodeIntValue:(int32_t)value __attribute__((swift_name("encodeInt(value:)")));
-- (void)encodeLongValue:(int64_t)value __attribute__((swift_name("encodeLong(value:)")));
-
-/**
- * @note annotations
- *   kotlinx.serialization.ExperimentalSerializationApi
-*/
-- (void)encodeNotNullMark __attribute__((swift_name("encodeNotNullMark()")));
-
-/**
- * @note annotations
- *   kotlinx.serialization.ExperimentalSerializationApi
-*/
-- (void)encodeNull __attribute__((swift_name("encodeNull()")));
-
-/**
- * @note annotations
- *   kotlinx.serialization.ExperimentalSerializationApi
-*/
-- (void)encodeNullableSerializableValueSerializer:(id<DigiyoKotlinx_serialization_coreSerializationStrategy>)serializer value:(id _Nullable)value __attribute__((swift_name("encodeNullableSerializableValue(serializer:value:)")));
-- (void)encodeSerializableValueSerializer:(id<DigiyoKotlinx_serialization_coreSerializationStrategy>)serializer value:(id _Nullable)value __attribute__((swift_name("encodeSerializableValue(serializer:value:)")));
-- (void)encodeShortValue:(int16_t)value __attribute__((swift_name("encodeShort(value:)")));
-- (void)encodeStringValue:(NSString *)value __attribute__((swift_name("encodeString(value:)")));
-@property (readonly) DigiyoKotlinx_serialization_coreSerializersModule *serializersModule __attribute__((swift_name("serializersModule")));
-@end
-
-__attribute__((swift_name("Kotlinx_serialization_coreSerialDescriptor")))
-@protocol DigiyoKotlinx_serialization_coreSerialDescriptor
-@required
-- (NSArray<id<DigiyoKotlinAnnotation>> *)getElementAnnotationsIndex:(int32_t)index __attribute__((swift_name("getElementAnnotations(index:)")));
-- (id<DigiyoKotlinx_serialization_coreSerialDescriptor>)getElementDescriptorIndex:(int32_t)index __attribute__((swift_name("getElementDescriptor(index:)")));
-- (int32_t)getElementIndexName:(NSString *)name __attribute__((swift_name("getElementIndex(name:)")));
-- (NSString *)getElementNameIndex:(int32_t)index __attribute__((swift_name("getElementName(index:)")));
-- (BOOL)isElementOptionalIndex:(int32_t)index __attribute__((swift_name("isElementOptional(index:)")));
-@property (readonly) NSArray<id<DigiyoKotlinAnnotation>> *annotations __attribute__((swift_name("annotations")));
-@property (readonly) int32_t elementsCount __attribute__((swift_name("elementsCount")));
-@property (readonly) BOOL isInline __attribute__((swift_name("isInline")));
-@property (readonly) BOOL isNullable __attribute__((swift_name("isNullable")));
-@property (readonly) DigiyoKotlinx_serialization_coreSerialKind *kind __attribute__((swift_name("kind")));
-@property (readonly) NSString *serialName __attribute__((swift_name("serialName")));
-@end
-
-__attribute__((swift_name("Kotlinx_serialization_coreDecoder")))
-@protocol DigiyoKotlinx_serialization_coreDecoder
-@required
-- (id<DigiyoKotlinx_serialization_coreCompositeDecoder>)beginStructureDescriptor:(id<DigiyoKotlinx_serialization_coreSerialDescriptor>)descriptor __attribute__((swift_name("beginStructure(descriptor:)")));
-- (BOOL)decodeBoolean __attribute__((swift_name("decodeBoolean()")));
-- (int8_t)decodeByte __attribute__((swift_name("decodeByte()")));
-- (unichar)decodeChar __attribute__((swift_name("decodeChar()")));
-- (double)decodeDouble __attribute__((swift_name("decodeDouble()")));
-- (int32_t)decodeEnumEnumDescriptor:(id<DigiyoKotlinx_serialization_coreSerialDescriptor>)enumDescriptor __attribute__((swift_name("decodeEnum(enumDescriptor:)")));
-- (float)decodeFloat __attribute__((swift_name("decodeFloat()")));
-- (id<DigiyoKotlinx_serialization_coreDecoder>)decodeInlineDescriptor:(id<DigiyoKotlinx_serialization_coreSerialDescriptor>)descriptor __attribute__((swift_name("decodeInline(descriptor:)")));
-- (int32_t)decodeInt __attribute__((swift_name("decodeInt()")));
-- (int64_t)decodeLong __attribute__((swift_name("decodeLong()")));
-
-/**
- * @note annotations
- *   kotlinx.serialization.ExperimentalSerializationApi
-*/
-- (BOOL)decodeNotNullMark __attribute__((swift_name("decodeNotNullMark()")));
-
-/**
- * @note annotations
- *   kotlinx.serialization.ExperimentalSerializationApi
-*/
-- (DigiyoKotlinNothing * _Nullable)decodeNull __attribute__((swift_name("decodeNull()")));
-
-/**
- * @note annotations
- *   kotlinx.serialization.ExperimentalSerializationApi
-*/
-- (id _Nullable)decodeNullableSerializableValueDeserializer:(id<DigiyoKotlinx_serialization_coreDeserializationStrategy>)deserializer __attribute__((swift_name("decodeNullableSerializableValue(deserializer:)")));
-- (id _Nullable)decodeSerializableValueDeserializer:(id<DigiyoKotlinx_serialization_coreDeserializationStrategy>)deserializer __attribute__((swift_name("decodeSerializableValue(deserializer:)")));
-- (int16_t)decodeShort __attribute__((swift_name("decodeShort()")));
-- (NSString *)decodeString __attribute__((swift_name("decodeString()")));
-@property (readonly) DigiyoKotlinx_serialization_coreSerializersModule *serializersModule __attribute__((swift_name("serializersModule")));
 @end
 
 __attribute__((objc_subclassing_restricted))
@@ -2846,6 +2848,108 @@ __attribute__((swift_name("DigiyocoreResultModel.Companion")))
 - (id<DigiyoKotlinx_serialization_coreKSerializer>)serializer __attribute__((swift_name("serializer()")));
 @end
 
+__attribute__((swift_name("Kotlinx_serialization_coreEncoder")))
+@protocol DigiyoKotlinx_serialization_coreEncoder
+@required
+- (id<DigiyoKotlinx_serialization_coreCompositeEncoder>)beginCollectionDescriptor:(id<DigiyoKotlinx_serialization_coreSerialDescriptor>)descriptor collectionSize:(int32_t)collectionSize __attribute__((swift_name("beginCollection(descriptor:collectionSize:)")));
+- (id<DigiyoKotlinx_serialization_coreCompositeEncoder>)beginStructureDescriptor:(id<DigiyoKotlinx_serialization_coreSerialDescriptor>)descriptor __attribute__((swift_name("beginStructure(descriptor:)")));
+- (void)encodeBooleanValue:(BOOL)value __attribute__((swift_name("encodeBoolean(value:)")));
+- (void)encodeByteValue:(int8_t)value __attribute__((swift_name("encodeByte(value:)")));
+- (void)encodeCharValue:(unichar)value __attribute__((swift_name("encodeChar(value:)")));
+- (void)encodeDoubleValue:(double)value __attribute__((swift_name("encodeDouble(value:)")));
+- (void)encodeEnumEnumDescriptor:(id<DigiyoKotlinx_serialization_coreSerialDescriptor>)enumDescriptor index:(int32_t)index __attribute__((swift_name("encodeEnum(enumDescriptor:index:)")));
+- (void)encodeFloatValue:(float)value __attribute__((swift_name("encodeFloat(value:)")));
+- (id<DigiyoKotlinx_serialization_coreEncoder>)encodeInlineDescriptor:(id<DigiyoKotlinx_serialization_coreSerialDescriptor>)descriptor __attribute__((swift_name("encodeInline(descriptor:)")));
+- (void)encodeIntValue:(int32_t)value __attribute__((swift_name("encodeInt(value:)")));
+- (void)encodeLongValue:(int64_t)value __attribute__((swift_name("encodeLong(value:)")));
+
+/**
+ * @note annotations
+ *   kotlinx.serialization.ExperimentalSerializationApi
+*/
+- (void)encodeNotNullMark __attribute__((swift_name("encodeNotNullMark()")));
+
+/**
+ * @note annotations
+ *   kotlinx.serialization.ExperimentalSerializationApi
+*/
+- (void)encodeNull __attribute__((swift_name("encodeNull()")));
+
+/**
+ * @note annotations
+ *   kotlinx.serialization.ExperimentalSerializationApi
+*/
+- (void)encodeNullableSerializableValueSerializer:(id<DigiyoKotlinx_serialization_coreSerializationStrategy>)serializer value:(id _Nullable)value __attribute__((swift_name("encodeNullableSerializableValue(serializer:value:)")));
+- (void)encodeSerializableValueSerializer:(id<DigiyoKotlinx_serialization_coreSerializationStrategy>)serializer value:(id _Nullable)value __attribute__((swift_name("encodeSerializableValue(serializer:value:)")));
+- (void)encodeShortValue:(int16_t)value __attribute__((swift_name("encodeShort(value:)")));
+- (void)encodeStringValue:(NSString *)value __attribute__((swift_name("encodeString(value:)")));
+@property (readonly) DigiyoKotlinx_serialization_coreSerializersModule *serializersModule __attribute__((swift_name("serializersModule")));
+@end
+
+__attribute__((swift_name("Kotlinx_serialization_coreSerialDescriptor")))
+@protocol DigiyoKotlinx_serialization_coreSerialDescriptor
+@required
+- (NSArray<id<DigiyoKotlinAnnotation>> *)getElementAnnotationsIndex:(int32_t)index __attribute__((swift_name("getElementAnnotations(index:)")));
+- (id<DigiyoKotlinx_serialization_coreSerialDescriptor>)getElementDescriptorIndex:(int32_t)index __attribute__((swift_name("getElementDescriptor(index:)")));
+- (int32_t)getElementIndexName:(NSString *)name __attribute__((swift_name("getElementIndex(name:)")));
+- (NSString *)getElementNameIndex:(int32_t)index __attribute__((swift_name("getElementName(index:)")));
+- (BOOL)isElementOptionalIndex:(int32_t)index __attribute__((swift_name("isElementOptional(index:)")));
+@property (readonly) NSArray<id<DigiyoKotlinAnnotation>> *annotations __attribute__((swift_name("annotations")));
+@property (readonly) int32_t elementsCount __attribute__((swift_name("elementsCount")));
+@property (readonly) BOOL isInline __attribute__((swift_name("isInline")));
+@property (readonly) BOOL isNullable __attribute__((swift_name("isNullable")));
+@property (readonly) DigiyoKotlinx_serialization_coreSerialKind *kind __attribute__((swift_name("kind")));
+@property (readonly) NSString *serialName __attribute__((swift_name("serialName")));
+@end
+
+__attribute__((swift_name("Kotlinx_serialization_coreDecoder")))
+@protocol DigiyoKotlinx_serialization_coreDecoder
+@required
+- (id<DigiyoKotlinx_serialization_coreCompositeDecoder>)beginStructureDescriptor:(id<DigiyoKotlinx_serialization_coreSerialDescriptor>)descriptor __attribute__((swift_name("beginStructure(descriptor:)")));
+- (BOOL)decodeBoolean __attribute__((swift_name("decodeBoolean()")));
+- (int8_t)decodeByte __attribute__((swift_name("decodeByte()")));
+- (unichar)decodeChar __attribute__((swift_name("decodeChar()")));
+- (double)decodeDouble __attribute__((swift_name("decodeDouble()")));
+- (int32_t)decodeEnumEnumDescriptor:(id<DigiyoKotlinx_serialization_coreSerialDescriptor>)enumDescriptor __attribute__((swift_name("decodeEnum(enumDescriptor:)")));
+- (float)decodeFloat __attribute__((swift_name("decodeFloat()")));
+- (id<DigiyoKotlinx_serialization_coreDecoder>)decodeInlineDescriptor:(id<DigiyoKotlinx_serialization_coreSerialDescriptor>)descriptor __attribute__((swift_name("decodeInline(descriptor:)")));
+- (int32_t)decodeInt __attribute__((swift_name("decodeInt()")));
+- (int64_t)decodeLong __attribute__((swift_name("decodeLong()")));
+
+/**
+ * @note annotations
+ *   kotlinx.serialization.ExperimentalSerializationApi
+*/
+- (BOOL)decodeNotNullMark __attribute__((swift_name("decodeNotNullMark()")));
+
+/**
+ * @note annotations
+ *   kotlinx.serialization.ExperimentalSerializationApi
+*/
+- (DigiyoKotlinNothing * _Nullable)decodeNull __attribute__((swift_name("decodeNull()")));
+
+/**
+ * @note annotations
+ *   kotlinx.serialization.ExperimentalSerializationApi
+*/
+- (id _Nullable)decodeNullableSerializableValueDeserializer:(id<DigiyoKotlinx_serialization_coreDeserializationStrategy>)deserializer __attribute__((swift_name("decodeNullableSerializableValue(deserializer:)")));
+- (id _Nullable)decodeSerializableValueDeserializer:(id<DigiyoKotlinx_serialization_coreDeserializationStrategy>)deserializer __attribute__((swift_name("decodeSerializableValue(deserializer:)")));
+- (int16_t)decodeShort __attribute__((swift_name("decodeShort()")));
+- (NSString *)decodeString __attribute__((swift_name("decodeString()")));
+@property (readonly) DigiyoKotlinx_serialization_coreSerializersModule *serializersModule __attribute__((swift_name("serializersModule")));
+@end
+
+
+/**
+ * @note annotations
+ *   androidx.compose.runtime.Immutable
+*/
+__attribute__((swift_name("Ui_graphicsPathNode")))
+@interface DigiyoUi_graphicsPathNode : DigiyoBase
+@property (readonly) BOOL isCurve __attribute__((swift_name("isCurve")));
+@property (readonly) BOOL isQuad __attribute__((swift_name("isQuad")));
+@end
+
 __attribute__((objc_subclassing_restricted))
 __attribute__((swift_name("Ui_unitDpRect.Companion")))
 @interface DigiyoUi_unitDpRectCompanion : DigiyoBase
@@ -2861,6 +2965,66 @@ __attribute__((swift_name("KotlinFloatIterator")))
 + (instancetype)new __attribute__((availability(swift, unavailable, message="use object initializers instead")));
 - (DigiyoFloat *)next __attribute__((swift_name("next()")));
 - (float)nextFloat __attribute__((swift_name("nextFloat()")));
+@end
+
+__attribute__((objc_subclassing_restricted))
+__attribute__((swift_name("DigiyocoreScoresModel.Companion")))
+@interface DigiyoDigiyocoreScoresModelCompanion : DigiyoBase
++ (instancetype)alloc __attribute__((unavailable));
++ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
++ (instancetype)companion __attribute__((swift_name("init()")));
+@property (class, readonly, getter=shared) DigiyoDigiyocoreScoresModelCompanion *shared __attribute__((swift_name("shared")));
+- (id<DigiyoKotlinx_serialization_coreKSerializer>)serializer __attribute__((swift_name("serializer()")));
+@end
+
+__attribute__((objc_subclassing_restricted))
+__attribute__((swift_name("DigiyocoreIdInfoModel.Companion")))
+@interface DigiyoDigiyocoreIdInfoModelCompanion : DigiyoBase
++ (instancetype)alloc __attribute__((unavailable));
++ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
++ (instancetype)companion __attribute__((swift_name("init()")));
+@property (class, readonly, getter=shared) DigiyoDigiyocoreIdInfoModelCompanion *shared __attribute__((swift_name("shared")));
+- (id<DigiyoKotlinx_serialization_coreKSerializer>)serializer __attribute__((swift_name("serializer()")));
+@end
+
+__attribute__((objc_subclassing_restricted))
+__attribute__((swift_name("DigiyocorePolDetails.Companion")))
+@interface DigiyoDigiyocorePolDetailsCompanion : DigiyoBase
++ (instancetype)alloc __attribute__((unavailable));
++ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
++ (instancetype)companion __attribute__((swift_name("init()")));
+@property (class, readonly, getter=shared) DigiyoDigiyocorePolDetailsCompanion *shared __attribute__((swift_name("shared")));
+- (id<DigiyoKotlinx_serialization_coreKSerializer>)serializer __attribute__((swift_name("serializer()")));
+@end
+
+__attribute__((objc_subclassing_restricted))
+__attribute__((swift_name("DigiyocoreCisefDetails.Companion")))
+@interface DigiyoDigiyocoreCisefDetailsCompanion : DigiyoBase
++ (instancetype)alloc __attribute__((unavailable));
++ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
++ (instancetype)companion __attribute__((swift_name("init()")));
+@property (class, readonly, getter=shared) DigiyoDigiyocoreCisefDetailsCompanion *shared __attribute__((swift_name("shared")));
+- (id<DigiyoKotlinx_serialization_coreKSerializer>)serializer __attribute__((swift_name("serializer()")));
+@end
+
+__attribute__((objc_subclassing_restricted))
+__attribute__((swift_name("DigiyocoreValidationFlags.Companion")))
+@interface DigiyoDigiyocoreValidationFlagsCompanion : DigiyoBase
++ (instancetype)alloc __attribute__((unavailable));
++ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
++ (instancetype)companion __attribute__((swift_name("init()")));
+@property (class, readonly, getter=shared) DigiyoDigiyocoreValidationFlagsCompanion *shared __attribute__((swift_name("shared")));
+- (id<DigiyoKotlinx_serialization_coreKSerializer>)serializer __attribute__((swift_name("serializer()")));
+@end
+
+__attribute__((objc_subclassing_restricted))
+__attribute__((swift_name("DigiyocoreConductorDetails.Companion")))
+@interface DigiyoDigiyocoreConductorDetailsCompanion : DigiyoBase
++ (instancetype)alloc __attribute__((unavailable));
++ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
++ (instancetype)companion __attribute__((swift_name("init()")));
+@property (class, readonly, getter=shared) DigiyoDigiyocoreConductorDetailsCompanion *shared __attribute__((swift_name("shared")));
+- (id<DigiyoKotlinx_serialization_coreKSerializer>)serializer __attribute__((swift_name("serializer()")));
 @end
 
 __attribute__((swift_name("Kotlinx_serialization_coreCompositeEncoder")))
@@ -2967,66 +3131,6 @@ __attribute__((swift_name("Kotlinx_serialization_coreCompositeDecoder")))
 __attribute__((objc_subclassing_restricted))
 __attribute__((swift_name("KotlinNothing")))
 @interface DigiyoKotlinNothing : DigiyoBase
-@end
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("DigiyocoreScoresModel.Companion")))
-@interface DigiyoDigiyocoreScoresModelCompanion : DigiyoBase
-+ (instancetype)alloc __attribute__((unavailable));
-+ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
-+ (instancetype)companion __attribute__((swift_name("init()")));
-@property (class, readonly, getter=shared) DigiyoDigiyocoreScoresModelCompanion *shared __attribute__((swift_name("shared")));
-- (id<DigiyoKotlinx_serialization_coreKSerializer>)serializer __attribute__((swift_name("serializer()")));
-@end
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("DigiyocoreIdInfoModel.Companion")))
-@interface DigiyoDigiyocoreIdInfoModelCompanion : DigiyoBase
-+ (instancetype)alloc __attribute__((unavailable));
-+ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
-+ (instancetype)companion __attribute__((swift_name("init()")));
-@property (class, readonly, getter=shared) DigiyoDigiyocoreIdInfoModelCompanion *shared __attribute__((swift_name("shared")));
-- (id<DigiyoKotlinx_serialization_coreKSerializer>)serializer __attribute__((swift_name("serializer()")));
-@end
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("DigiyocorePolDetails.Companion")))
-@interface DigiyoDigiyocorePolDetailsCompanion : DigiyoBase
-+ (instancetype)alloc __attribute__((unavailable));
-+ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
-+ (instancetype)companion __attribute__((swift_name("init()")));
-@property (class, readonly, getter=shared) DigiyoDigiyocorePolDetailsCompanion *shared __attribute__((swift_name("shared")));
-- (id<DigiyoKotlinx_serialization_coreKSerializer>)serializer __attribute__((swift_name("serializer()")));
-@end
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("DigiyocoreCisefDetails.Companion")))
-@interface DigiyoDigiyocoreCisefDetailsCompanion : DigiyoBase
-+ (instancetype)alloc __attribute__((unavailable));
-+ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
-+ (instancetype)companion __attribute__((swift_name("init()")));
-@property (class, readonly, getter=shared) DigiyoDigiyocoreCisefDetailsCompanion *shared __attribute__((swift_name("shared")));
-- (id<DigiyoKotlinx_serialization_coreKSerializer>)serializer __attribute__((swift_name("serializer()")));
-@end
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("DigiyocoreValidationFlags.Companion")))
-@interface DigiyoDigiyocoreValidationFlagsCompanion : DigiyoBase
-+ (instancetype)alloc __attribute__((unavailable));
-+ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
-+ (instancetype)companion __attribute__((swift_name("init()")));
-@property (class, readonly, getter=shared) DigiyoDigiyocoreValidationFlagsCompanion *shared __attribute__((swift_name("shared")));
-- (id<DigiyoKotlinx_serialization_coreKSerializer>)serializer __attribute__((swift_name("serializer()")));
-@end
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("DigiyocoreConductorDetails.Companion")))
-@interface DigiyoDigiyocoreConductorDetailsCompanion : DigiyoBase
-+ (instancetype)alloc __attribute__((unavailable));
-+ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
-+ (instancetype)companion __attribute__((swift_name("init()")));
-@property (class, readonly, getter=shared) DigiyoDigiyocoreConductorDetailsCompanion *shared __attribute__((swift_name("shared")));
-- (id<DigiyoKotlinx_serialization_coreKSerializer>)serializer __attribute__((swift_name("serializer()")));
 @end
 
 
