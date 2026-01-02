@@ -36,6 +36,7 @@ Este SDK emplea inteligencia artificial para la detección precisa y eficiente d
 - [getInData](#getindata)
 - [commitDia](#commitdia)
 - [verifyTasksAndCommit](#verifytasksandcommit)
+- [checkEnrollment](#checkenrollment)
 ### [Personlización y estilos](#personalización-y-estilos)
 - [CaptureModeConfig](#capturemodeconfig)
 - [DigiyoColorScheme](#digiyocolorscheme)
@@ -792,6 +793,53 @@ digiyoSdk.verifyTasksAndCommit(diaId: digiyoSdk.getSavedDia()?.diaId ?? "") { st
 
 ---
 
+### `checkEnrollment`
+
+Verifica el estado del enrolamiento.
+
+#### Android
+
+```kotlin
+digiyoSdk.checkEnrollment(
+    diaId = digiyoSdk.getSavedDia()?.diaId ?: "",
+    idNumber = "1234567",
+    onSuccess = { status ->
+        // Success
+    },
+    onError = {
+        // Error
+    },
+    onTasksNotCompleted = { tasks ->
+        // Retorna la lista de inDataName que no pudieron ser enviados en forma asíncrona
+    }
+)
+```
+
+#### iOS
+
+```swift
+digiyoSdk.checkEnrollment(
+    diaId: digiyoSdk.getSavedDia()?.diaId ?? "",
+    idNumber: "1234567",
+    onSuccess: { status in
+        // Success
+    },
+    onError: { error in
+        // Error
+    },
+    onTasksNotCompleted: { tasks in
+        // Retorna la lista de inDataName que no pudieron ser enviados en forma asíncrona
+    }
+)
+```
+
+**Parámetros**
+
+- **`diaId`** (*String*): ID del DIA que se desea procesar.
+- **`idNumber`** (*String*): El número de documento que se desea verificar.
+
+---
+
 ## `Personalización y Estilos`
 
 ### `DigiyoColorScheme`
@@ -1460,8 +1508,10 @@ digiyoSdk.getHelpScreenView(
         ),
         continueButtonTitle = "Escanear documento",
         customTitleTextColor = null,
-        customContinueButtonColor = DigiYoColorScheme.DEFAULT_COLOR_SCHEME.primaryColor,
-        displayDefaultActivityIndicator = false
+        buttonConfig ButtonConfig.DEFAULT.copy(
+            label = "Tomar selfie"
+        ),
+        helpScreenImageContentDescription = "Imagen de un teléfono tomando una selfie"
         ),
      onButtonPressed = {
         navController.navigate("step2")
@@ -1487,10 +1537,10 @@ digiyoSdk.getHelpScreenViewViewController(
             KotlinPair(first: HelpBulletPoint.check, second: "Pon el teléfono cerca para que tu rostro y número de CI se vean con claridad."),
             KotlinPair(first: HelpBulletPoint.error, second: "No enviés CI editadas o caducadas.")
         ],
-        continueButtonTitle: "Escanear documento",
         customTitleTextColor: nil,
-        customContinueButtonColor: DigiYoColorScheme.companion.DEFAULT_COLOR_SCHEME.primaryColor),
-        displayDefaultActivityIndicator: false,
+        buttonConfig: ButtonConfig.Companion().defaultWithLabel(label: "Tomar selfie"),
+        helpScreenImageContentDescription: "Imagen de un teléfono tomando una selfie"
+    ),
     onButtonPressed: {
         viewModel.navigateToNextScreen = true
     }
@@ -1519,12 +1569,13 @@ digiyoSdk.getMediaPreviewScreen(
         isMediaAVideo = true,
         colorScheme = null,
         bulletAndAdvices = null,
-        primaryButtonTitle = "Continuar",
-        secondaryButtonTitle = "Volver a tomar la foto",
-        customTitleTextColor = null,
-        customPrimaryButtonColor = DigiYoColorScheme.DEFAULT_COLOR_SCHEME.primaryColor,
-        customSecondaryButtonColor = DigiYoColorScheme.DEFAULT_COLOR_SCHEME.primaryColor,
-        displayDefaultActivityIndicator = false,
+        primaryButtonConfig = ButtonConfig.DEFAULT.copy(
+          label = "Subir foto"
+        ),
+        secondaryButtonConfig = ButtonConfig.SECONDARY.copy(
+          label = "Volver a tomar la foto"
+        ),
+        customTitleTextColor = null
     ),
     onPrimaryButtonPressed = {
 
@@ -1547,12 +1598,9 @@ viewModel.digiyoSdk.getMediaPreviewScreenViewController(
         isMediaAVideo: true,
         colorScheme: nil,
         bulletAndAdvices: nil,
-        primaryButtonTitle: "Continuar",
-        customPrimaryButtonColor: DigiYoColorScheme.companion.DEFAULT_COLOR_SCHEME.primaryColor,
-        secondaryButtonTitle: "Volver a tomar la foto",
-        customSecondaryButtonColor: DigiYoColorScheme.companion.DEFAULT_COLOR_SCHEME.primaryColor,
-        customTitleTextColor: nil,
-        displayDefaultActivityIndicator: false,
+        primaryButtonConfig: ButtonConfig.Companion().defaultWithLabel(label: "Subir foto"),
+        secondaryButtonConfig: ButtonConfig.Companion().secondaryWithLabel(label: "Volver a tomar la foto"),
+        customTitleTextColor: nil
     ),
     onPrimaryButtonPressed: {
 
