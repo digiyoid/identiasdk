@@ -17,7 +17,7 @@ let package = Package(
             name: "DigiyoSwiftPackage",
             url:
                 "https://github.com/digiyoid/identiasdk/releases/download/v1.3.1/DigiyoSwiftPackage.xcframework.zip",
-            checksum: "65adda50fcd96e7208e1a5784bced2d03999628973f70483dc81b86e413e917c"
+            checksum: "b26d50ae7f15afc4e1241e4ac9d18b5bdb0f4682467a0f1279b1386582245625"
         )
     ]
 )
