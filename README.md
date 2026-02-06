@@ -832,6 +832,97 @@ digiyoSdk.checkEnrollment(
 - **`diaId`** (*String*): ID del DIA que se desea procesar.
 - **`idNumber`** (*String*): El número de documento que se desea verificar.
 
+### `getSubWorkflow`
+
+Obtiene la lista de sub-flujos (workflows) asociados a un DIA. Este método realiza reintentos automáticos si el procesamiento aún no ha finalizado.
+
+#### Android (Kotlin)
+
+```kotlin
+Digiyo.getSubWorkflow(
+    diaId = digiyoSdk.getSavedDia()?.diaId ?: "",
+    attemptAfterMillis = 10000, // Opcional, por defecto 10s
+    attempts = 9,               // Opcional, por defecto 9 reintentos
+    onSuccess = { subWorkflows ->
+        // Éxito: retorna List<SubWorkflow>?
+    },
+    onError = { error ->
+        // Error: retorna DigiYoError
+    }
+)
+```
+
+#### iOS (Swift)
+
+```swift
+DigiyoSDK.getSubWorkflow(
+    diaId: digiyoSdk.getSavedDia()?.diaId ?? "",
+    attemptAfterMillis: 10000,
+    attempts: 9
+) { subWorkflows in
+    // Éxito: retorna [DigiyocoreSubWorkflow]?
+} onError: { error in
+    // Error: retorna DigiyocoreDigiYoError
+}
+```
+
+**Parámetros**
+
+- **`diaId`** (*String*): Identificador único del DIA.
+- **`attemptAfterMillis`** (*Long*): Tiempo de espera entre cada intento de consulta en milisegundos.
+- **`attempts`** (*Int*): Cantidad máxima de reintentos permitidos.
+- **`onSuccess`** (*Callback*): Función invocada cuando se recupera exitosamente la lista de sub-flujos.
+- **`onError`** (*Callback*): Función invocada en caso de error o si se agotan los intentos.
+
+---
+
+### `sendImage` (con SubWorkflow automático)
+
+Sube una imagen y permite solicitar automáticamente el estado del flujo de trabajo (`SubWorkflow`) una vez que la carga sea exitosa.
+
+#### Android (Kotlin)
+
+```kotlin
+Digiyo.sendImage(
+    diaId = digiyoSdk.getSavedDia()?.diaId ?: "",
+    filePath = "ruta/al/archivo.jpg",
+    inDataName = "CI_PY_BACK",
+    liveValidationOptions = null,    // Opcional
+    shouldRequestWorkflow = true,    // Si es true, solicita sub-workflows tras el éxito
+    onSuccess = { imageResponse, subWorkflows ->
+        // Éxito: retorna respuesta de imagen y lista de sub-flujos
+    },
+    onError = { error ->
+        // Error
+    }
+)
+```
+
+#### iOS (Swift)
+
+```swift
+DigiyoSDK.sendImage(
+    diaId: digiyoSdk.getSavedDia()?.diaId ?? "",
+    filePath: "ruta/al/archivo.jpg",
+    inDataName: "CI_PY_BACK",
+    liveValidationOptions: nil,
+    shouldRequestWorkflow: true
+) { imageResponse, subWorkflows in
+    // Éxito: retorna (String?, [DigiyocoreSubWorkflow]?)
+} onError: { error in
+    // Error
+}
+```
+
+**Parámetros**
+
+- **`diaId`** (*String*): ID del DIA asociado.
+- **`filePath`** (*String*): Ruta local de la imagen capturada.
+- **`inDataName`** (*String*): Nombre del inData (ej: "CI_PY_BACK").
+- **`shouldRequestWorkflow`** (*Boolean*): Determina si el SDK debe llamar internamente a `getSubWorkflow` después de subir la imagen.
+- **`onSuccess`** (*Callback*): Recibe la respuesta del servidor y la lista de sub-flujos (si se solicitó).
+- **`onError`** (*Callback*): Invocado en caso de error en la carga o en la consulta del flujo.
+
 ---
 
 ## `Personalización y Estilos`
