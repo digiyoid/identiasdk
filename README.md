@@ -808,9 +808,6 @@ digiyoSdk.checkEnrollment(
     },
     onError = {
         // Error
-    },
-    onTasksNotCompleted = { tasks ->
-        // Retorna la lista de inDataName que no pudieron ser enviados en forma asíncrona
     }
 )
 ```
@@ -826,9 +823,6 @@ digiyoSdk.checkEnrollment(
     },
     onError: { error in
         // Error
-    },
-    onTasksNotCompleted: { tasks in
-        // Retorna la lista de inDataName que no pudieron ser enviados en forma asíncrona
     }
 )
 ```
