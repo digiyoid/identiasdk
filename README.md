@@ -37,6 +37,8 @@ Este SDK emplea inteligencia artificial para la detección precisa y eficiente d
 - [commitDia](#commitdia)
 - [verifyTasksAndCommit](#verifytasksandcommit)
 - [checkEnrollment](#checkenrollment)
+- [getSubWorkflow](#getsubworkflow)
+- [sendImage (con SubWorkflow)](#sendimageconsubworkflow)
 ### [Personlización y estilos](#personalización-y-estilos)
 - [CaptureModeConfig](#capturemodeconfig)
 - [DigiyoColorScheme](#digiyocolorscheme)
