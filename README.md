@@ -37,6 +37,17 @@ Este SDK emplea inteligencia artificial para la detección precisa y eficiente d
 - [commitDia](#commitdia)
 - [verifyTasksAndCommit](#verifytasksandcommit)
 - [checkEnrollment](#checkenrollment)
+### [Modelo de datos](#modelo-de-datos)
+- [DigiYoConfig](#digiyoconfig)
+- [DiaModel](#diamodel)
+- [InDataEntryModel](#indataentrymodel)
+- [DataRequireModel](#datarequiremodel)
+- [InDataConfigModel](#indataconfigmodel)
+- [EnrollmentData](#enrollmentdata)
+- [TaskModel](#taskmodel)
+- [ResultModel](#resultmodel)
+- [PolDetails](#poldetails)
+- [DigiYoError](#digiyerror)
 ### [Personlización y estilos](#personalización-y-estilos)
 - [CaptureModeConfig](#capturemodeconfig)
 - [DigiyoColorScheme](#digiyocolorscheme)
@@ -831,6 +842,94 @@ digiyoSdk.checkEnrollment(
 
 - **`diaId`** (*String*): ID del DIA que se desea procesar.
 - **`idNumber`** (*String*): El número de documento que se desea verificar.
+
+---
+
+## Modelos de Datos
+
+A continuación se detallan los modelos de datos (objetos) utilizados por el SDK para la gestión de identidades y comunicación con el backend.
+
+---
+
+### `DigiYoConfig`
+Define los parámetros de conexión y seguridad del SDK.
+- **`baseUrl`** (*String*): Dirección URL de los servicios de Digiyo.
+- **`apiKey`** (*String*): Token para autenticación de peticiones.
+- **`enforceSslPinning`** (*Boolean*): Habilita la validación estricta de certificados SSL.
+- **`requestTimeoutInMillis`** (*Long*): Tiempo máximo (ms) de espera para respuestas del servidor.
+
+---
+
+### `DiaModel`
+Representa el estado completo de un proceso de Documento de Identificación y Autenticación.
+- **`diaId`** (*String*): Identificador único del proceso.
+- **`type`** (*String*): Nombre del flujo o workflow configurado.
+- **`status`** (*String*): Estado del proceso (ej. "STARTED", "PENDING", "COMPLETED").
+- **`meta`** (*MetaModel*): Información de auditoría y del socio.
+- **`inDataList`** (*List<InDataEntryModel>*): Lista de todos los requisitos de datos para este flujo.
+
+---
+
+### `InDataEntryModel`
+Estructura que asocia un nombre de dato con su configuración técnica.
+- **`name`** (*String*): Identificador del requisito (ej. "SELFIE", "ID_CARD_FRONT").
+- **`data`** (*DataRequireModel*): Detalles técnicos del requisito.
+
+---
+
+### `DataRequireModel`
+Contiene los metadatos de un requisito de entrada.
+- **`value`** (*String*): Valor o identificador del dato.
+- **`contentType`** (*String*): Formato esperado (ej. "image/jpeg", "video/mp4").
+- **`config`** (*InDataConfigModel*): Configuraciones específicas de validación.
+
+---
+
+### `InDataConfigModel`
+Configuraciones avanzadas para la validación de un dato.
+- **`versusArray`** (*List<Int>*): Lista de IDs de dedos requeridos para validación biométrica.
+- **`liveValidations`** (*Map<String, Boolean>*): Mapa de validaciones en vivo activas (ej. sonrisa, ojos).
+
+---
+
+### `EnrollmentData`
+Información sobre el registro previo de un usuario.
+- **`isEnrolled`** (*Boolean*): Indica si el usuario ya está enrolado en el sistema.
+- **`isAllowedToRetry`** (*Boolean*): Determina si se permite intentar el flujo nuevamente.
+- **`dia`** (*DiaModel*): Datos del último proceso asociado al usuario.
+
+---
+
+### `TaskModel`
+Contiene los resultados del procesamiento del backend una vez finalizado el flujo.
+- **`result`** (*ResultModel*): Detalles de las puntuaciones y datos extraídos.
+
+---
+
+### `ResultModel`
+Detalle técnico de los resultados obtenidos tras el análisis.
+- **`scores`** (*ScoresModel*): Puntuaciones de coincidencia facial y biometría.
+- **`idInfo`** (*IdInfoModel*): Información extraída del documento (OCR).
+- **`polDetails`** (*PolDetails*): Detalles de pruebas de vida (ojos, sonrisa, video real).
+- **`validationFlags`** (*ValidationFlags*): Indicadores de éxito de diversas validaciones internas.
+
+---
+
+### `PolDetails`
+Resultados específicos de las pruebas de vida y biometría.
+- **`eyeStatus`** (*String*): Estado detectado de los ojos (abiertos/cerrados).
+- **`smileFound`** (*Boolean*): Si se detectó una sonrisa válida.
+- **`videoIsReal`** (*Boolean*): Resultado del análisis de anti-spoofing de video.
+- **`fingersRead`** (*List<Long>*): Lista de dedos detectados exitosamente.
+- **`documentPhotoMatchesSelfie`** (*Boolean*): Indica si la foto del documento coincide con la selfie.
+
+---
+
+### `DigiYoError`
+Objeto estandarizado para la gestión de excepciones.
+- **`code`** (*String*): Código identificador del error.
+- **`detail`** (*String*): Mensaje detallado sobre la falla.
+- **`userVisible`** (*Boolean*): Define si el mensaje es apto para mostrarse en la UI.
 
 ---
 
