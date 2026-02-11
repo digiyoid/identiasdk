@@ -91,7 +91,7 @@ En el `build.gradle` (`settings.gradle` o `settings.gradle.kts`) del proyecto, s
              maven {
                 name = "GitHubPackages"
                 url = uri("https://maven.pkg.github.com/digiyoid/identiasdk")
-                credentials {`~
+                credentials {
                     username = System.getenv("GITHUB_USER") // Variable de entorno que contiene el usuario de Github
                     password = System.getenv("GITHUB_PAT") // Variable de Entorno que contiene el Personal Access Token
                 }
@@ -101,7 +101,7 @@ En el `build.gradle` (`settings.gradle` o `settings.gradle.kts`) del proyecto, s
     }
 ```
 
-En el archivo `.bashrc` (o equivalente en Macos, Linux u otros de tipo Unix), definir las variables de entorno de las siguiente manera:
+En el archivo `.bashrc` (o equivalente en MacOS, Linux u otros de tipo Unix), definir las variables de entorno de las siguiente manera:
 
 ```bash
 #.bashrc de tu S.O.
