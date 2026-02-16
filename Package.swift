@@ -16,8 +16,8 @@ let package = Package(
         .binaryTarget(
             name: "DigiyoSwiftPackage",
             url:
-                "https://github.com/digiyoid/identiasdk/releases/download/v1.3.1-patch2/DigiyoSwiftPackage.xcframework.zip",
-            checksum: "f736b81c271e5a766685bd5d575e26576154e84c64f967bad1c22f17a622d1a2"
+                "https://github.com/digiyoid/identiasdk/releases/download/v1.3.1-patch3/DigiyoSwiftPackage.xcframework.zip",
+            checksum: "d757392b1ae5c6786709d7660e05652359d705b35b5e5c5cf95c7e13a3253490"
         )
     ]
 )
