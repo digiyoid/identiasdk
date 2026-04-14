@@ -37,6 +37,8 @@ Este SDK emplea inteligencia artificial para la detección precisa y eficiente d
 - [commitDia](#commitdia)
 - [verifyTasksAndCommit](#verifytasksandcommit)
 - [checkEnrollment](#checkenrollment)
+- [getSubWorkflow](#getsubworkflow)
+- [sendImage (SubWorkflow automático)](#sendimage-con-subworkflow-automático)
 ### [Modelo de datos](#modelo-de-datos)
 - [DigiYoConfig](#digiyoconfig)
 - [DiaModel](#diamodel)
@@ -47,29 +49,42 @@ Este SDK emplea inteligencia artificial para la detección precisa y eficiente d
 - [TaskModel](#taskmodel)
 - [ResultModel](#resultmodel)
 - [PolDetails](#poldetails)
-- [DigiYoError](#digiyerror)
-### [Personlización y estilos](#personalización-y-estilos)
-- [CaptureModeConfig](#capturemodeconfig)
+- [DigiYoError](#digiyoerror)
+- [DocumentCameraConfig](#documentcameraconfig)
+- [SelfieCameraConfig](#selfiecameraconfig)
+- [VideoCameraConfig](#videocameraconfig)
+- [ChallengeOverlayConfig](#challengeoverlayconfig)
+- [HelpConfig](#helpconfig)
+- [HelpBulletpoint](#helpbulletpoint)
+- [MediaPreviewConfig](#mediapreviewconfig)
+- [SuccessAlertConfig](#successalertconfig)
+- [ErrorAlertConfig](#erroralertconfig)
+- [LiveValidationsText](#livevalidationstext)
+- [DigiYoRGB](#digiyorgb)
+### [Personalización y estilos](#personalización-y-estilos)
 - [DigiyoColorScheme](#digiyocolorscheme)
+- [DigiYoImageAsset](#digiyoimageasset)
+- [CaptureModeConfig](#capturemodeconfig)
 - [ButtonConfig](#buttonconfig)
 - [DigiYoShape](#digiyoshape)
 - [DigiYoButtonStyle](#digiyobuttonstyle)
 - [CaptureButtonType](#capturebuttontype)
+- [CaptureButtonBehavior](#capturebuttonbehavior)
 - [InfoBoxConfig](#infoboxconfig)
 - [DigiYoIcons](#digiyoicons)
-### [Componentes de UI](#componentes-de-ui-1)
+### [Componentes de UI](#componentes-de-ui)
 - [DocumentCameraView](#documentcameraview)
 - [SelfieCameraView](#selfiecameraview)
 - [VideoCameraView](#videocameraview)
 - [HelpScreenView](#helpscreenview)
 - [MediaPreviewScreen](#mediapreviewscreen)
 ### Otros
-- [Nuevos Parámetros Agregados](#nuevos-parámetros-agregados)
+- [Lista de Cambios](#lista-de-cambios)
 - [Proguard](#proguard-android)
 
 ---
 
-## `Instalación del SDK`
+## Instalación del SDK
 
 ### Android
 
@@ -132,13 +147,13 @@ git@github.com:Digiyoid/identiasdk.git
 
 ---
 
-## `Configuración e inicialización`
+## Configuración e inicialización
 
 Una vez inicializado con `DigiyoConfig`, en inicializaciones posteriores puedes pasar `null` (en Android) porque la configuración se almacena localmente y se recupera automáticamente.
 
 ### Android
 
-#### `Configuración`
+#### Configuración
 
 ```kotlin
 import DigiyoSDK
@@ -152,7 +167,7 @@ private val config = DigiyoConfig(
 )
 ```
 
-#### `Inicialización directa de la instancia`
+#### Inicialización directa de la instancia
 
 ```kotlin
 //El Context es requerido para poder acceder al directorio de las fotografías y videos una vez que el flujo haya terminado.
@@ -161,7 +176,7 @@ private val config = DigiyoConfig(
 private val digiyoSdk = DigiYoSDK(context, config)
 ```
 
-#### `Inicialización mediante DigiYoHelper (Recomendada)`
+#### Inicialización mediante DigiYoHelper (Recomendada)
 
 ```kotlin
 //El Context es requerido para poder acceder al directorio de las fotografías y videos una vez que el flujo haya terminado.
@@ -177,7 +192,7 @@ private val digiyoSdk = DigiYoHelper.sdk
 
 ### iOS
 
-#### `Configuración`
+#### Configuración
 
 ```swift
 import Digiyo
@@ -191,14 +206,14 @@ let digiyoConfig = DigiyocoreDigiyoConfig(
 )
 ```
 
-#### `Inicialización directa de la instancia`
+#### Inicialización directa de la instancia
 
 ```swift
 // Instancia del SDK
 let digiyoSdk = DigiYoSDK(config: digiyoConfig)
 ```
 
-#### `Inicialización mediante DigiYoHelper (Recomendada)`
+#### Inicialización mediante DigiYoHelper (Recomendada)
 
 ```swift
 DigiYoHelper.shared.initialize(config: digiyoConfig)
@@ -209,9 +224,9 @@ let digiyoSdk = DigiYoHelper.shared.sdk
 
 ---
 
-## `Métodos principales`
+## Métodos principales
 
-### `createDia`
+### createDia
 
 Crea un nuevo DIA (Documento de Identificación y Autenticación).
 
@@ -255,7 +270,7 @@ digiyoSdk.createDia(
 
 ---
 
-### `getDia`
+### getDia
 
 Obtiene el estado del DIA en el backend.
 
@@ -313,9 +328,7 @@ digiyoSdk.getDia(diaId: digiyoSdk.getSavedDia()?.diaId ?? "") { [weak self] res 
 
 ---
 
----
-
-### `cancelDia`
+### cancelDia
 
 Cancela el DIA especificado mediante su diaId.
 
@@ -353,7 +366,7 @@ digiyoSdk.cancelDia(diaId: digiyoSdk.getSavedDia()?.diaId ?? "") { [weak self] r
 
 ---
 
-### `sendImage`
+### sendImage
 
 Sube imágenes capturadas.
 
@@ -413,7 +426,7 @@ digiyoSdk.sendImage(
 
 ---
 
-### `sendImageAsynchronously`
+### sendImageAsynchronously
 
 Sube imágenes capturadas en forma asíncrona, sin esperar por el resultado. Los errores seran verificados durante la ejecución de **`verifyTasksAndCommit`**.
 
@@ -463,7 +476,7 @@ digiyoSdk.sendImageAsynchronously(
 
 ---
 
-### `sendVideo`
+### sendVideo
 
 Sube un video grabado.
 
@@ -547,7 +560,7 @@ digiyoSdk.sendVideo(
 
 ---
 
-### `sendVideoAsynchronously`
+### sendVideoAsynchronously
 
 Sube un video grabado en forma asíncrona, sin esperar por el resultado. Los errores seran verificados durante la ejecución de **`verifyTasksAndCommit`**.
 
@@ -622,7 +635,7 @@ digiyoSdk.sendVideoAsynchronously(
 ---
 
 
-### `sendTextData`
+### sendTextData
 
 Permite enviar datos de texto a un DIA específico.
 
@@ -666,7 +679,7 @@ digiyoSdk.sendTextData(
 
 ---
 
-### `sendJsonData`
+### sendJsonData
 
 Permite enviar datos en formato JSON a un DIA específico.
 
@@ -707,7 +720,7 @@ digiyoSdk.sendJsonData(
 
 ---
 
-### `getInData`
+### getInData
 
 Obtiene un `InDataEntryModel` a partir de su nombre.
 
@@ -739,7 +752,7 @@ if let entry = inDataEntry {
 
 ---
 
-### `commitDia`
+### commitDia
 
 Realiza el commit del DIA para iniciar el procesamiento en el backend.
 
@@ -773,9 +786,9 @@ digiyoSdk.commitDia(diaId: digiyoSdk.getSavedDia()?.diaId ?? "") { status in
 
 ---
 
-### `verifyTasksAndCommit`
+### verifyTasksAndCommit
 
-Verifica las tareas de subida de imágenes o video asíncronas y espera a que todos terminan para realizar el commit del DIA e iniciar el procesamiento en el backend.
+Verifica las tareas de subida de imágenes o video asíncronas y espera a que todas terminen para realizar el commit del DIA e iniciar el procesamiento en el backend.
 
 #### Android
 
@@ -812,7 +825,7 @@ digiyoSdk.verifyTasksAndCommit(diaId: digiyoSdk.getSavedDia()?.diaId ?? "") { st
 
 ---
 
-### `checkEnrollment`
+### checkEnrollment
 
 Verifica el estado del enrolamiento.
 
@@ -851,7 +864,7 @@ digiyoSdk.checkEnrollment(
 - **`diaId`** (*String*): ID del DIA que se desea procesar.
 - **`idNumber`** (*String*): El número de documento que se desea verificar.
 
-### `getSubWorkflow`
+### getSubWorkflow
 
 Obtiene la lista de sub-flujos (workflows) asociados a un DIA. Este método realiza reintentos automáticos si el procesamiento aún no ha finalizado.
 
@@ -895,7 +908,7 @@ DigiyoSDK.getSubWorkflow(
 
 ---
 
-### `sendImage` (con SubWorkflow automático)
+### sendImage (con SubWorkflow automático)
 
 Sube una imagen y permite solicitar automáticamente el estado del flujo de trabajo (`SubWorkflow`) una vez que la carga sea exitosa.
 
@@ -944,13 +957,13 @@ DigiyoSDK.sendImage(
 
 ---
 
-## Modelos de Datos
+## Modelo de datos
 
 A continuación se detallan los modelos de datos (objetos) utilizados por el SDK para la gestión de identidades y comunicación con el backend.
 
 ---
 
-### `DigiYoConfig`
+### DigiYoConfig
 Define los parámetros de conexión y seguridad del SDK.
 - **`baseUrl`** (*String*): Dirección URL de los servicios de Digiyo.
 - **`apiKey`** (*String*): Token para autenticación de peticiones.
@@ -959,7 +972,7 @@ Define los parámetros de conexión y seguridad del SDK.
 
 ---
 
-### `DiaModel`
+### DiaModel
 Representa el estado completo de un proceso de Documento de Identificación y Autenticación.
 - **`diaId`** (*String*): Identificador único del proceso.
 - **`type`** (*String*): Nombre del flujo o workflow configurado.
@@ -969,14 +982,14 @@ Representa el estado completo de un proceso de Documento de Identificación y Au
 
 ---
 
-### `InDataEntryModel`
+### InDataEntryModel
 Estructura que asocia un nombre de dato con su configuración técnica.
 - **`name`** (*String*): Identificador del requisito (ej. "SELFIE", "ID_CARD_FRONT").
 - **`data`** (*DataRequireModel*): Detalles técnicos del requisito.
 
 ---
 
-### `DataRequireModel`
+### DataRequireModel
 Contiene los metadatos de un requisito de entrada.
 - **`value`** (*String*): Valor o identificador del dato.
 - **`contentType`** (*String*): Formato esperado (ej. "image/jpeg", "video/mp4").
@@ -984,14 +997,14 @@ Contiene los metadatos de un requisito de entrada.
 
 ---
 
-### `InDataConfigModel`
+### InDataConfigModel
 Configuraciones avanzadas para la validación de un dato.
 - **`versusArray`** (*List<Int>*): Lista de IDs de dedos requeridos para validación biométrica.
 - **`liveValidations`** (*Map<String, Boolean>*): Mapa de validaciones en vivo activas (ej. sonrisa, ojos).
 
 ---
 
-### `EnrollmentData`
+### EnrollmentData
 Información sobre el registro previo de un usuario.
 - **`isEnrolled`** (*Boolean*): Indica si el usuario ya está enrolado en el sistema.
 - **`isAllowedToRetry`** (*Boolean*): Determina si se permite intentar el flujo nuevamente.
@@ -999,13 +1012,13 @@ Información sobre el registro previo de un usuario.
 
 ---
 
-### `TaskModel`
+### TaskModel
 Contiene los resultados del procesamiento del backend una vez finalizado el flujo.
 - **`result`** (*ResultModel*): Detalles de las puntuaciones y datos extraídos.
 
 ---
 
-### `ResultModel`
+### ResultModel
 Detalle técnico de los resultados obtenidos tras el análisis.
 - **`scores`** (*ScoresModel*): Puntuaciones de coincidencia facial y biometría.
 - **`idInfo`** (*IdInfoModel*): Información extraída del documento (OCR).
@@ -1014,7 +1027,7 @@ Detalle técnico de los resultados obtenidos tras el análisis.
 
 ---
 
-### `PolDetails`
+### PolDetails
 Resultados específicos de las pruebas de vida y biometría.
 - **`eyeStatus`** (*String*): Estado detectado de los ojos (abiertos/cerrados).
 - **`smileFound`** (*Boolean*): Si se detectó una sonrisa válida.
@@ -1024,7 +1037,7 @@ Resultados específicos de las pruebas de vida y biometría.
 
 ---
 
-### `DigiYoError`
+### DigiYoError
 Objeto estandarizado para la gestión de excepciones.
 - **`code`** (*String*): Código identificador del error.
 - **`detail`** (*String*): Mensaje detallado sobre la falla.
@@ -1032,9 +1045,141 @@ Objeto estandarizado para la gestión de excepciones.
 
 ---
 
-## `Personalización y Estilos`
+### DocumentCameraConfig
+Configuración para la captura de documentos.
+- **`cameraTitle`** (*String*): Título de la pantalla de la cámara.
+- **`cameraSubtitle`** (*String?*): Subtítulo opcional de la pantalla de la cámara.
+- **`documentType`** (*DocumentType*): Tipo de documento a capturar.
+- **`colorScheme`** (*DigiyoColorScheme?*): Configuración de colores personalizada.
+- **`successAlertConfig`** (*SuccessAlertConfig?*): Configuración de la alerta de éxito.
+- **`showCloseButton`** (*Boolean?*): Indica si se debe mostrar el botón de cerrar.
+- **`captureModeConfig`** (*CaptureModeConfig*): Configuración del modo de captura.
+- **`showDetectedObjectRect`** (*Boolean*): Activa el dibujado de un rectángulo sobre el objeto detectado.
+- **`smartCropEnabled`** (*Boolean*): Habilita el recorte inteligente basado en la detección.
+- **`shutterSoundEnabled`** (*Boolean*): Indica si el sonido del obturador está activado.
 
-### `DigiyoColorScheme`
+---
+
+### SelfieCameraConfig
+Configuración para la captura de selfies.
+- **`cameraTitle`** (*String*): Título de la pantalla de selfie.
+- **`colorScheme`** (*DigiyoColorScheme?*): Configuración de colores personalizada.
+- **`successAlertConfig`** (*SuccessAlertConfig?*): Configuración de la alerta de éxito.
+- **`showCloseButton`** (*Boolean?*): Indica si se debe mostrar el botón de cerrar.
+- **`captureModeConfig`** (*CaptureModeConfig*): Configuración del modo de captura.
+- **`shutterSoundEnabled`** (*Boolean*): Indica si el sonido del obturador está activado.
+- **`customLiveValidationsText`** (*LiveValidationsText?*): Textos personalizados para las validaciones en vivo.
+
+---
+
+### VideoCameraConfig
+Configuración para la grabación de video.
+- **`cameraTitle`** (*String*): Título de la pantalla de video.
+- **`colorScheme`** (*DigiyoColorScheme?*): Configuración de colores personalizada.
+- **`successAlertConfig`** (*SuccessAlertConfig?*): Configuración de la alerta de éxito.
+- **`errorAlertConfig`** (*ErrorAlertConfig?*): Configuración de la alerta de error.
+- **`showCloseButton`** (*Boolean?*): Indica si se debe mostrar el botón de cerrar.
+- **`captureModeConfig`** (*CaptureModeConfig*): Configuración del modo de captura.
+- **`customLiveValidationsText`** (*LiveValidationsText?*): Textos personalizados para validaciones en vivo.
+- **`cameraSoundEnabled`** (*Boolean?*): Indica si los sonidos de inicio/fin de grabación están activados.
+- **`challengeOverlayConfig`** (*ChallengeOverlayConfig?*): Configuración del overlay de desafíos.
+- **`videoRecordDurationMs`** (*Long?*): Duración máxima de la grabación en milisegundos.
+
+---
+
+### ChallengeOverlayConfig
+Configuración del overlay de desafíos en la cámara de video.
+- **`delayBetweenEachFrameMs`** (*Long*): Tiempo de espera entre cuadros de desafíos.
+- **`displayCountdown`** (*Boolean*): Muestra o no una cuenta regresiva.
+- **`displayStepNumber`** (*Boolean*): Muestra o no el número de paso.
+
+---
+
+### HelpConfig
+Configuración de la pantalla de ayuda o recomendaciones.
+- **`helpScreenTitle`** (*String*): Título de la pantalla de ayuda.
+- **`helpScreenImage`** (*DigiYoImageAsset?*): Imagen principal de la pantalla de ayuda.
+- **`helpScreenComplementaryImage`** (*DigiYoImageAsset?*): Imagen complementaria opcional.
+- **`helpScreenComplementaryImageHeight`** (*Double?*): Altura de la imagen complementaria.
+- **`colorScheme`** (*DigiyoColorScheme?*): Configuración de colores personalizada.
+- **`imageShouldFollowColorScheme`** (*Boolean*): Indica si la imagen debe teñirse con el colorScheme.
+- **`bulletAndAdvices`** (*List<HelpBulletpoint>*): Lista de puntos o consejos a mostrar.
+- **`customTitleTextColor`** (*DigiYoRGB?*): Color personalizado para el título.
+- **`buttonConfig`** (*ButtonConfig?*): Configuración del botón de acción.
+- **`helpScreenImageContentDescription`** (*String?*): Descripción de accesibilidad para la imagen principal.
+- **`helpScreenComplementaryImageContentDescription`** (*String?*): Descripción de accesibilidad para la imagen complementaria.
+
+---
+
+### HelpBulletpoint
+Representa un punto informativo o consejo en la pantalla de ayuda.
+- **`icon`** (*DigiYoImageAsset*): Icono descriptivo.
+- **`iconSize`** (*Double*): Tamaño del icono.
+- **`iconColor`** (*DigiYoRGB?*): Color opcional para el icono.
+- **`text`** (*String*): Texto descriptivo del punto.
+
+---
+
+### MediaPreviewConfig
+Configuración de la pantalla de previsualización de medios.
+- **`previewScreenTitle`** (*String*): Título de la pantalla de previsualización.
+- **`previewSubtitle`** (*String?*): Subtítulo de la pantalla de previsualización.
+- **`previewMediaPath`** (*String?*): Ruta del archivo multimedia a previsualizar.
+- **`isMediaAVideo`** (*Boolean*): Indica si el archivo es un video.
+- **`colorScheme`** (*DigiyoColorScheme?*): Configuración de colores personalizada.
+- **`bulletAndAdvices`** (*List<HelpBulletpoint>?*): Lista opcional de consejos.
+- **`primaryButtonConfig`** (*ButtonConfig?*): Configuración del botón principal.
+- **`secondaryButtonConfig`** (*ButtonConfig?*): Configuración del botón secundario.
+- **`customTitleTextColor`** (*DigiYoRGB?*): Color personalizado para el título.
+
+---
+
+### SuccessAlertConfig
+Configuración para la alerta de éxito que aparece tras una captura correcta.
+- **`title`** (*String*): Título de la alerta.
+- **`subTitle`** (*String*): Subtítulo explicativo.
+- **`buttonTitle`** (*String*): Texto del botón de acción.
+- **`primaryColor`** (*DigiYoRGB?*): Color principal de la alerta.
+- **`image`** (*DigiYoImageAsset?*): Imagen o icono a mostrar.
+- **`displayDefaultActivityIndicator`** (*Boolean*): Muestra un indicador de carga por defecto.
+- **`displayDialogAsBottomSheet`** (*Boolean*): Si es true, la alerta se muestra como una hoja inferior (bottom sheet).
+
+---
+
+### ErrorAlertConfig
+Configuración para la alerta de error que aparece ante una falla en la captura o validación.
+- **`title`** (*String*): Título del error.
+- **`subTitle`** (*String*): Descripción detallada del error.
+- **`buttonTitle`** (*String*): Texto del botón para reintentar o cerrar.
+- **`primaryColor`** (*DigiYoRGB?*): Color principal de la alerta.
+- **`displayDefaultActivityIndicator`** (*Boolean*): Muestra un indicador de carga por defecto.
+- **`displayDialogAsBottomSheet`** (*Boolean*): Si es true, la alerta se muestra como una hoja inferior (bottom sheet).
+
+---
+
+### LiveValidationsText
+Textos personalizados para los desafíos de biometría y pruebas de vida.
+- **`lookLeftRightText`** (*String?*): Instrucción para girar la cabeza a los lados.
+- **`lookUpDownText`** (*String?*): Instrucción para mover la cabeza arriba y abajo.
+- **`openCloseMouthText`** (*String?*): Instrucción para abrir y cerrar la boca.
+- **`faceEyeCheckText`** (*String?*): Instrucción para parpadear.
+- **`faceSmileCheckText`** (*String?*): Instrucción para sonreír.
+- **`idOnFaceCheckText`** (*String?*): Instrucción para mostrar el documento junto al rostro.
+- **`fingerCheckText`** (*String?*): Instrucción para mostrar una cantidad específica de dedos.
+
+---
+
+### DigiYoRGB
+Representación de colores en formato RGB.
+- **`red`** (*Int*): Componente rojo (0-255).
+- **`green`** (*Int*): Componente verde (0-255).
+- **`blue`** (*Int*): Componente azul (0-255).
+
+---
+
+## Personalización y estilos
+
+### DigiyoColorScheme
 
 Configuración para facilitar la personalización de colores de algunos elementos en: DocumentCameraView, SelfieCameraView y VideoCameraView.
 
@@ -1100,9 +1245,9 @@ digiyoSdk.getDocumentCameraViewController(
 
 ---
 
-### `DigiYoImageAsset`
+### DigiYoImageAsset
 
-Es un interface que contiene los métodos para interactuar con las imágenes provenientes de ambas plataformas.
+Es una interfaz que contiene los métodos para interactuar con las imágenes provenientes de ambas plataformas.
 Su implementación concreta sería:
 
 #### Android
@@ -1122,7 +1267,7 @@ ImageAsset("vc_document_front")
 
 ```
 
-### `CaptureModeConfig`
+### CaptureModeConfig
 
 Configuración del modo de captura de: DocumentCameraView, SelfieCameraView y VideoCameraView
 
@@ -1201,7 +1346,7 @@ digiyoSdk.getDocumentCameraViewController(
 **Parámetros**
 
 - **`automaticReadingEnabled`** (*Boolean*): Activa o desactiva el modo de captura automática.
-- **`automaticModeTimeoutMillis`** (*Long?*): Si no es nulo, define el tiempo en milisegundos en que la captura automática estrá activada antes de pasar a modo manual.
+- **`automaticModeTimeoutMillis`** (*Long?*): Si no es nulo, define el tiempo en milisegundos en que la captura automática estará activada antes de pasar a modo manual.
 - **`cameraButtonConfig`** (*ButtonConfig?*): Corresponde a la configuración de personalización del botón, incluyendo el título.
 - **`buttonType`** (*CaptureButtonType?*): Corresponde al tipo de botón.
 - **`buttonBehavior`** (*CaptureButtonBehavior?*): Corresponde al comportamiento del botón al capturar la foto o el video. Por defecto, el botón queda desactivado.
@@ -1210,7 +1355,7 @@ digiyoSdk.getDocumentCameraViewController(
 
 ---
 
-### `ButtonConfig`
+### ButtonConfig
 
 Configuración de personalización de botones.
 
@@ -1228,7 +1373,7 @@ Configuración de personalización de botones.
 
 ---
 
-### `DigiYoShape`
+### DigiYoShape
 
 Forma del botón a personalizar.
 
@@ -1240,7 +1385,7 @@ Forma del botón a personalizar.
 
 ---
 
-### `DigiYoButtonStyle`
+### DigiYoButtonStyle
 
 Estilo del botón a personalizar.
 
@@ -1254,7 +1399,7 @@ Estilo del botón a personalizar.
 
 ---
 
-### `CaptureButtonType`
+### CaptureButtonType
 
 Tipo de botón. Tiene prioridad sobre el estilo del botón.
 
@@ -1266,7 +1411,7 @@ Tipo de botón. Tiene prioridad sobre el estilo del botón.
 
 ---
 
-### `CaptureButtonBehavior`
+### CaptureButtonBehavior
 
 Comportamiento del botón al tomar la foto o el video.
 
@@ -1277,7 +1422,7 @@ Comportamiento del botón al tomar la foto o el video.
 
 ---
 
-### `InfoBoxConfig`
+### InfoBoxConfig
 
 Configuración de personalización de la información desplegada durante la captura de fotos/videos.
 
@@ -1293,7 +1438,7 @@ Configuración de personalización de la información desplegada durante la capt
 
 ---
 
-### `DigiYoIcons`
+### DigiYoIcons
 
 Agrupa las imágenes e iconos presentes en el SDK:
 
@@ -1310,9 +1455,9 @@ Agrupa las imágenes e iconos presentes en el SDK:
 ---
 
 
-## `Componentes de UI`
+## Componentes de UI
 
-### `DocumentCameraView`
+### DocumentCameraView
 
 Muestra una vista (Android) o un `UIViewController` (iOS) para capturar fotos de documentos.
 
@@ -1434,7 +1579,7 @@ digiyoSdk.getDocumentCameraViewController(
 
 ---
 
-### `SelfieCameraView`
+### SelfieCameraView
 
 Muestra una vista (Android) o un `UIViewController` (iOS) para capturar selfies con la cámara frontal.
 
@@ -1547,7 +1692,7 @@ digiyoSdk.getSelfieCameraViewViewController(
 
 ---
 
-### `VideoCameraView`
+### VideoCameraView
 
 Muestra una vista (Android) o un `UIViewController` (iOS) para grabar videos.
 
@@ -1675,7 +1820,7 @@ digiyoSdk.getVideoCameraViewViewController(
 
 ---
 
-### `HelpScreenView`
+### HelpScreenView
 
 Muestra una vista (Android) o un `UIViewController` (iOS) que puede ser utilizado para desplegar recomendaciones a lo largo del flujo.
 
@@ -1764,9 +1909,9 @@ digiyoSdk.getHelpScreenViewViewController(
 
 ---
 
-### `MediaPreviewScreen`
+### MediaPreviewScreen
 
-Muestra una vista (Android) o un `UIViewController` (iOS) que puede ser tutilizado para previsualizar las imágenes o videos capturados antes de su envío.
+Muestra una vista (Android) o un `UIViewController` (iOS) que puede ser utilizado para previsualizar las imágenes o videos capturados antes de su envío.
 
 #### Android
 
@@ -1829,11 +1974,11 @@ viewModel.digiyoSdk.getMediaPreviewScreenViewController(
 
 ---
 
-### `Lista de Cambios`
+### Lista de Cambios
 
 - #### CaptureModeConfig:
     - **`cameraButtonConfig`** (*ButtonConfig?*): Corresponde a la configuración de personalización del botón, incluyendo el título.
-    - **`buttonType`** (*CaptureButtenType?*): Corresponde al tipo de botón.
+    - **`buttonType`** (*CaptureButtonType?*): Corresponde al tipo de botón.
     - **`infoBoxConfig`** (*InfoBoxConfig?*): Corresponde a la configuración de personalización de la información que se despliega en la captura.
 - #### DocumentCameraConfig:
   - **`cameraSubtitle`** (*String?*): Permite agregar un subtítulo a la pantalla de la cámara.
