@@ -76,8 +76,8 @@ Este SDK emplea inteligencia artificial para la detección precisa y eficiente d
 El SDK requiere un mínimo de **API 24**. Para instalar la librería en una aplicación Android, agrega la siguiente dependencia en el archivo `build.gradle` o `build.gradle.kts` de tu módulo App:
 
 ```groovy
-implementation "com.roshka:digiyocore:1.2.0"
-implementation "com.roshka:digiyo:1.2.0"
+implementation "com.roshka:digiyocore:1.4.1"
+implementation "com.roshka:digiyo:1.4.1"
 ```
 
 En el `build.gradle` (`settings.gradle` o `settings.gradle.kts`) del proyecto, se configura el repositorio Maven apuntando a GithubPackages de la siguiente manera:
@@ -220,6 +220,8 @@ Crea un nuevo DIA (Documento de Identificación y Autenticación).
 ```kotlin
 digiyoSdk.createDia(
     diaType = "standard-validation-sdk",
+    latitude = "-25.2865", // Opcional
+    longitude = "-57.6470", // Opcional
     onSuccess = { dia ->
         // Success
     },
@@ -232,7 +234,11 @@ digiyoSdk.createDia(
 #### iOS
 
 ```swift
-digiyoSdk.createDia(diaType: "standard-validation-sdk") { dia in
+digiyoSdk.createDia(
+    diaType: "standard-validation-sdk",
+    latitude: "-25.2865", // Opcional
+    longitude: "-57.6470", // Opcional
+) { dia in
     // Success
 } onError: { error in
     // Error
@@ -242,6 +248,8 @@ digiyoSdk.createDia(diaType: "standard-validation-sdk") { dia in
 **Parámetros**
 
 - **`diaType`** (*String*): Tipo de DIA, por ejemplo: "standard-validation-sdk".
+- **`latitude`** (*String?*): Latitud opcional para geolocalización.
+- **`longitude`** (*String?*): Longitud opcional para geolocalización.
 - **`onSuccess`** (*Callback*): Función invocada en caso de éxito.
 - **`onError`** (*Callback*): Función invocada en caso de error.
 
@@ -843,6 +851,97 @@ digiyoSdk.checkEnrollment(
 - **`diaId`** (*String*): ID del DIA que se desea procesar.
 - **`idNumber`** (*String*): El número de documento que se desea verificar.
 
+### `getSubWorkflow`
+
+Obtiene la lista de sub-flujos (workflows) asociados a un DIA. Este método realiza reintentos automáticos si el procesamiento aún no ha finalizado.
+
+#### Android (Kotlin)
+
+```kotlin
+Digiyo.getSubWorkflow(
+    diaId = digiyoSdk.getSavedDia()?.diaId ?: "",
+    attemptAfterMillis = 10000, // Opcional, por defecto 10s
+    attempts = 9,               // Opcional, por defecto 9 reintentos
+    onSuccess = { subWorkflows ->
+        // Éxito: retorna List<SubWorkflow>?
+    },
+    onError = { error ->
+        // Error: retorna DigiYoError
+    }
+)
+```
+
+#### iOS (Swift)
+
+```swift
+DigiyoSDK.getSubWorkflow(
+    diaId: digiyoSdk.getSavedDia()?.diaId ?? "",
+    attemptAfterMillis: 10000,
+    attempts: 9
+) { subWorkflows in
+    // Éxito: retorna [DigiyocoreSubWorkflow]?
+} onError: { error in
+    // Error: retorna DigiyocoreDigiYoError
+}
+```
+
+**Parámetros**
+
+- **`diaId`** (*String*): Identificador único del DIA.
+- **`attemptAfterMillis`** (*Long*): Tiempo de espera entre cada intento de consulta en milisegundos.
+- **`attempts`** (*Int*): Cantidad máxima de reintentos permitidos.
+- **`onSuccess`** (*Callback*): Función invocada cuando se recupera exitosamente la lista de sub-flujos.
+- **`onError`** (*Callback*): Función invocada en caso de error o si se agotan los intentos.
+
+---
+
+### `sendImage` (con SubWorkflow automático)
+
+Sube una imagen y permite solicitar automáticamente el estado del flujo de trabajo (`SubWorkflow`) una vez que la carga sea exitosa.
+
+#### Android (Kotlin)
+
+```kotlin
+Digiyo.sendImage(
+    diaId = digiyoSdk.getSavedDia()?.diaId ?: "",
+    filePath = "ruta/al/archivo.jpg",
+    inDataName = "CI_PY_BACK",
+    liveValidationOptions = null,    // Opcional
+    shouldRequestWorkflow = true,    // Si es true, solicita sub-workflows tras el éxito
+    onSuccess = { imageResponse, subWorkflows ->
+        // Éxito: retorna respuesta de imagen y lista de sub-flujos
+    },
+    onError = { error ->
+        // Error
+    }
+)
+```
+
+#### iOS (Swift)
+
+```swift
+DigiyoSDK.sendImage(
+    diaId: digiyoSdk.getSavedDia()?.diaId ?? "",
+    filePath: "ruta/al/archivo.jpg",
+    inDataName: "CI_PY_BACK",
+    liveValidationOptions: nil,
+    shouldRequestWorkflow: true
+) { imageResponse, subWorkflows in
+    // Éxito: retorna (String?, [DigiyocoreSubWorkflow]?)
+} onError: { error in
+    // Error
+}
+```
+
+**Parámetros**
+
+- **`diaId`** (*String*): ID del DIA asociado.
+- **`filePath`** (*String*): Ruta local de la imagen capturada.
+- **`inDataName`** (*String*): Nombre del inData (ej: "CI_PY_BACK").
+- **`shouldRequestWorkflow`** (*Boolean*): Determina si el SDK debe llamar internamente a `getSubWorkflow` después de subir la imagen.
+- **`onSuccess`** (*Callback*): Recibe la respuesta del servidor y la lista de sub-flujos (si se solicitó).
+- **`onError`** (*Callback*): Invocado en caso de error en la carga o en la consulta del flujo.
+
 ---
 
 ## Modelos de Datos
@@ -1030,13 +1129,13 @@ Configuración del modo de captura de: DocumentCameraView, SelfieCameraView y Vi
 #### Android
 
 ```kotlin
-digiyoSdk.DocumentCameraView(
+digiyoSdk.getDocumentCameraView(
     config = DocumentCameraConfig(
        ...
         captureModeConfig = CaptureModeConfig(
             automaticReadingEnabled = true,
             automaticModeTimeoutMillis = 8000,
-            buttonConfig = ButtonConfig(
+            cameraButtonConfig = ButtonConfig(
                 label = "Capturar documento",
                 shape = DigiYoShape.Rounded(24.0f),
                 buttonStyle = DigiYoButtonStyle.Default,
@@ -1048,7 +1147,7 @@ digiyoSdk.DocumentCameraView(
                 disabledBackgroundColor = null,
                 disabledContentColor = null
             ),
-            buttonType = CaptureButtonType.Default,
+            buttonType = CaptureButtonType.DefaultButton,
             buttonBehavior = null,
             infoBoxConfig = null,
             overwriteDefaultTextWith = null
@@ -1072,7 +1171,7 @@ digiyoSdk.getDocumentCameraViewController(
         captureModeConfig: CaptureModeConfig(
             automaticReadingEnabled: true,
             automaticModeTimeoutMillis: 8000,
-            buttonConfig: ButtonConfig(
+            cameraButtonConfig: ButtonConfig(
                 label: "Capturar documento",
                 shape: DigiYoShape.Rounded(cornerRadius: 24.0),
                 buttonStyle: DigiYoButtonStyle.Default(),
@@ -1103,8 +1202,8 @@ digiyoSdk.getDocumentCameraViewController(
 
 - **`automaticReadingEnabled`** (*Boolean*): Activa o desactiva el modo de captura automática.
 - **`automaticModeTimeoutMillis`** (*Long?*): Si no es nulo, define el tiempo en milisegundos en que la captura automática estrá activada antes de pasar a modo manual.
-- **`buttonConfig`** (*ButtonConfig?*): Corresponde a la configuración de personalización del botón, incluyendo el título.
-- **`buttonType`** (*CaptureButtenType?*): Corresponde al tipo de botón.
+- **`cameraButtonConfig`** (*ButtonConfig?*): Corresponde a la configuración de personalización del botón, incluyendo el título.
+- **`buttonType`** (*CaptureButtonType?*): Corresponde al tipo de botón.
 - **`buttonBehavior`** (*CaptureButtonBehavior?*): Corresponde al comportamiento del botón al capturar la foto o el video. Por defecto, el botón queda desactivado.
 - **`infoBoxConfig`** (*InfoBoxConfig?*): Corresponde a la configuración de personalización de la información que se despliega en la captura.
 - **`overwriteDefaultTextWith`** (String?): Permite reemplazar el texto por defecto del infoBox. (Si existen validaciones activas, el texto de las validaciones tienen prioridad, por lo que deben de personalizarse desde `customLiveValidationsText` en la configuración correspondiente)
@@ -1221,32 +1320,32 @@ Muestra una vista (Android) o un `UIViewController` (iOS) para capturar fotos de
 
 ```kotlin
 val context = LocalContext.current
-val customImage = AppCompatResources.getDrawable(context, R.drawable.vc_document_front)?.toBase64Image()
 ...
 
-digiyoSdk.DocumentCameraView(
+digiyoSdk.getDocumentCameraView(
     config = DocumentCameraConfig(
         cameraTitle = "ID Card - Front",
+        cameraSubtitle = "Scan the front side of your ID Card",
         successAlertConfig = SuccessAlertConfig(
             title = "Next Step",
             subTitle = "Scan the back side",
             buttonTitle = "Continue",
             primaryColor = DigiYoRGB(red = 94, green = 185, blue = 240),
-            imageBase64 = customImage,
+            image = ImageAsset(context, R.drawable.vc_document_front),
             displayDefaultActivityIndicator = false,
             displayDialogAsBottomSheet = false
         ),
         documentType = DocumentType.ID_FRONT,
         colorScheme = DigiyoColorScheme.fromPrimaryColor(
-            DigiYoRGB(red: 94, green: 240, blue: 160)
+            DigiYoRGB(red = 94, green = 240, blue = 160)
         ),
         showCloseButton = false,
         captureModeConfig = CaptureModeConfig(
             automaticReadingEnabled = true,
             automaticModeTimeoutMillis = 8000,
-            buttonConfig = ButtonConfig(
+            cameraButtonConfig = ButtonConfig(
                 label = "Capturar documento",
-                shape = DigiYoShape.Rounded(Dimen24dp),
+                shape = DigiYoShape.Rounded(24.0f),
                 buttonStyle = DigiYoButtonStyle.Default,
                 isLoading = false,
                 contentPadding = 32,
@@ -1256,11 +1355,12 @@ digiyoSdk.DocumentCameraView(
                 disabledBackgroundColor = null,
                 disabledContentColor = null
             ),
-            buttonType = CaptureButtonType.Default,
+            buttonType = CaptureButtonType.DefaultButton,
             infoBoxConfig = null
         ),
         showDetectedObjectRect = true,
-        smartCropEnabled = false
+        smartCropEnabled = false,
+        shutterSoundEnabled = true
     ),
     onClose = {
         navController.popBackStack()
@@ -1274,15 +1374,12 @@ digiyoSdk.DocumentCameraView(
 #### iOS
 
 ```swift
-var customImage: String?
-if let image = UIImage(named: "vc_document_front") {
-     customImage = ExtensionsKt.toBase64Image(image)
-}
 ...
 
 digiyoSdk.getDocumentCameraViewController(
     config: DocumentCameraConfig(
         cameraTitle: "ID Card - Front",
+        cameraSubtitle: "Scan the front side of your ID Card",
         documentType: .idFront,
         colorScheme = DigiyoColorScheme.companion.fromPrimaryColor(
             DigiYoRGB(red: 94, green: 240, blue: 160)
@@ -1292,7 +1389,7 @@ digiyoSdk.getDocumentCameraViewController(
             subTitle: "Scan the back side",
             buttonTitle: "Continue",
             primaryColor: DigiYoRGB(red: 94, green: 185, blue: 240),
-            iamgeBase64: customImage,
+            image: ImageAsset("vc_document_front"),
             displayDefaultActivityIndicator: false,
             displayDialogAsBottomSheet: false
         ),
@@ -1300,7 +1397,7 @@ digiyoSdk.getDocumentCameraViewController(
         captureModeConfig: CaptureModeConfig(
             automaticReadingEnabled: true,
             automaticModeTimeoutMillis: 8000,
-            buttonConfig: ButtonConfig(
+            cameraButtonConfig: ButtonConfig(
                 label: "Capturar documento",
                 shape: DigiYoShape.Rounded(cornerRadius: 24.0),
                 buttonStyle: DigiYoButtonStyle.Default(),
@@ -1316,7 +1413,8 @@ digiyoSdk.getDocumentCameraViewController(
             infoBoxConfig: nil
         ),
         showDetectedObjectRect: true,
-        smartCropEnabled: false
+        smartCropEnabled: false,
+        shutterSoundEnabled: true
     ),
     onResult = { imageCropped, imageFull in
         viewModel.sendImage(filePath: imageCropped, imageFullPath: imageFull)
@@ -1325,6 +1423,7 @@ digiyoSdk.getDocumentCameraViewController(
         self.presentationMode.wrappedValue.dismiss()
     }
 )
+```
 ```
 
 **Parámetros**
@@ -1343,10 +1442,9 @@ Muestra una vista (Android) o un `UIViewController` (iOS) para capturar selfies 
 
 ```kotlin
 val context = LocalContext.current
-val customImage = AppCompatResources.getDrawable(context, R.drawable.vc_document_front)?.toBase64Image()
 ...
 
-digiyoSdk.SelfieCameraView(
+digiyoSdk.getSelfieCameraView(
     config = SelfieCameraConfig(
         cameraTitle = "Selfie",
         successAlertConfig = SuccessAlertConfig(
@@ -1354,20 +1452,20 @@ digiyoSdk.SelfieCameraView(
             subTitle = "Record a 5-second video",
             buttonTitle = "Continue",
             primaryColor = DigiYoRGB(94, 185, 240),
-            imageBase64 = customImage,
+            image = ImageAsset(context, R.drawable.vc_document_front),
             displayDefaultActivityIndicator = false,
             displayDialogAsBottomSheet = false
         ),
         colorScheme = DigiyoColorScheme.fromPrimaryColor(
-            DigiYoRGB(red: 94, green: 240, blue: 160)
+            DigiYoRGB(red = 94, green = 240, blue = 160)
         ),
         showCloseButton = false,
         captureModeConfig = CaptureModeConfig(
             automaticReadingEnabled = true,
             automaticModeTimeoutMillis = 8000,
-            buttonConfig = ButtonConfig(
+            cameraButtonConfig = ButtonConfig(
                 label = "Capturar selfie",
-                shape = DigiYoShape.Rounded(Dimen24dp),
+                shape = DigiYoShape.Rounded(24.0f),
                 buttonStyle = DigiYoButtonStyle.Default,
                 isLoading = false,
                 contentPadding = 32,
@@ -1377,9 +1475,10 @@ digiyoSdk.SelfieCameraView(
                 disabledBackgroundColor = null,
                 disabledContentColor = null
             ),
-            buttonType = CaptureButtonType.Default,
+            buttonType = CaptureButtonType.DefaultButton,
             infoBoxConfig = null
         ),
+        shutterSoundEnabled = true,
         customLiveValidationsText = null
     ),
     onResult = { path ->
@@ -1394,10 +1493,6 @@ digiyoSdk.SelfieCameraView(
 #### iOS
 
 ```swift
-var customImage: String?
-if let image = UIImage(named: "vc_document_front") {
-     customImage = ExtensionsKt.toBase64Image(image)
-}
 ...
 
 digiyoSdk.getSelfieCameraViewViewController(
@@ -1410,8 +1505,8 @@ digiyoSdk.getSelfieCameraViewViewController(
             title: "Next Step",
             subTitle: "Record a 5-second video",
             buttonTitle: "Continue",
-            primaryColor = DigiYoRGB(red: 94, green: 185, blue: 240),
-            imageBase64: customImage,
+            primaryColor: DigiYoRGB(red: 94, green: 185, blue: 240),
+            image: ImageAsset("vc_document_front"),
             displayDefaultActivityIndicator: false,
             displayDialogAsBottomSheet: false
         ),
@@ -1419,7 +1514,7 @@ digiyoSdk.getSelfieCameraViewViewController(
         captureModeConfig: CaptureModeConfig(
             automaticReadingEnabled: true,
             automaticModeTimeoutMillis: 8000,
-            buttonConfig: ButtonConfig(
+            cameraButtonConfig: ButtonConfig(
                 label: "Capturar selfie",
                 shape: DigiYoShape.Rounded(cornerRadius: 24.0),
                 buttonStyle: DigiYoButtonStyle.Default(),
@@ -1434,6 +1529,7 @@ digiyoSdk.getSelfieCameraViewViewController(
             buttonType: CaptureButtonType.defaultbutton,
             infoBoxConfig: nil
         ),
+        shutterSoundEnabled: true,
         customLiveValidationsText: nil
     )
 ) { path in
@@ -1458,18 +1554,18 @@ Muestra una vista (Android) o un `UIViewController` (iOS) para grabar videos.
 #### Android
 
 ```kotlin
-digiyoSdk.VideoCameraView(
+digiyoSdk.getVideoCameraView(
     config = VideoCameraConfig(
         cameraTitle = "Show 2 fingers",
         colorScheme = DigiyoColorScheme.fromPrimaryColor(
-            DigiYoRGB(red: 94, green: 240, blue: 160)
+            DigiYoRGB(red = 94, green = 240, blue = 160)
         ),
         successAlertConfig = SuccessAlertConfig(
             title = "Done",
             subTitle = "We will now analyze your video",
             buttonTitle = "OK",
             primaryColor = DigiYoRGB(94, 185, 240),
-            customImage = null,
+            image = null,
             displayDefaultActivityIndicator = false,
             displayDialogAsBottomSheet = false
         ),
@@ -1485,9 +1581,9 @@ digiyoSdk.VideoCameraView(
         captureModeConfig = CaptureModeConfig(
             automaticReadingEnabled = true,
             automaticModeTimeoutMillis = 8000,
-            buttonConfig = ButtonConfig(
+            cameraButtonConfig = ButtonConfig(
                 label = "Grabar video",
-                shape = DigiYoShape.Rounded(Dimen24dp),
+                shape = DigiYoShape.Rounded(24.0f),
                 buttonStyle = DigiYoButtonStyle.Default,
                 isLoading = false,
                 contentPadding = 32,
@@ -1497,11 +1593,13 @@ digiyoSdk.VideoCameraView(
                 disabledBackgroundColor = null,
                 disabledContentColor = null
             ),
-            buttonType = CaptureButtonType.Default,
+            buttonType = CaptureButtonType.DefaultButton,
             infoBoxConfig = null
         ),
         customLiveValidationsText = null,
-        cameraSoundEnabled = false
+        cameraSoundEnabled = false,
+        challengeOverlayConfig = ChallengeOverlayConfig.DEFAULT,
+        videoRecordDurationMs = 5000L
     ),
     onResult = { path ->
         viewModel.patchVideo(filePath = path)
@@ -1518,15 +1616,15 @@ digiyoSdk.VideoCameraView(
 digiyoSdk.getVideoCameraViewViewController(
     config: VideoCameraConfig(
         cameraTitle: "Video",
-        colorScheme = DigiyoColorScheme.companion.fromPrimaryColor(
+        colorScheme: DigiyoColorScheme.companion.fromPrimaryColor(
             DigiYoRGB(red: 94, green: 240, blue: 160)
         ),
         successAlertConfig: SuccessAlertConfig(
             title: "Next Step",
             subTitle: "We will now analyze your video",
             buttonTitle: "Continue",
-            primaryColor = DigiYoRGB(red: 94, green: 185, blue: 240),
-            customImage: nil,
+            primaryColor: DigiYoRGB(red: 94, green: 185, blue: 240),
+            image: nil,
             displayDefaultActivityIndicator: false,
             displayDialogAsBottomSheet: false
         ),
@@ -1542,7 +1640,7 @@ digiyoSdk.getVideoCameraViewViewController(
         captureModeConfig: CaptureModeConfig(
             automaticReadingEnabled: true,
             automaticModeTimeoutMillis: 8000,
-            buttonConfig: ButtonConfig(
+            cameraButtonConfig: ButtonConfig(
                 label: "Grabar video",
                 shape: DigiYoShape.Rounded(cornerRadius: 24.0),
                 buttonStyle: DigiYoButtonStyle.Default(),
@@ -1558,7 +1656,9 @@ digiyoSdk.getVideoCameraViewViewController(
             infoBoxConfig: nil
         ),
         customLiveValidationsText: nil,
-        cameraSoundEnabled: false
+        cameraSoundEnabled: false,
+        challengeOverlayConfig: ChallengeOverlayConfig.Companion().DEFAULT,
+        videoRecordDurationMs: 5000
     )
 ) { path in
     viewModel.patchVideo(filePath: path)
@@ -1577,7 +1677,7 @@ digiyoSdk.getVideoCameraViewViewController(
 
 ### `HelpScreenView`
 
-Muestra una vista (Android) o un `UIViewController` (iOS) que puede ser tutilizado para desplegar recomendaciones a lo largo del flujo.
+Muestra una vista (Android) o un `UIViewController` (iOS) que puede ser utilizado para desplegar recomendaciones a lo largo del flujo.
 
 #### Android
 
@@ -1589,24 +1689,39 @@ digiyoSdk.getHelpScreenView(
     config = HelpConfig(
         helpScreenTitle = "Foto frontal de tu cédula",
         helpScreenImage = ImageAsset(context, R.drawable.vc_document_front),
+        helpScreenComplementaryImage = null,
+        helpScreenComplementaryImageHeight = null,
         colorScheme =  DigiYoColorScheme.fromPrimaryColor(
-            DigiYoRGB(red: 94, green: 240, blue: 160)
+            DigiYoRGB(red = 94, green = 240, blue = 160)
         ),
         imageShouldFollowColorScheme = false,
         bulletAndAdvices = listOf(
-            HelpBulletPoint.Check to "Foto legible, bien iluminada.",
-            HelpBulletPoint.Check to "Coloca tu CI en una superficie plana y de un solo color.",
-            HelpBulletPoint.Check to "Pon el teléfono cerca para que tu rostro y número de CI se vean con claridad.",
-            HelpBulletPoint.Error to "No enviés CI editadas o caducadas.",
+            HelpBulletpoint(
+                icon = ImageAsset(context, R.drawable.ic_check),
+                text = "Foto legible, bien iluminada."
+            ),
+            HelpBulletpoint(
+                icon = ImageAsset(context, R.drawable.ic_check),
+                text = "Coloca tu CI en una superficie plana y de un solo color."
+            ),
+            HelpBulletpoint(
+                icon = ImageAsset(context, R.drawable.ic_check),
+                text = "Pon el teléfono cerca para que tu rostro y número de CI se vean con claridad."
+            ),
+            HelpBulletpoint(
+                icon = ImageAsset(context, R.drawable.ic_error),
+                iconColor = DigiYoRGB(255, 0, 0),
+                text = "No envíes CI editadas o caducadas."
+            ),
         ),
-        continueButtonTitle = "Escanear documento",
         customTitleTextColor = null,
-        buttonConfig ButtonConfig.DEFAULT.copy(
-            label = "Tomar selfie"
+        buttonConfig = ButtonConfig.DEFAULT.copy(
+            label = "Escanear documento"
         ),
-        helpScreenImageContentDescription = "Imagen de un teléfono tomando una selfie"
-        ),
-     onButtonPressed = {
+        helpScreenImageContentDescription = "Imagen de un teléfono tomando una selfie",
+        helpScreenComplementaryImageContentDescription = null
+    ),
+    onButtonPressed = {
         navController.navigate("step2")
     },
 )
@@ -1615,24 +1730,26 @@ digiyoSdk.getHelpScreenView(
 #### iOS
 
 ```swift
-
 digiyoSdk.getHelpScreenViewViewController(
     config: HelpConfig(
         helpScreenTitle: "Foto frontal de tu cédula",
         helpScreenImage: ImageAsset("vc_document_front"),
+        helpScreenComplementaryImage: nil,
+        helpScreenComplementaryImageHeight: nil,
         colorScheme: DigiYoColorScheme.companion.fromPrimaryColor(
             DigiYoRGB(red: 94, green: 240, blue: 160)
         ),
         imageShouldFollowColorScheme: false,
         bulletAndAdvices: [
-            KotlinPair(first: HelpBulletPoint.check, second: "Foto legible, bien iluminada."),
-            KotlinPair(first: HelpBulletPoint.check, second: "Coloca tu CI en una superficie plana y de un solo color."),
-            KotlinPair(first: HelpBulletPoint.check, second: "Pon el teléfono cerca para que tu rostro y número de CI se vean con claridad."),
-            KotlinPair(first: HelpBulletPoint.error, second: "No enviés CI editadas o caducadas.")
+            HelpBulletpoint(icon: ImageAsset("ic_check"), text: "Foto legible, bien iluminada."),
+            HelpBulletpoint(icon: ImageAsset("ic_check"), text: "Coloca tu CI en una superficie plana y de un solo color."),
+            HelpBulletpoint(icon: ImageAsset("ic_check"), text: "Pon el teléfono cerca para que tu rostro y número de CI se vean con claridad."),
+            HelpBulletpoint(icon: ImageAsset("ic_error"), iconColor: DigiYoRGB(red: 255, green: 0, blue: 0), text: "No envíes CI editadas o caducadas.")
         ],
         customTitleTextColor: nil,
-        buttonConfig: ButtonConfig.Companion().defaultWithLabel(label: "Tomar selfie"),
-        helpScreenImageContentDescription: "Imagen de un teléfono tomando una selfie"
+        buttonConfig: ButtonConfig.Companion().defaultWithLabel(label: "Escanear documento"),
+        helpScreenImageContentDescription: "Imagen de un teléfono tomando una selfie",
+        helpScreenComplementaryImageContentDescription: nil
     ),
     onButtonPressed: {
         viewModel.navigateToNextScreen = true
@@ -1652,8 +1769,8 @@ digiyoSdk.getHelpScreenViewViewController(
 Muestra una vista (Android) o un `UIViewController` (iOS) que puede ser tutilizado para previsualizar las imágenes o videos capturados antes de su envío.
 
 #### Android
-```
 
+```
 digiyoSdk.getMediaPreviewScreen(
     config = MediaPreviewConfig(
         previewScreenTitle = "Verifica tu fotografía",
@@ -1671,10 +1788,10 @@ digiyoSdk.getMediaPreviewScreen(
         customTitleTextColor = null
     ),
     onPrimaryButtonPressed = {
-
+    
     },
     onSecondaryButtonPressed = {
-
+    
     }
 ) // Ejemplo
 ```
@@ -1715,20 +1832,24 @@ viewModel.digiyoSdk.getMediaPreviewScreenViewController(
 ### `Lista de Cambios`
 
 - #### CaptureModeConfig:
-    - **`buttonConfig`** (*ButtonConfig?*): Corresponde a la configuración de personalización del botón, incluyendo el título.
+    - **`cameraButtonConfig`** (*ButtonConfig?*): Corresponde a la configuración de personalización del botón, incluyendo el título.
     - **`buttonType`** (*CaptureButtenType?*): Corresponde al tipo de botón.
     - **`infoBoxConfig`** (*InfoBoxConfig?*): Corresponde a la configuración de personalización de la información que se despliega en la captura.
 - #### DocumentCameraConfig:
+  - **`cameraSubtitle`** (*String?*): Permite agregar un subtítulo a la pantalla de la cámara.
   - **`showDetectedObjectRect`** (*Boolean*): Permite activar o desactivar el dibujado de un rectángulo alrededor del objeto detectado.
   - **`smartCropEnabled`** (*Boolean*): Permite activar o desactivar el recorte de la imagen usando el rectángulo detectado. Si se encuentra desactivado, la referencia es el recuadro guía presente en la pantalla de cámara.
-  - **`shutterSoundEnabled`** (*Boolean*): Permite activar o desactivar el sonido del obsturador de la cámara.
+  - **`shutterSoundEnabled`** (*Boolean*): Permite activar o desactivar el sonido del obturador de la cámara.
 - #### SelfieCameraConfig:
-  - **`shutterSoundEnabled`** (*Boolean*): Permite activar o desactivar el sonido del obsturador de la cámara.
+  - **`shutterSoundEnabled`** (*Boolean*): Permite activar o desactivar el sonido del obturador de la cámara.
   - **`customLiveValidationsText`** (*LiveValidationsText?*): Permite personalizar el texto de los diferentes desafíos presentados para la validación de prueba de vida.
 - #### VideoCameraConfig:
   - **`customLiveValidationsText`** (*LiveValidationsText?*): Permite personalizar el texto de los diferentes desafíos presentados para la validación de prueba de vida.
-  - **`cameraSoundEnabled`** (*Boolean*): Permite activar o desactivar el sonido de la cámara que alerta del inicio y final de la grabación.
+  - **`cameraSoundEnabled`** (*Boolean?*): Permite activar o desactivar el sonido de la cámara que alerta del inicio y final de la grabación.
+  - **`challengeOverlayConfig`** (*ChallengeOverlayConfig?*): Permite configurar el overlay de los desafíos de video.
+  - **`videoRecordDurationMs`** (*Long?*): Permite configurar la duración máxima de la grabación de video en milisegundos.
 - #### HelpConfig:
+  - **`helpScreenComplementaryImage`** (*DigiYoImageAsset?*): Permite agregar una imagen complementaria a la pantalla de ayuda.
   - **`imageShouldFollowColorScheme`** (*Boolean*): Permite manejar si la imagen agregada debe ser o no coloreada con respecto al colorScheme.
 - #### SuccessAlertConfig
   - **`image`** (*DigiYoAsset?*): Permite agregar una imagen personalizada al modal. Pueden utilizarse las imagenes presentes en el SDK en ```DigiYoIcons```:
