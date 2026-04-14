@@ -6,7 +6,7 @@
 #import <Foundation/NSString.h>
 #import <Foundation/NSValue.h>
 
-@class DigiyoButtonConfig, DigiyoButtonConfigCompanion, DigiyoCameraMode, DigiyoCaptureArea, DigiyoCaptureButtonBehavior, DigiyoCaptureButtonType, DigiyoCaptureModeConfig, DigiyoCaptureModeConfigCompanion, DigiyoDigiYo, DigiyoDigiYoButtonStyle, DigiyoDigiYoButtonStyleDefault, DigiyoDigiYoButtonStyleTextOnlyEnd, DigiyoDigiYoButtonStyleTextOnlyStart, DigiyoDigiYoColorScheme, DigiyoDigiYoColorSchemeCompanion, DigiyoDigiYoHelper, DigiyoDigiYoIcons, DigiyoDigiYoImageAsset, DigiyoDigiYoImageAssetCompanion, DigiyoDigiYoRGB, DigiyoDigiYoRGBCompanion, DigiyoDigiYoSDK, DigiyoDigiYoSDKUtils, DigiyoDigiYoShape, DigiyoDigiYoShapeCircle, DigiyoDigiYoShapeSquare, DigiyoDigiyocoreCisefDetails, DigiyoDigiyocoreCisefDetailsCompanion, DigiyoDigiyocoreConductorDetails, DigiyoDigiyocoreConductorDetailsCompanion, DigiyoDigiyocoreDataRequireModel, DigiyoDigiyocoreDataRequireModelCompanion, DigiyoDigiyocoreDiaModel, DigiyoDigiyocoreDiaModelCompanion, DigiyoDigiyocoreDigiYoConfig, DigiyoDigiyocoreDigiYoConfigEntity, DigiyoDigiyocoreDigiYoConfigEntityCompanion, DigiyoDigiyocoreDigiYoCore, DigiyoDigiyocoreDigiYoError, DigiyoDigiyocoreDigiYoErrorCompanion, DigiyoDigiyocoreEnrollmentData, DigiyoDigiyocoreEnrollmentDataCompanion, DigiyoDigiyocoreIdInfoModel, DigiyoDigiyocoreIdInfoModelCompanion, DigiyoDigiyocoreInDataConfigModel, DigiyoDigiyocoreInDataConfigModelCompanion, DigiyoDigiyocoreInDataEntryModel, DigiyoDigiyocoreInDataEntryModelCompanion, DigiyoDigiyocoreLiveValidationOptions, DigiyoDigiyocoreLiveValidationOptionsCompanion, DigiyoDigiyocoreLogLevel, DigiyoDigiyocoreMetaModel, DigiyoDigiyocoreMetaModelCompanion, DigiyoDigiyocorePartnerModel, DigiyoDigiyocorePartnerModelCompanion, DigiyoDigiyocorePolDetails, DigiyoDigiyocorePolDetailsCompanion, DigiyoDigiyocoreResultModel, DigiyoDigiyocoreResultModelCompanion, DigiyoDigiyocoreScoresModel, DigiyoDigiyocoreScoresModelCompanion, DigiyoDigiyocoreTaskModel, DigiyoDigiyocoreTaskModelCompanion, DigiyoDigiyocoreValidationFlags, DigiyoDigiyocoreValidationFlagsCompanion, DigiyoDocumentCameraConfig, DigiyoDocumentDetectorStatus, DigiyoDocumentStatusMapperCompanion, DigiyoDocumentType, DigiyoErrorAlertConfig, DigiyoHelpBulletPoint, DigiyoHelpConfig, DigiyoInfoBoxConfig, DigiyoInfoBoxConfigCompanion, DigiyoInfoBoxStyle, DigiyoKotlinArray<T>, DigiyoKotlinAutofreeScope, DigiyoKotlinByteArray, DigiyoKotlinByteIterator, DigiyoKotlinCValue<T>, DigiyoKotlinCValues<T>, DigiyoKotlinCValuesRef<T>, DigiyoKotlinDeferScope, DigiyoKotlinEnum<E>, DigiyoKotlinEnumCompanion, DigiyoKotlinException, DigiyoKotlinFloatArray, DigiyoKotlinFloatIterator, DigiyoKotlinIllegalStateException, DigiyoKotlinIntArray, DigiyoKotlinIntIterator, DigiyoKotlinIntProgression, DigiyoKotlinIntProgressionCompanion, DigiyoKotlinIntRange, DigiyoKotlinIntRangeCompanion, DigiyoKotlinNothing, DigiyoKotlinPair<__covariant A, __covariant B>, DigiyoKotlinRuntimeException, DigiyoKotlinThrowable, DigiyoKotlinx_serialization_coreSerialKind, DigiyoKotlinx_serialization_coreSerializersModule, DigiyoLensFacingType, DigiyoLibraryDrawableResource, DigiyoLibraryFontResource, DigiyoLibraryPluralStringResource, DigiyoLibraryResource, DigiyoLibraryResourceItem, DigiyoLibraryStringArrayResource, DigiyoLibraryStringResource, DigiyoLiveValidationsAssets, DigiyoLiveValidationsText, DigiyoLiveValidationsTextCompanion, DigiyoMediaPreviewConfig, DigiyoRes, DigiyoResArray, DigiyoResDrawable, DigiyoResFont, DigiyoResPlurals, DigiyoResString, DigiyoSelfieCameraConfig, DigiyoSelfieDetectorStatus, DigiyoSelfieStatusMapperCompanion, DigiyoSuccessAlertConfig, DigiyoUiImageVector, DigiyoUiImageVectorCompanion, DigiyoUiVectorGroup, DigiyoUiVectorNode, DigiyoUi_geometryRect, DigiyoUi_geometryRectCompanion, DigiyoUi_graphicsColorSpace, DigiyoUi_graphicsOutline, DigiyoUi_graphicsPathNode, DigiyoUi_unitDpRect, DigiyoUi_unitDpRectCompanion, DigiyoUi_unitLayoutDirection, DigiyoVideoCameraConfig, DigiyoVideoDetectorStatus, DigiyoVideoStatusMapperCompanion, DigiyoVideoValidationType, NSData, UIImage, UIViewController, VNFaceLandmarkRegion2D, VNRectangleObservation;
+@class DigiyoButtonConfig, DigiyoButtonConfigCompanion, DigiyoCameraMode, DigiyoCaptureArea, DigiyoCaptureButtonBehavior, DigiyoCaptureButtonType, DigiyoCaptureModeConfig, DigiyoCaptureModeConfigCompanion, DigiyoChallengeOverlayConfig, DigiyoChallengeOverlayConfigCompanion, DigiyoDigiYo, DigiyoDigiYoButtonStyle, DigiyoDigiYoButtonStyleDefault, DigiyoDigiYoButtonStyleTextOnlyEnd, DigiyoDigiYoButtonStyleTextOnlyStart, DigiyoDigiYoColorScheme, DigiyoDigiYoColorSchemeCompanion, DigiyoDigiYoHelper, DigiyoDigiYoIcons, DigiyoDigiYoImageAsset, DigiyoDigiYoImageAssetCompanion, DigiyoDigiYoRGB, DigiyoDigiYoRGBCompanion, DigiyoDigiYoSDK, DigiyoDigiYoSDKUtils, DigiyoDigiYoShape, DigiyoDigiYoShapeCircle, DigiyoDigiYoShapeSquare, DigiyoDigiyocoreCisefDetails, DigiyoDigiyocoreCisefDetailsCompanion, DigiyoDigiyocoreConductorDetails, DigiyoDigiyocoreConductorDetailsCompanion, DigiyoDigiyocoreDataRequireModel, DigiyoDigiyocoreDataRequireModelCompanion, DigiyoDigiyocoreDiaModel, DigiyoDigiyocoreDiaModelCompanion, DigiyoDigiyocoreDigiYoConfig, DigiyoDigiyocoreDigiYoConfigEntity, DigiyoDigiyocoreDigiYoConfigEntityCompanion, DigiyoDigiyocoreDigiYoCore, DigiyoDigiyocoreDigiYoError, DigiyoDigiyocoreDigiYoErrorCompanion, DigiyoDigiyocoreEnrollmentData, DigiyoDigiyocoreEnrollmentDataCompanion, DigiyoDigiyocoreIdInfoModel, DigiyoDigiyocoreIdInfoModelCompanion, DigiyoDigiyocoreInDataConfigModel, DigiyoDigiyocoreInDataConfigModelCompanion, DigiyoDigiyocoreInDataEntryModel, DigiyoDigiyocoreInDataEntryModelCompanion, DigiyoDigiyocoreLiveValidationOptions, DigiyoDigiyocoreLiveValidationOptionsCompanion, DigiyoDigiyocoreLogLevel, DigiyoDigiyocoreMetaModel, DigiyoDigiyocoreMetaModelCompanion, DigiyoDigiyocorePartnerModel, DigiyoDigiyocorePartnerModelCompanion, DigiyoDigiyocorePolDetails, DigiyoDigiyocorePolDetailsCompanion, DigiyoDigiyocoreResultModel, DigiyoDigiyocoreResultModelCompanion, DigiyoDigiyocoreScoresModel, DigiyoDigiyocoreScoresModelCompanion, DigiyoDigiyocoreSubWorkflow, DigiyoDigiyocoreSubWorkflowCompanion, DigiyoDigiyocoreTaskModel, DigiyoDigiyocoreTaskModelCompanion, DigiyoDigiyocoreValidationFlags, DigiyoDigiyocoreValidationFlagsCompanion, DigiyoDocumentCameraConfig, DigiyoDocumentDetectorStatus, DigiyoDocumentStatusMapperCompanion, DigiyoDocumentType, DigiyoErrorAlertConfig, DigiyoHelpBulletPoint, DigiyoHelpBulletpoint, DigiyoHelpBulletpointCompanion, DigiyoHelpConfig, DigiyoInfoBoxConfig, DigiyoInfoBoxConfigCompanion, DigiyoInfoBoxStyle, DigiyoKotlinArray<T>, DigiyoKotlinAutofreeScope, DigiyoKotlinByteArray, DigiyoKotlinByteIterator, DigiyoKotlinCValue<T>, DigiyoKotlinCValues<T>, DigiyoKotlinCValuesRef<T>, DigiyoKotlinDeferScope, DigiyoKotlinEnum<E>, DigiyoKotlinEnumCompanion, DigiyoKotlinException, DigiyoKotlinFloatArray, DigiyoKotlinFloatIterator, DigiyoKotlinIllegalStateException, DigiyoKotlinIntArray, DigiyoKotlinIntIterator, DigiyoKotlinIntProgression, DigiyoKotlinIntProgressionCompanion, DigiyoKotlinIntRange, DigiyoKotlinIntRangeCompanion, DigiyoKotlinNothing, DigiyoKotlinRuntimeException, DigiyoKotlinThrowable, DigiyoKotlinx_serialization_coreSerialKind, DigiyoKotlinx_serialization_coreSerializersModule, DigiyoLensFacingType, DigiyoLibraryDrawableResource, DigiyoLibraryFontResource, DigiyoLibraryPluralStringResource, DigiyoLibraryResource, DigiyoLibraryResourceItem, DigiyoLibraryStringArrayResource, DigiyoLibraryStringResource, DigiyoLiveValidationsAssets, DigiyoLiveValidationsText, DigiyoLiveValidationsTextCompanion, DigiyoMediaPreviewConfig, DigiyoRes, DigiyoResArray, DigiyoResDrawable, DigiyoResFont, DigiyoResPlurals, DigiyoResString, DigiyoSelfieCameraConfig, DigiyoSelfieDetectorStatus, DigiyoSelfieStatusMapperCompanion, DigiyoSuccessAlertConfig, DigiyoUiImageVector, DigiyoUiImageVectorCompanion, DigiyoUiVectorGroup, DigiyoUiVectorNode, DigiyoUi_geometryRect, DigiyoUi_geometryRectCompanion, DigiyoUi_graphicsColorSpace, DigiyoUi_graphicsOutline, DigiyoUi_graphicsPathNode, DigiyoUi_unitDpRect, DigiyoUi_unitDpRectCompanion, DigiyoUi_unitLayoutDirection, DigiyoVideoCameraConfig, DigiyoVideoDetectorStatus, DigiyoVideoStatusMapperCompanion, DigiyoVideoValidationType, NSData, UIImage, UIViewController, VNFaceLandmarkRegion2D, VNRectangleObservation;
 
 @protocol DigiyoDigiyocoreJavaSerializable, DigiyoKotlinAnnotation, DigiyoKotlinClosedRange, DigiyoKotlinComparable, DigiyoKotlinIterable, DigiyoKotlinIterator, DigiyoKotlinKAnnotatedElement, DigiyoKotlinKClass, DigiyoKotlinKClassifier, DigiyoKotlinKDeclarationContainer, DigiyoKotlinNativePlacement, DigiyoKotlinOpenEndRange, DigiyoKotlinx_serialization_coreCompositeDecoder, DigiyoKotlinx_serialization_coreCompositeEncoder, DigiyoKotlinx_serialization_coreDecoder, DigiyoKotlinx_serialization_coreDeserializationStrategy, DigiyoKotlinx_serialization_coreEncoder, DigiyoKotlinx_serialization_coreKSerializer, DigiyoKotlinx_serialization_coreSerialDescriptor, DigiyoKotlinx_serialization_coreSerializationStrategy, DigiyoKotlinx_serialization_coreSerializersModuleCollector, DigiyoLibraryQualifier, DigiyoLibrary_baseBaseRealmObject, DigiyoLibrary_baseDeleteable, DigiyoLibrary_baseRealmObject, DigiyoLibrary_baseTypedRealmObject, DigiyoUiModifier, DigiyoUiModifierElement, DigiyoUi_graphicsImageBitmap, DigiyoUi_graphicsShape, DigiyoUi_unitDensity, DigiyoUi_unitFontScalingLinear;
 
@@ -155,8 +155,10 @@ __attribute__((swift_name("DigiyocoreDigiYoCore")))
 - (void)getDiaDiaId:(NSString *)diaId onSuccess:(void (^)(DigiyoDigiyocoreDiaModel * _Nullable))onSuccess onError:(void (^)(DigiyoDigiyocoreDigiYoError *))onError __attribute__((swift_name("getDia(diaId:onSuccess:onError:)")));
 - (DigiyoDigiyocoreInDataEntryModel * _Nullable)getInDataInDataName:(NSString *)inDataName __attribute__((swift_name("getInData(inDataName:)")));
 - (DigiyoDigiyocoreDiaModel * _Nullable)getSavedDia __attribute__((swift_name("getSavedDia()")));
+- (void)getSubWorkflowDiaId:(NSString *)diaId attemptAfterMillis:(int64_t)attemptAfterMillis attempts:(int32_t)attempts onSuccess:(void (^)(NSArray<DigiyoDigiyocoreSubWorkflow *> * _Nullable))onSuccess onError:(void (^)(DigiyoDigiyocoreDigiYoError *))onError __attribute__((swift_name("getSubWorkflow(diaId:attemptAfterMillis:attempts:onSuccess:onError:)")));
 - (void)logLevel:(DigiyoDigiyocoreLogLevel *)level message:(NSString *)message location:(NSString *)location subLocation:(NSString *)subLocation type:(NSString * _Nullable)type onError:(void (^ _Nullable)(DigiyoDigiyocoreDigiYoError *))onError __attribute__((swift_name("log(level:message:location:subLocation:type:onError:)")));
 - (void)sendImageDiaId:(NSString *)diaId filePath:(NSString *)filePath inDataName:(NSString *)inDataName liveValidationOptions:(DigiyoDigiyocoreLiveValidationOptions * _Nullable)liveValidationOptions onSuccess:(void (^)(NSString * _Nullable))onSuccess onError:(void (^)(DigiyoDigiyocoreDigiYoError *))onError __attribute__((swift_name("sendImage(diaId:filePath:inDataName:liveValidationOptions:onSuccess:onError:)")));
+- (void)sendImageDiaId:(NSString *)diaId filePath:(NSString *)filePath inDataName:(NSString *)inDataName liveValidationOptions:(DigiyoDigiyocoreLiveValidationOptions * _Nullable)liveValidationOptions shouldRequestWorkflow:(BOOL)shouldRequestWorkflow onSuccess:(void (^)(NSString * _Nullable, NSArray<DigiyoDigiyocoreSubWorkflow *> * _Nullable))onSuccess onError:(void (^)(DigiyoDigiyocoreDigiYoError *))onError __attribute__((swift_name("sendImage(diaId:filePath:inDataName:liveValidationOptions:shouldRequestWorkflow:onSuccess:onError:)")));
 - (void)sendImageAysnchronouslyDiaId:(NSString *)diaId filePath:(NSString *)filePath inDataName:(NSString *)inDataName liveValidationOptions:(DigiyoDigiyocoreLiveValidationOptions * _Nullable)liveValidationOptions __attribute__((swift_name("sendImageAysnchronously(diaId:filePath:inDataName:liveValidationOptions:)")));
 - (void)sendJsonDataDiaId:(NSString *)diaId json:(NSString *)json onSuccess:(void (^)(NSString * _Nullable))onSuccess onError:(void (^)(DigiyoDigiyocoreDigiYoError *))onError __attribute__((swift_name("sendJsonData(diaId:json:onSuccess:onError:)")));
 - (void)sendTextDataDiaId:(NSString *)diaId value:(NSString *)value inDataName:(NSString *)inDataName onSuccess:(void (^)(NSString * _Nullable))onSuccess onError:(void (^)(DigiyoDigiyocoreDigiYoError *))onError __attribute__((swift_name("sendTextData(diaId:value:inDataName:onSuccess:onError:)")));
@@ -168,6 +170,7 @@ __attribute__((swift_name("DigiyocoreDigiYoCore")))
 __attribute__((swift_name("DigiYo")))
 @interface DigiyoDigiYo : DigiyoDigiyocoreDigiYoCore
 - (instancetype)initWithConfig:(DigiyoDigiyocoreDigiYoConfig * _Nullable)config __attribute__((swift_name("init(config:)"))) __attribute__((objc_designated_initializer));
+- (NSString * _Nullable)getActiveValidationTextLiveValidationsText:(DigiyoLiveValidationsText *)liveValidationsText __attribute__((swift_name("getActiveValidationText(liveValidationsText:)")));
 @end
 
 __attribute__((objc_subclassing_restricted))
@@ -294,17 +297,49 @@ __attribute__((swift_name("ErrorAlertConfig")))
 @end
 
 __attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("HelpConfig")))
-@interface DigiyoHelpConfig : DigiyoBase
-- (instancetype)initWithHelpScreenTitle:(NSString *)helpScreenTitle helpScreenImage:(DigiyoDigiYoImageAsset * _Nullable)helpScreenImage colorScheme:(DigiyoDigiYoColorScheme * _Nullable)colorScheme imageShouldFollowColorScheme:(BOOL)imageShouldFollowColorScheme bulletAndAdvices:(NSArray<DigiyoKotlinPair<DigiyoHelpBulletPoint *, NSString *> *> *)bulletAndAdvices customTitleTextColor:(DigiyoDigiYoRGB * _Nullable)customTitleTextColor buttonConfig:(DigiyoButtonConfig * _Nullable)buttonConfig helpScreenImageContentDescription:(NSString * _Nullable)helpScreenImageContentDescription __attribute__((swift_name("init(helpScreenTitle:helpScreenImage:colorScheme:imageShouldFollowColorScheme:bulletAndAdvices:customTitleTextColor:buttonConfig:helpScreenImageContentDescription:)"))) __attribute__((objc_designated_initializer));
-- (DigiyoHelpConfig *)doCopyHelpScreenTitle:(NSString *)helpScreenTitle helpScreenImage:(DigiyoDigiYoImageAsset * _Nullable)helpScreenImage colorScheme:(DigiyoDigiYoColorScheme * _Nullable)colorScheme imageShouldFollowColorScheme:(BOOL)imageShouldFollowColorScheme bulletAndAdvices:(NSArray<DigiyoKotlinPair<DigiyoHelpBulletPoint *, NSString *> *> *)bulletAndAdvices customTitleTextColor:(DigiyoDigiYoRGB * _Nullable)customTitleTextColor buttonConfig:(DigiyoButtonConfig * _Nullable)buttonConfig helpScreenImageContentDescription:(NSString * _Nullable)helpScreenImageContentDescription __attribute__((swift_name("doCopy(helpScreenTitle:helpScreenImage:colorScheme:imageShouldFollowColorScheme:bulletAndAdvices:customTitleTextColor:buttonConfig:helpScreenImageContentDescription:)")));
+__attribute__((swift_name("HelpBulletpoint")))
+@interface DigiyoHelpBulletpoint : DigiyoBase
+- (instancetype)initWithIcon:(DigiyoDigiYoImageAsset *)icon iconSize:(double)iconSize iconColor:(DigiyoDigiYoRGB * _Nullable)iconColor text:(NSString *)text __attribute__((swift_name("init(icon:iconSize:iconColor:text:)"))) __attribute__((objc_designated_initializer));
+@property (class, readonly, getter=companion) DigiyoHelpBulletpointCompanion *companion __attribute__((swift_name("companion")));
+- (DigiyoHelpBulletpoint *)doCopyIcon:(DigiyoDigiYoImageAsset *)icon iconSize:(double)iconSize iconColor:(DigiyoDigiYoRGB * _Nullable)iconColor text:(NSString *)text __attribute__((swift_name("doCopy(icon:iconSize:iconColor:text:)")));
 - (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
 - (NSUInteger)hash __attribute__((swift_name("hash()")));
 - (NSString *)description __attribute__((swift_name("description()")));
-@property (readonly) NSArray<DigiyoKotlinPair<DigiyoHelpBulletPoint *, NSString *> *> *bulletAndAdvices __attribute__((swift_name("bulletAndAdvices")));
+@property (readonly) DigiyoDigiYoImageAsset *icon __attribute__((swift_name("icon")));
+@property (readonly) DigiyoDigiYoRGB * _Nullable iconColor __attribute__((swift_name("iconColor")));
+@property (readonly) double iconSize __attribute__((swift_name("iconSize")));
+@property (readonly) NSString *text __attribute__((swift_name("text")));
+@end
+
+__attribute__((objc_subclassing_restricted))
+__attribute__((swift_name("HelpBulletpoint.Companion")))
+@interface DigiyoHelpBulletpointCompanion : DigiyoBase
++ (instancetype)alloc __attribute__((unavailable));
++ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
++ (instancetype)companion __attribute__((swift_name("init()")));
+@property (class, readonly, getter=shared) DigiyoHelpBulletpointCompanion *shared __attribute__((swift_name("shared")));
+@property (readonly) DigiyoDigiYoRGB *ERROR_COLOR __attribute__((swift_name("ERROR_COLOR")));
+@property (readonly) double ICON_SIZE_BIG __attribute__((swift_name("ICON_SIZE_BIG")));
+@property (readonly) double ICON_SIZE_MEDIUM __attribute__((swift_name("ICON_SIZE_MEDIUM")));
+@property (readonly) double ICON_SIZE_SMALL __attribute__((swift_name("ICON_SIZE_SMALL")));
+@property (readonly) DigiyoDigiYoRGB *NORMAL_COLOR __attribute__((swift_name("NORMAL_COLOR")));
+@end
+
+__attribute__((objc_subclassing_restricted))
+__attribute__((swift_name("HelpConfig")))
+@interface DigiyoHelpConfig : DigiyoBase
+- (instancetype)initWithHelpScreenTitle:(NSString *)helpScreenTitle helpScreenImage:(DigiyoDigiYoImageAsset * _Nullable)helpScreenImage helpScreenComplementaryImage:(DigiyoDigiYoImageAsset * _Nullable)helpScreenComplementaryImage helpScreenComplementaryImageHeight:(DigiyoDouble * _Nullable)helpScreenComplementaryImageHeight colorScheme:(DigiyoDigiYoColorScheme * _Nullable)colorScheme imageShouldFollowColorScheme:(BOOL)imageShouldFollowColorScheme bulletAndAdvices:(NSArray<DigiyoHelpBulletpoint *> *)bulletAndAdvices customTitleTextColor:(DigiyoDigiYoRGB * _Nullable)customTitleTextColor buttonConfig:(DigiyoButtonConfig * _Nullable)buttonConfig helpScreenImageContentDescription:(NSString * _Nullable)helpScreenImageContentDescription helpScreenComplementaryImageContentDescription:(NSString * _Nullable)helpScreenComplementaryImageContentDescription __attribute__((swift_name("init(helpScreenTitle:helpScreenImage:helpScreenComplementaryImage:helpScreenComplementaryImageHeight:colorScheme:imageShouldFollowColorScheme:bulletAndAdvices:customTitleTextColor:buttonConfig:helpScreenImageContentDescription:helpScreenComplementaryImageContentDescription:)"))) __attribute__((objc_designated_initializer));
+- (DigiyoHelpConfig *)doCopyHelpScreenTitle:(NSString *)helpScreenTitle helpScreenImage:(DigiyoDigiYoImageAsset * _Nullable)helpScreenImage helpScreenComplementaryImage:(DigiyoDigiYoImageAsset * _Nullable)helpScreenComplementaryImage helpScreenComplementaryImageHeight:(DigiyoDouble * _Nullable)helpScreenComplementaryImageHeight colorScheme:(DigiyoDigiYoColorScheme * _Nullable)colorScheme imageShouldFollowColorScheme:(BOOL)imageShouldFollowColorScheme bulletAndAdvices:(NSArray<DigiyoHelpBulletpoint *> *)bulletAndAdvices customTitleTextColor:(DigiyoDigiYoRGB * _Nullable)customTitleTextColor buttonConfig:(DigiyoButtonConfig * _Nullable)buttonConfig helpScreenImageContentDescription:(NSString * _Nullable)helpScreenImageContentDescription helpScreenComplementaryImageContentDescription:(NSString * _Nullable)helpScreenComplementaryImageContentDescription __attribute__((swift_name("doCopy(helpScreenTitle:helpScreenImage:helpScreenComplementaryImage:helpScreenComplementaryImageHeight:colorScheme:imageShouldFollowColorScheme:bulletAndAdvices:customTitleTextColor:buttonConfig:helpScreenImageContentDescription:helpScreenComplementaryImageContentDescription:)")));
+- (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
+- (NSUInteger)hash __attribute__((swift_name("hash()")));
+- (NSString *)description __attribute__((swift_name("description()")));
+@property (readonly) NSArray<DigiyoHelpBulletpoint *> *bulletAndAdvices __attribute__((swift_name("bulletAndAdvices")));
 @property (readonly) DigiyoButtonConfig * _Nullable buttonConfig __attribute__((swift_name("buttonConfig")));
 @property (readonly) DigiyoDigiYoColorScheme * _Nullable colorScheme __attribute__((swift_name("colorScheme")));
 @property (readonly) DigiyoDigiYoRGB * _Nullable customTitleTextColor __attribute__((swift_name("customTitleTextColor")));
+@property (readonly) DigiyoDigiYoImageAsset * _Nullable helpScreenComplementaryImage __attribute__((swift_name("helpScreenComplementaryImage")));
+@property (readonly) NSString * _Nullable helpScreenComplementaryImageContentDescription __attribute__((swift_name("helpScreenComplementaryImageContentDescription")));
+@property (readonly) DigiyoDouble * _Nullable helpScreenComplementaryImageHeight __attribute__((swift_name("helpScreenComplementaryImageHeight")));
 @property (readonly) DigiyoDigiYoImageAsset * _Nullable helpScreenImage __attribute__((swift_name("helpScreenImage")));
 @property (readonly) NSString * _Nullable helpScreenImageContentDescription __attribute__((swift_name("helpScreenImageContentDescription")));
 @property (readonly) NSString *helpScreenTitle __attribute__((swift_name("helpScreenTitle")));
@@ -364,12 +399,12 @@ __attribute__((swift_name("LiveValidationsText.Companion")))
 __attribute__((objc_subclassing_restricted))
 __attribute__((swift_name("MediaPreviewConfig")))
 @interface DigiyoMediaPreviewConfig : DigiyoBase
-- (instancetype)initWithPreviewScreenTitle:(NSString *)previewScreenTitle previewSubtitle:(NSString * _Nullable)previewSubtitle previewMediaPath:(NSString * _Nullable)previewMediaPath isMediaAVideo:(BOOL)isMediaAVideo colorScheme:(DigiyoDigiYoColorScheme * _Nullable)colorScheme bulletAndAdvices:(NSArray<DigiyoKotlinPair<DigiyoHelpBulletPoint *, NSString *> *> * _Nullable)bulletAndAdvices primaryButtonConfig:(DigiyoButtonConfig * _Nullable)primaryButtonConfig secondaryButtonConfig:(DigiyoButtonConfig * _Nullable)secondaryButtonConfig customTitleTextColor:(DigiyoDigiYoRGB * _Nullable)customTitleTextColor __attribute__((swift_name("init(previewScreenTitle:previewSubtitle:previewMediaPath:isMediaAVideo:colorScheme:bulletAndAdvices:primaryButtonConfig:secondaryButtonConfig:customTitleTextColor:)"))) __attribute__((objc_designated_initializer));
-- (DigiyoMediaPreviewConfig *)doCopyPreviewScreenTitle:(NSString *)previewScreenTitle previewSubtitle:(NSString * _Nullable)previewSubtitle previewMediaPath:(NSString * _Nullable)previewMediaPath isMediaAVideo:(BOOL)isMediaAVideo colorScheme:(DigiyoDigiYoColorScheme * _Nullable)colorScheme bulletAndAdvices:(NSArray<DigiyoKotlinPair<DigiyoHelpBulletPoint *, NSString *> *> * _Nullable)bulletAndAdvices primaryButtonConfig:(DigiyoButtonConfig * _Nullable)primaryButtonConfig secondaryButtonConfig:(DigiyoButtonConfig * _Nullable)secondaryButtonConfig customTitleTextColor:(DigiyoDigiYoRGB * _Nullable)customTitleTextColor __attribute__((swift_name("doCopy(previewScreenTitle:previewSubtitle:previewMediaPath:isMediaAVideo:colorScheme:bulletAndAdvices:primaryButtonConfig:secondaryButtonConfig:customTitleTextColor:)")));
+- (instancetype)initWithPreviewScreenTitle:(NSString *)previewScreenTitle previewSubtitle:(NSString * _Nullable)previewSubtitle previewMediaPath:(NSString * _Nullable)previewMediaPath isMediaAVideo:(BOOL)isMediaAVideo colorScheme:(DigiyoDigiYoColorScheme * _Nullable)colorScheme bulletAndAdvices:(NSArray<DigiyoHelpBulletpoint *> * _Nullable)bulletAndAdvices primaryButtonConfig:(DigiyoButtonConfig * _Nullable)primaryButtonConfig secondaryButtonConfig:(DigiyoButtonConfig * _Nullable)secondaryButtonConfig customTitleTextColor:(DigiyoDigiYoRGB * _Nullable)customTitleTextColor __attribute__((swift_name("init(previewScreenTitle:previewSubtitle:previewMediaPath:isMediaAVideo:colorScheme:bulletAndAdvices:primaryButtonConfig:secondaryButtonConfig:customTitleTextColor:)"))) __attribute__((objc_designated_initializer));
+- (DigiyoMediaPreviewConfig *)doCopyPreviewScreenTitle:(NSString *)previewScreenTitle previewSubtitle:(NSString * _Nullable)previewSubtitle previewMediaPath:(NSString * _Nullable)previewMediaPath isMediaAVideo:(BOOL)isMediaAVideo colorScheme:(DigiyoDigiYoColorScheme * _Nullable)colorScheme bulletAndAdvices:(NSArray<DigiyoHelpBulletpoint *> * _Nullable)bulletAndAdvices primaryButtonConfig:(DigiyoButtonConfig * _Nullable)primaryButtonConfig secondaryButtonConfig:(DigiyoButtonConfig * _Nullable)secondaryButtonConfig customTitleTextColor:(DigiyoDigiYoRGB * _Nullable)customTitleTextColor __attribute__((swift_name("doCopy(previewScreenTitle:previewSubtitle:previewMediaPath:isMediaAVideo:colorScheme:bulletAndAdvices:primaryButtonConfig:secondaryButtonConfig:customTitleTextColor:)")));
 - (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
 - (NSUInteger)hash __attribute__((swift_name("hash()")));
 - (NSString *)description __attribute__((swift_name("description()")));
-@property (readonly) NSArray<DigiyoKotlinPair<DigiyoHelpBulletPoint *, NSString *> *> * _Nullable bulletAndAdvices __attribute__((swift_name("bulletAndAdvices")));
+@property (readonly) NSArray<DigiyoHelpBulletpoint *> * _Nullable bulletAndAdvices __attribute__((swift_name("bulletAndAdvices")));
 @property (readonly) DigiyoDigiYoColorScheme * _Nullable colorScheme __attribute__((swift_name("colorScheme")));
 @property (readonly) DigiyoDigiYoRGB * _Nullable customTitleTextColor __attribute__((swift_name("customTitleTextColor")));
 @property (readonly) BOOL isMediaAVideo __attribute__((swift_name("isMediaAVideo")));
@@ -440,6 +475,11 @@ __attribute__((swift_name("CaptureButtonType")))
 @property (class, readonly) NSArray<DigiyoCaptureButtonType *> *entries __attribute__((swift_name("entries")));
 @end
 
+
+/**
+ * @note annotations
+ *   androidx.compose.runtime.Stable
+*/
 __attribute__((objc_subclassing_restricted))
 __attribute__((swift_name("CaptureModeConfig")))
 @interface DigiyoCaptureModeConfig : DigiyoBase
@@ -467,6 +507,30 @@ __attribute__((swift_name("CaptureModeConfig.Companion")))
 @property (class, readonly, getter=shared) DigiyoCaptureModeConfigCompanion *shared __attribute__((swift_name("shared")));
 @property (readonly) int64_t DEFAULT_BUTTON_TIMEOUT_MILLIS __attribute__((swift_name("DEFAULT_BUTTON_TIMEOUT_MILLIS")));
 @property (readonly) NSString *DEFAULT_BUTTON_TITLE __attribute__((swift_name("DEFAULT_BUTTON_TITLE")));
+@end
+
+__attribute__((objc_subclassing_restricted))
+__attribute__((swift_name("ChallengeOverlayConfig")))
+@interface DigiyoChallengeOverlayConfig : DigiyoBase
+- (instancetype)initWithDelayBetweenEachFrameMs:(int64_t)delayBetweenEachFrameMs displayCountdown:(BOOL)displayCountdown displayStepNumber:(BOOL)displayStepNumber __attribute__((swift_name("init(delayBetweenEachFrameMs:displayCountdown:displayStepNumber:)"))) __attribute__((objc_designated_initializer));
+@property (class, readonly, getter=companion) DigiyoChallengeOverlayConfigCompanion *companion __attribute__((swift_name("companion")));
+- (DigiyoChallengeOverlayConfig *)doCopyDelayBetweenEachFrameMs:(int64_t)delayBetweenEachFrameMs displayCountdown:(BOOL)displayCountdown displayStepNumber:(BOOL)displayStepNumber __attribute__((swift_name("doCopy(delayBetweenEachFrameMs:displayCountdown:displayStepNumber:)")));
+- (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
+- (NSUInteger)hash __attribute__((swift_name("hash()")));
+- (NSString *)description __attribute__((swift_name("description()")));
+@property (readonly) int64_t delayBetweenEachFrameMs __attribute__((swift_name("delayBetweenEachFrameMs")));
+@property (readonly) BOOL displayCountdown __attribute__((swift_name("displayCountdown")));
+@property (readonly) BOOL displayStepNumber __attribute__((swift_name("displayStepNumber")));
+@end
+
+__attribute__((objc_subclassing_restricted))
+__attribute__((swift_name("ChallengeOverlayConfig.Companion")))
+@interface DigiyoChallengeOverlayConfigCompanion : DigiyoBase
++ (instancetype)alloc __attribute__((unavailable));
++ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
++ (instancetype)companion __attribute__((swift_name("init()")));
+@property (class, readonly, getter=shared) DigiyoChallengeOverlayConfigCompanion *shared __attribute__((swift_name("shared")));
+@property (readonly) DigiyoChallengeOverlayConfig *DEFAULT __attribute__((swift_name("DEFAULT")));
 @end
 
 __attribute__((objc_subclassing_restricted))
@@ -546,19 +610,21 @@ __attribute__((swift_name("SelfieCameraConfig")))
 __attribute__((objc_subclassing_restricted))
 __attribute__((swift_name("VideoCameraConfig")))
 @interface DigiyoVideoCameraConfig : DigiyoBase
-- (instancetype)initWithCameraTitle:(NSString *)cameraTitle colorScheme:(DigiyoDigiYoColorScheme * _Nullable)colorScheme successAlertConfig:(DigiyoSuccessAlertConfig * _Nullable)successAlertConfig errorAlertConfig:(DigiyoErrorAlertConfig * _Nullable)errorAlertConfig showCloseButton:(DigiyoBoolean * _Nullable)showCloseButton captureModeConfig:(DigiyoCaptureModeConfig *)captureModeConfig customLiveValidationsText:(DigiyoLiveValidationsText * _Nullable)customLiveValidationsText cameraSoundEnabled:(DigiyoBoolean * _Nullable)cameraSoundEnabled __attribute__((swift_name("init(cameraTitle:colorScheme:successAlertConfig:errorAlertConfig:showCloseButton:captureModeConfig:customLiveValidationsText:cameraSoundEnabled:)"))) __attribute__((objc_designated_initializer));
-- (DigiyoVideoCameraConfig *)doCopyCameraTitle:(NSString *)cameraTitle colorScheme:(DigiyoDigiYoColorScheme * _Nullable)colorScheme successAlertConfig:(DigiyoSuccessAlertConfig * _Nullable)successAlertConfig errorAlertConfig:(DigiyoErrorAlertConfig * _Nullable)errorAlertConfig showCloseButton:(DigiyoBoolean * _Nullable)showCloseButton captureModeConfig:(DigiyoCaptureModeConfig *)captureModeConfig customLiveValidationsText:(DigiyoLiveValidationsText * _Nullable)customLiveValidationsText cameraSoundEnabled:(DigiyoBoolean * _Nullable)cameraSoundEnabled __attribute__((swift_name("doCopy(cameraTitle:colorScheme:successAlertConfig:errorAlertConfig:showCloseButton:captureModeConfig:customLiveValidationsText:cameraSoundEnabled:)")));
+- (instancetype)initWithCameraTitle:(NSString *)cameraTitle colorScheme:(DigiyoDigiYoColorScheme * _Nullable)colorScheme successAlertConfig:(DigiyoSuccessAlertConfig * _Nullable)successAlertConfig errorAlertConfig:(DigiyoErrorAlertConfig * _Nullable)errorAlertConfig showCloseButton:(DigiyoBoolean * _Nullable)showCloseButton captureModeConfig:(DigiyoCaptureModeConfig *)captureModeConfig customLiveValidationsText:(DigiyoLiveValidationsText * _Nullable)customLiveValidationsText cameraSoundEnabled:(DigiyoBoolean * _Nullable)cameraSoundEnabled challengeOverlayConfig:(DigiyoChallengeOverlayConfig * _Nullable)challengeOverlayConfig videoRecordDurationMs:(DigiyoLong * _Nullable)videoRecordDurationMs __attribute__((swift_name("init(cameraTitle:colorScheme:successAlertConfig:errorAlertConfig:showCloseButton:captureModeConfig:customLiveValidationsText:cameraSoundEnabled:challengeOverlayConfig:videoRecordDurationMs:)"))) __attribute__((objc_designated_initializer));
+- (DigiyoVideoCameraConfig *)doCopyCameraTitle:(NSString *)cameraTitle colorScheme:(DigiyoDigiYoColorScheme * _Nullable)colorScheme successAlertConfig:(DigiyoSuccessAlertConfig * _Nullable)successAlertConfig errorAlertConfig:(DigiyoErrorAlertConfig * _Nullable)errorAlertConfig showCloseButton:(DigiyoBoolean * _Nullable)showCloseButton captureModeConfig:(DigiyoCaptureModeConfig *)captureModeConfig customLiveValidationsText:(DigiyoLiveValidationsText * _Nullable)customLiveValidationsText cameraSoundEnabled:(DigiyoBoolean * _Nullable)cameraSoundEnabled challengeOverlayConfig:(DigiyoChallengeOverlayConfig * _Nullable)challengeOverlayConfig videoRecordDurationMs:(DigiyoLong * _Nullable)videoRecordDurationMs __attribute__((swift_name("doCopy(cameraTitle:colorScheme:successAlertConfig:errorAlertConfig:showCloseButton:captureModeConfig:customLiveValidationsText:cameraSoundEnabled:challengeOverlayConfig:videoRecordDurationMs:)")));
 - (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
 - (NSUInteger)hash __attribute__((swift_name("hash()")));
 - (NSString *)description __attribute__((swift_name("description()")));
 @property (readonly) DigiyoBoolean * _Nullable cameraSoundEnabled __attribute__((swift_name("cameraSoundEnabled")));
 @property (readonly) NSString *cameraTitle __attribute__((swift_name("cameraTitle")));
 @property (readonly) DigiyoCaptureModeConfig *captureModeConfig __attribute__((swift_name("captureModeConfig")));
+@property (readonly) DigiyoChallengeOverlayConfig * _Nullable challengeOverlayConfig __attribute__((swift_name("challengeOverlayConfig")));
 @property (readonly) DigiyoDigiYoColorScheme * _Nullable colorScheme __attribute__((swift_name("colorScheme")));
 @property (readonly) DigiyoLiveValidationsText * _Nullable customLiveValidationsText __attribute__((swift_name("customLiveValidationsText")));
 @property (readonly) DigiyoErrorAlertConfig * _Nullable errorAlertConfig __attribute__((swift_name("errorAlertConfig")));
 @property (readonly) DigiyoBoolean * _Nullable showCloseButton __attribute__((swift_name("showCloseButton")));
 @property (readonly) DigiyoSuccessAlertConfig * _Nullable successAlertConfig __attribute__((swift_name("successAlertConfig")));
+@property (readonly) DigiyoLong * _Nullable videoRecordDurationMs __attribute__((swift_name("videoRecordDurationMs")));
 @end
 
 __attribute__((objc_subclassing_restricted))
@@ -729,6 +795,15 @@ __attribute__((swift_name("DigiYoIcons")))
 @property (readonly) NSString *DocFrontImage __attribute__((swift_name("DocFrontImage")));
 @property (readonly) NSString *ErrorImage __attribute__((swift_name("ErrorImage")));
 @property (readonly) NSString *ErrorImageInverted __attribute__((swift_name("ErrorImageInverted")));
+@property (readonly) NSString *HeadFrontalView __attribute__((swift_name("HeadFrontalView")));
+@property (readonly) NSString *HeadFrontalViewEyesClosed __attribute__((swift_name("HeadFrontalViewEyesClosed")));
+@property (readonly) NSString *HeadFrontalViewEyesOpened __attribute__((swift_name("HeadFrontalViewEyesOpened")));
+@property (readonly) NSString *HeadFrontalViewFullFace __attribute__((swift_name("HeadFrontalViewFullFace")));
+@property (readonly) NSString *HeadFrontalViewLookingDown __attribute__((swift_name("HeadFrontalViewLookingDown")));
+@property (readonly) NSString *HeadFrontalViewLookingUp __attribute__((swift_name("HeadFrontalViewLookingUp")));
+@property (readonly) NSString *HeadFrontalViewMouthClosed __attribute__((swift_name("HeadFrontalViewMouthClosed")));
+@property (readonly) NSString *HeadFrontalViewSmiling __attribute__((swift_name("HeadFrontalViewSmiling")));
+@property (readonly) NSString *HeadLateralView __attribute__((swift_name("HeadLateralView")));
 @property (readonly) NSString *InfoGlyph __attribute__((swift_name("InfoGlyph")));
 @property (readonly) NSString *NoGlassesImage __attribute__((swift_name("NoGlassesImage")));
 @property (readonly) NSString *ProfileImage __attribute__((swift_name("ProfileImage")));
@@ -1369,6 +1444,48 @@ __attribute__((swift_name("DigiyocoreInDataEntryModel")))
 @property (readonly) NSString * _Nullable name __attribute__((swift_name("name")));
 @end
 
+
+/**
+ * @note annotations
+ *   kotlinx.serialization.Serializable
+*/
+__attribute__((objc_subclassing_restricted))
+__attribute__((swift_name("DigiyocoreSubWorkflow")))
+@interface DigiyoDigiyocoreSubWorkflow : DigiyoBase
+- (instancetype)initWithSwID:(NSString *)swID diaIid:(int64_t)diaIid dataName:(NSString *)dataName status:(NSString *)status statusReason:(NSString * _Nullable)statusReason ocr:(NSDictionary<NSString *, id> * _Nullable)ocr __attribute__((swift_name("init(swID:diaIid:dataName:status:statusReason:ocr:)"))) __attribute__((objc_designated_initializer));
+@property (class, readonly, getter=companion) DigiyoDigiyocoreSubWorkflowCompanion *companion __attribute__((swift_name("companion")));
+- (DigiyoDigiyocoreSubWorkflow *)doCopySwID:(NSString *)swID diaIid:(int64_t)diaIid dataName:(NSString *)dataName status:(NSString *)status statusReason:(NSString * _Nullable)statusReason ocr:(NSDictionary<NSString *, id> * _Nullable)ocr __attribute__((swift_name("doCopy(swID:diaIid:dataName:status:statusReason:ocr:)")));
+- (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
+- (NSUInteger)hash __attribute__((swift_name("hash()")));
+- (NSString *)description __attribute__((swift_name("description()")));
+
+/**
+ * @note annotations
+ *   kotlinx.serialization.SerialName(value="data_name")
+*/
+@property (readonly) NSString *dataName __attribute__((swift_name("dataName")));
+
+/**
+ * @note annotations
+ *   kotlinx.serialization.SerialName(value="dia_iid")
+*/
+@property (readonly) int64_t diaIid __attribute__((swift_name("diaIid")));
+@property (readonly) NSDictionary<NSString *, id> * _Nullable ocr __attribute__((swift_name("ocr")));
+@property (readonly) NSString *status __attribute__((swift_name("status")));
+
+/**
+ * @note annotations
+ *   kotlinx.serialization.SerialName(value="status_reason")
+*/
+@property (readonly) NSString * _Nullable statusReason __attribute__((swift_name("statusReason")));
+
+/**
+ * @note annotations
+ *   kotlinx.serialization.SerialName(value="sw_id")
+*/
+@property (readonly) NSString *swID __attribute__((swift_name("swID")));
+@end
+
 __attribute__((objc_subclassing_restricted))
 __attribute__((swift_name("DigiyocoreLogLevel")))
 @interface DigiyoDigiyocoreLogLevel : DigiyoKotlinEnum<DigiyoDigiyocoreLogLevel *>
@@ -1514,18 +1631,6 @@ __attribute__((swift_name("KotlinByteArray")))
 - (DigiyoKotlinByteIterator *)iterator __attribute__((swift_name("iterator()")));
 - (void)setIndex:(int32_t)index value:(int8_t)value __attribute__((swift_name("set(index:value:)")));
 @property (readonly) int32_t size __attribute__((swift_name("size")));
-@end
-
-__attribute__((objc_subclassing_restricted))
-__attribute__((swift_name("KotlinPair")))
-@interface DigiyoKotlinPair<__covariant A, __covariant B> : DigiyoBase
-- (instancetype)initWithFirst:(A _Nullable)first second:(B _Nullable)second __attribute__((swift_name("init(first:second:)"))) __attribute__((objc_designated_initializer));
-- (DigiyoKotlinPair<A, B> *)doCopyFirst:(A _Nullable)first second:(B _Nullable)second __attribute__((swift_name("doCopy(first:second:)")));
-- (BOOL)equalsOther:(id _Nullable)other __attribute__((swift_name("equals(other:)")));
-- (int32_t)hashCode __attribute__((swift_name("hashCode()")));
-- (NSString *)toString __attribute__((swift_name("toString()")));
-@property (readonly) A _Nullable first __attribute__((swift_name("first")));
-@property (readonly) B _Nullable second __attribute__((swift_name("second")));
 @end
 
 __attribute__((objc_subclassing_restricted))
@@ -1945,6 +2050,16 @@ __attribute__((swift_name("DigiyocoreInDataEntryModel.Companion")))
 + (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
 + (instancetype)companion __attribute__((swift_name("init()")));
 @property (class, readonly, getter=shared) DigiyoDigiyocoreInDataEntryModelCompanion *shared __attribute__((swift_name("shared")));
+- (id<DigiyoKotlinx_serialization_coreKSerializer>)serializer __attribute__((swift_name("serializer()")));
+@end
+
+__attribute__((objc_subclassing_restricted))
+__attribute__((swift_name("DigiyocoreSubWorkflow.Companion")))
+@interface DigiyoDigiyocoreSubWorkflowCompanion : DigiyoBase
++ (instancetype)alloc __attribute__((unavailable));
++ (instancetype)allocWithZone:(struct _NSZone *)zone __attribute__((unavailable));
++ (instancetype)companion __attribute__((swift_name("init()")));
+@property (class, readonly, getter=shared) DigiyoDigiyocoreSubWorkflowCompanion *shared __attribute__((swift_name("shared")));
 - (id<DigiyoKotlinx_serialization_coreKSerializer>)serializer __attribute__((swift_name("serializer()")));
 @end
 
