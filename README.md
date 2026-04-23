@@ -91,8 +91,8 @@ Este SDK emplea inteligencia artificial para la detección precisa y eficiente d
 El SDK requiere un mínimo de **API 24**. Para instalar la librería en una aplicación Android, agrega la siguiente dependencia en el archivo `build.gradle` o `build.gradle.kts` de tu módulo App:
 
 ```groovy
-implementation "com.roshka:digiyocore:1.4.1"
-implementation "com.roshka:digiyo:1.4.1"
+implementation "com.roshka:digiyocore:1.4.2"
+implementation "com.roshka:digiyo:1.4.2"
 ```
 
 En el `build.gradle` (`settings.gradle` o `settings.gradle.kts`) del proyecto, se configura el repositorio Maven apuntando a GithubPackages de la siguiente manera:
