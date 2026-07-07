@@ -368,9 +368,9 @@ __attribute__((swift_name("LiveValidationsAssets")))
 __attribute__((objc_subclassing_restricted))
 __attribute__((swift_name("LiveValidationsText")))
 @interface DigiyoLiveValidationsText : DigiyoBase
-- (instancetype)initWithLookLeftRightText:(NSString * _Nullable)lookLeftRightText lookUpDownText:(NSString * _Nullable)lookUpDownText openCloseMouthText:(NSString * _Nullable)openCloseMouthText faceEyeCheckText:(NSString * _Nullable)faceEyeCheckText faceSmileCheckText:(NSString * _Nullable)faceSmileCheckText idOnFaceCheckText:(NSString * _Nullable)idOnFaceCheckText fingerCheckText:(NSString * _Nullable)fingerCheckText __attribute__((swift_name("init(lookLeftRightText:lookUpDownText:openCloseMouthText:faceEyeCheckText:faceSmileCheckText:idOnFaceCheckText:fingerCheckText:)"))) __attribute__((objc_designated_initializer));
+- (instancetype)initWithLookLeftRightText:(NSString * _Nullable)lookLeftRightText lookUpDownText:(NSString * _Nullable)lookUpDownText openCloseMouthText:(NSString * _Nullable)openCloseMouthText faceEyeCheckText:(NSString * _Nullable)faceEyeCheckText faceSmileCheckText:(NSString * _Nullable)faceSmileCheckText idOnFaceCheckText:(NSString * _Nullable)idOnFaceCheckText fingerCheckText:(NSString * _Nullable)fingerCheckText lookToTheSideText:(NSString * _Nullable)lookToTheSideText __attribute__((swift_name("init(lookLeftRightText:lookUpDownText:openCloseMouthText:faceEyeCheckText:faceSmileCheckText:idOnFaceCheckText:fingerCheckText:lookToTheSideText:)"))) __attribute__((objc_designated_initializer));
 @property (class, readonly, getter=companion) DigiyoLiveValidationsTextCompanion *companion __attribute__((swift_name("companion")));
-- (DigiyoLiveValidationsText *)doCopyLookLeftRightText:(NSString * _Nullable)lookLeftRightText lookUpDownText:(NSString * _Nullable)lookUpDownText openCloseMouthText:(NSString * _Nullable)openCloseMouthText faceEyeCheckText:(NSString * _Nullable)faceEyeCheckText faceSmileCheckText:(NSString * _Nullable)faceSmileCheckText idOnFaceCheckText:(NSString * _Nullable)idOnFaceCheckText fingerCheckText:(NSString * _Nullable)fingerCheckText __attribute__((swift_name("doCopy(lookLeftRightText:lookUpDownText:openCloseMouthText:faceEyeCheckText:faceSmileCheckText:idOnFaceCheckText:fingerCheckText:)")));
+- (DigiyoLiveValidationsText *)doCopyLookLeftRightText:(NSString * _Nullable)lookLeftRightText lookUpDownText:(NSString * _Nullable)lookUpDownText openCloseMouthText:(NSString * _Nullable)openCloseMouthText faceEyeCheckText:(NSString * _Nullable)faceEyeCheckText faceSmileCheckText:(NSString * _Nullable)faceSmileCheckText idOnFaceCheckText:(NSString * _Nullable)idOnFaceCheckText fingerCheckText:(NSString * _Nullable)fingerCheckText lookToTheSideText:(NSString * _Nullable)lookToTheSideText __attribute__((swift_name("doCopy(lookLeftRightText:lookUpDownText:openCloseMouthText:faceEyeCheckText:faceSmileCheckText:idOnFaceCheckText:fingerCheckText:lookToTheSideText:)")));
 - (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
 - (NSUInteger)hash __attribute__((swift_name("hash()")));
 - (void)setActiveTextLiveValidationOptions:(DigiyoDigiyocoreLiveValidationOptions *)liveValidationOptions __attribute__((swift_name("setActiveText(liveValidationOptions:)")));
@@ -382,6 +382,7 @@ __attribute__((swift_name("LiveValidationsText")))
 @property (readonly) NSString * _Nullable fingerCheckText __attribute__((swift_name("fingerCheckText")));
 @property (readonly) NSString * _Nullable idOnFaceCheckText __attribute__((swift_name("idOnFaceCheckText")));
 @property (readonly) NSString * _Nullable lookLeftRightText __attribute__((swift_name("lookLeftRightText")));
+@property (readonly) NSString * _Nullable lookToTheSideText __attribute__((swift_name("lookToTheSideText")));
 @property (readonly) NSString * _Nullable lookUpDownText __attribute__((swift_name("lookUpDownText")));
 @property (readonly) NSString * _Nullable openCloseMouthText __attribute__((swift_name("openCloseMouthText")));
 @end
@@ -1508,9 +1509,9 @@ __attribute__((swift_name("DigiyocoreLogLevel")))
 __attribute__((objc_subclassing_restricted))
 __attribute__((swift_name("DigiyocoreLiveValidationOptions")))
 @interface DigiyoDigiyocoreLiveValidationOptions : DigiyoBase <DigiyoDigiyocoreJavaSerializable>
-- (instancetype)initWithLookLeftRight:(BOOL)lookLeftRight lookUpDown:(BOOL)lookUpDown openCloseMouth:(BOOL)openCloseMouth faceEyeCheck:(BOOL)faceEyeCheck faceSmileCheck:(BOOL)faceSmileCheck idOnFaceCheck:(BOOL)idOnFaceCheck fingerCheck:(BOOL)fingerCheck __attribute__((swift_name("init(lookLeftRight:lookUpDown:openCloseMouth:faceEyeCheck:faceSmileCheck:idOnFaceCheck:fingerCheck:)"))) __attribute__((objc_designated_initializer));
+- (instancetype)initWithLookLeftRight:(BOOL)lookLeftRight lookUpDown:(BOOL)lookUpDown openCloseMouth:(BOOL)openCloseMouth faceEyeCheck:(BOOL)faceEyeCheck faceSmileCheck:(BOOL)faceSmileCheck idOnFaceCheck:(BOOL)idOnFaceCheck fingerCheck:(BOOL)fingerCheck lookToTheSide:(BOOL)lookToTheSide __attribute__((swift_name("init(lookLeftRight:lookUpDown:openCloseMouth:faceEyeCheck:faceSmileCheck:idOnFaceCheck:fingerCheck:lookToTheSide:)"))) __attribute__((objc_designated_initializer));
 @property (class, readonly, getter=companion) DigiyoDigiyocoreLiveValidationOptionsCompanion *companion __attribute__((swift_name("companion")));
-- (DigiyoDigiyocoreLiveValidationOptions *)doCopyLookLeftRight:(BOOL)lookLeftRight lookUpDown:(BOOL)lookUpDown openCloseMouth:(BOOL)openCloseMouth faceEyeCheck:(BOOL)faceEyeCheck faceSmileCheck:(BOOL)faceSmileCheck idOnFaceCheck:(BOOL)idOnFaceCheck fingerCheck:(BOOL)fingerCheck __attribute__((swift_name("doCopy(lookLeftRight:lookUpDown:openCloseMouth:faceEyeCheck:faceSmileCheck:idOnFaceCheck:fingerCheck:)")));
+- (DigiyoDigiyocoreLiveValidationOptions *)doCopyLookLeftRight:(BOOL)lookLeftRight lookUpDown:(BOOL)lookUpDown openCloseMouth:(BOOL)openCloseMouth faceEyeCheck:(BOOL)faceEyeCheck faceSmileCheck:(BOOL)faceSmileCheck idOnFaceCheck:(BOOL)idOnFaceCheck fingerCheck:(BOOL)fingerCheck lookToTheSide:(BOOL)lookToTheSide __attribute__((swift_name("doCopy(lookLeftRight:lookUpDown:openCloseMouth:faceEyeCheck:faceSmileCheck:idOnFaceCheck:fingerCheck:lookToTheSide:)")));
 - (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
 - (NSUInteger)hash __attribute__((swift_name("hash()")));
 - (NSDictionary<NSString *, DigiyoBoolean *> *)toMap __attribute__((swift_name("toMap()")));
@@ -1545,6 +1546,12 @@ __attribute__((swift_name("DigiyocoreLiveValidationOptions")))
  *   kotlinx.serialization.SerialName(value="look_left_right")
 */
 @property (readonly) BOOL lookLeftRight __attribute__((swift_name("lookLeftRight")));
+
+/**
+ * @note annotations
+ *   kotlinx.serialization.SerialName(value="look_to_the_side")
+*/
+@property (readonly) BOOL lookToTheSide __attribute__((swift_name("lookToTheSide")));
 
 /**
  * @note annotations
