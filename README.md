@@ -60,6 +60,7 @@ Este SDK emplea inteligencia artificial para la detección precisa y eficiente d
 - [SuccessAlertConfig](#successalertconfig)
 - [ErrorAlertConfig](#erroralertconfig)
 - [LiveValidationsText](#livevalidationstext)
+- [VideoChallengeTexts](#videochallengetexts)
 - [DigiYoRGB](#digiyorgb)
 ### [Personalización y estilos](#personalización-y-estilos)
 - [DigiyoColorScheme](#digiyocolorscheme)
@@ -76,9 +77,14 @@ Este SDK emplea inteligencia artificial para la detección precisa y eficiente d
 - [DocumentCameraView](#documentcameraview)
 - [SelfieCameraView](#selfiecameraview)
 - [VideoCameraView](#videocameraview)
+  - [Textos sobre la cámara (`challengeTexts`)](#textos-sobre-la-cámara-challengetexts)
+  - [Texto de ayuda debajo del óvalo](#texto-de-ayuda-debajo-del-óvalo)
+  - [Colores del óvalo y de la etiqueta](#colores-del-óvalo-y-de-la-etiqueta)
 - [HelpScreenView](#helpscreenview)
 - [MediaPreviewScreen](#mediapreviewscreen)
 ### Otros
+- [Captura con poca luz (Android)](#captura-con-poca-luz-android)
+- [Utilidades públicas del SDK](#utilidades-públicas-del-sdk)
 - [Lista de Cambios](#lista-de-cambios)
 - [Proguard](#proguard-android)
 
@@ -91,9 +97,11 @@ Este SDK emplea inteligencia artificial para la detección precisa y eficiente d
 El SDK requiere un mínimo de **API 24**. Para instalar la librería en una aplicación Android, agrega la siguiente dependencia en el archivo `build.gradle` o `build.gradle.kts` de tu módulo App:
 
 ```groovy
-implementation "com.roshka:digiyocore:1.4.2"
-implementation "com.roshka:digiyo:1.4.2"
+implementation "com.roshka:digiyocore:1.5.1"
+implementation "com.roshka:digiyo:1.5.1"
 ```
+
+> Ver el historial de versiones y los cambios de cada una en [CHANGELOG.md](CHANGELOG.md).
 
 En el `build.gradle` (`settings.gradle` o `settings.gradle.kts`) del proyecto, se configura el repositorio Maven apuntando a GithubPackages de la siguiente manera:
 
@@ -1084,6 +1092,9 @@ Configuración para la grabación de video.
 - **`cameraSoundEnabled`** (*Boolean?*): Indica si los sonidos de inicio/fin de grabación están activados.
 - **`challengeOverlayConfig`** (*ChallengeOverlayConfig?*): Configuración del overlay de desafíos.
 - **`videoRecordDurationMs`** (*Long?*): Duración máxima de la grabación en milisegundos.
+- **`showDetectedFaceOval`** (*Boolean?*): Dibuja o no el óvalo del rostro detectado, además del óvalo guía. `null` = no se dibuja.
+- **`overlayDimAlpha`** (*Float?*): Opacidad del fondo translúcido que rodea al óvalo guía, de 0 a 1. `null` = el valor por defecto del SDK.
+- **`challengeTexts`** (*VideoChallengeTexts?*): Textos que el SDK dibuja sobre la cámara durante la grabación. `null` = se usan los del SDK (`VideoChallengeTexts.DEFAULT`). Ver [Textos sobre la cámara](#textos-sobre-la-cámara-challengetexts).
 
 ---
 
@@ -1166,6 +1177,26 @@ Textos personalizados para los desafíos de biometría y pruebas de vida.
 - **`faceSmileCheckText`** (*String?*): Instrucción para sonreír.
 - **`idOnFaceCheckText`** (*String?*): Instrucción para mostrar el documento junto al rostro.
 - **`fingerCheckText`** (*String?*): Instrucción para mostrar una cantidad específica de dedos.
+
+---
+
+### VideoChallengeTexts
+Textos que el SDK dibuja **sobre la cámara** durante la grabación de video. Se pasa en
+`VideoCameraConfig.challengeTexts`; en `null` se usan los valores por defecto del SDK
+(`VideoChallengeTexts.DEFAULT`). Ver [Textos sobre la cámara](#textos-sobre-la-cámara-challengetexts).
+
+- **`ovalLabelText`** (*String?*): Etiqueta encima del óvalo, p. ej. `"ALÉJESE"`. `null` o vacío = no se muestra. Por defecto `"ALÉJESE"`.
+- **`fingerRecordingText`** (*String?*): Texto durante la grabación en el desafío de dedos (`versus_array`). El `%d` se reemplaza por la cantidad de dedos del array.
+- **`depthRecordingText`** (*String?*): Texto durante la grabación en el desafío 3D / profundidad (`pol_depth`).
+- **`lookLeftRightRecordingText`** (*String?*): `live_validations.look_left_right`.
+- **`lookUpDownRecordingText`** (*String?*): `live_validations.look_up_down`.
+- **`openCloseMouthRecordingText`** (*String?*): `live_validations.open_close_mouth`.
+- **`faceEyeCheckRecordingText`** (*String?*): `live_validations.face_eye_check`.
+- **`faceSmileCheckRecordingText`** (*String?*): `live_validations.face_smile_check`.
+- **`idOnFaceCheckRecordingText`** (*String?*): `live_validations.id_on_face_check`.
+
+Todos los textos de grabación están **vacíos por defecto**: si la app no define uno, el SDK
+no dibuja ningún mensaje mientras se graba.
 
 ---
 
@@ -1271,6 +1302,16 @@ ImageAsset("vc_document_front")
 
 Configuración del modo de captura de: DocumentCameraView, SelfieCameraView y VideoCameraView
 
+| Campo | Tipo | Para qué sirve | Por defecto |
+|---|---|---|---|
+| `automaticReadingEnabled` | `Boolean` | `true`: la grabación arranca sola en cuanto el rostro queda encuadrado en el óvalo y **el botón nunca se muestra**. `false`: el botón se muestra siempre, deshabilitado hasta que el rostro queda encuadrado. | obligatorio |
+| `automaticModeTimeoutMillis` | `Long?` | Solo en modo automático: pasado ese tiempo sin lograr el encuadre, se desactiva el modo automático y aparece el botón manual. `null` = sin timeout. | `null` |
+| `cameraButtonConfig` | `ButtonConfig?` | Apariencia del botón (ver tabla siguiente). | `null` → etiqueta `"Capturar"` con `colorScheme.secondary` de fondo |
+| `buttonType` | `CaptureButtonType` | `DefaultButton` (botón ancho con texto), `ShutterButtonType1` o `ShutterButtonType2` (botones tipo disparador, circulares, ignoran `label`). | `DefaultButton` |
+| `buttonBehavior` | `CaptureButtonBehavior?` | `DisableButtonOnShoot`: al disparar, el botón se deshabilita. `DisplayLoadingOnShoot`: muestra un spinner en su lugar. | `DisableButtonOnShoot` |
+| `infoBoxConfig` | `InfoBoxConfig?` | Caja de ayuda debajo del óvalo (icono, colores, borde, estilo). `null` = la del SDK, que colorea el texto según el estado de la detección. | `null` |
+| `overwriteDefaultTextWith` | `String?` | Texto de ayuda de la caja debajo del óvalo. Admite `%d`, que se sustituye por la cantidad de dedos de `versus_array`. **`null` equivale a `""`: no se muestra ningún texto** (no se cae a un texto por defecto del SDK). | `null` → sin texto |
+
 #### Android
 
 ```kotlin
@@ -1358,6 +1399,21 @@ digiyoSdk.getDocumentCameraViewController(
 ### ButtonConfig
 
 Configuración de personalización de botones.
+
+| Campo | Tipo | Para qué sirve | Por defecto |
+|---|---|---|---|
+| `label` | `String` | Texto del botón, p. ej. `"Grabar video"`. Se ignora con los `buttonType` de tipo disparador. | obligatorio |
+| `shape` | `DigiYoShape` | `Rounded(cornerRadius)`, `Outlined(cornerRadius)` (dibuja además un borde), `Circle` o `Square`. El radio va en dp. | `Rounded(24.0)` |
+| `buttonStyle` | `DigiYoButtonStyle` | `Default` (texto centrado), `TextOnlyStart`, `TextOnlyEnd`, `TextWithIconSpaceBetween(icon)`, `TextWithIconCentered(icon)`. | `Default` |
+| `isLoading` | `Boolean` | Fuerza el estado de carga (spinner en lugar del texto). Normalmente se deja en `false` y lo maneja `buttonBehavior`. | `false` |
+| `contentPadding` | `Int` | Padding horizontal interno, en dp. | `0` (los presets del SDK usan `32`) |
+| `debounceIntervalMs` | `Long?` | Tiempo mínimo entre pulsaciones, para evitar dobles disparos. | `2000` |
+| `backgroundColor` | `DigiYoRGB` | Color de fondo del botón habilitado. | obligatorio |
+| `contentColor` | `DigiYoRGB?` | Color del texto. `null` = se calcula automáticamente por contraste con el fondo. | `null` |
+| `disabledBackgroundColor` | `DigiYoRGB?` | Fondo con el botón deshabilitado, o sea mientras el rostro no está encuadrado. `null` = gris. | `null` |
+| `disabledContentColor` | `DigiYoRGB?` | Texto con el botón deshabilitado. `null` = gris translúcido. | `null` |
+
+Atajos útiles: `ButtonConfig.DEFAULT`, `ButtonConfig.SECONDARY`, `ButtonConfig.SHUTTER`, y `ButtonConfig.defaultWithLabel("...")` / `secondaryWithLabel("...")`.
 
 **Parámetros**
 
@@ -1818,6 +1874,141 @@ digiyoSdk.getVideoCameraViewViewController(
 - **`onResult`** (*Callback*): Retorna la ruta del video grabado.
 - **`onClose`** (*Callback*): Se invoca al cerrar la cámara.
 
+#### Textos sobre la cámara (`challengeTexts`)
+
+Durante la grabación el SDK dibuja dos textos sobre la cámara, y ambos son parametrizables desde la app (igual que `CaptureModeConfig.overwriteDefaultTextWith`) a través de `VideoCameraConfig.challengeTexts`:
+
+| Texto | Cuándo se muestra | Estilo |
+|---|---|---|
+| `ovalLabelText` | Encima del óvalo, mientras el rostro todavía **no** está bien encuadrado. Desaparece junto con el óvalo, es decir cuando el rostro queda validado (y, en modo manual, cuando se habilita el botón de grabar). | Letras blancas ExtraBold sobre un fondo de color con esquinas redondeadas. El fondo se configura con `colorScheme.successColor` (`VideoCameraConfig.colorScheme`), el mismo color al que cambia el marco del óvalo cuando el rostro queda encuadrado. |
+| Texto de grabación | Mientras se está grabando. Cuál se usa depende del desafío que devolvió `createDia` en `in_data.POL_VIDEO.config`. | Blanco, negritas |
+
+Los textos de grabación se eligen así, a partir de `in_data.POL_VIDEO.config`:
+
+| Campo de `challengeTexts` | Se usa cuando `in_data.POL_VIDEO.config` trae |
+|---|---|
+| `fingerRecordingText` | `versus_array` (desafío de dedos). El `%d` se reemplaza por la cantidad de dedos del array: con `"Levantá %d dedos"` y `versus_array = [2]` se muestra "Levantá 2 dedos". |
+| `depthRecordingText` | `pol_depth` (desafío 3D / profundidad) |
+| `lookLeftRightRecordingText` | `live_validations.look_left_right` |
+| `lookUpDownRecordingText` | `live_validations.look_up_down` |
+| `openCloseMouthRecordingText` | `live_validations.open_close_mouth` |
+| `faceEyeCheckRecordingText` | `live_validations.face_eye_check` |
+| `faceSmileCheckRecordingText` | `live_validations.face_smile_check` |
+| `idOnFaceCheckRecordingText` | `live_validations.id_on_face_check` |
+
+#### Valores por defecto
+
+Si no se pasa `challengeTexts`, el SDK usa `VideoChallengeTexts.DEFAULT`, que es:
+
+| Texto | Valor por defecto |
+|---|---|
+| `ovalLabelText` | `"ALÉJESE"` |
+| Todos los textos de grabación | **vacíos** |
+
+Es decir, **el SDK no impone ningún mensaje durante la grabación**: si la app no define un
+texto, no se dibuja nada. Es el mismo criterio que `CaptureModeConfig.overwriteDefaultTextWith`
+en `null`. La app que quiera mostrar una instrucción la define explícitamente:
+
+```kotlin
+challengeTexts = VideoChallengeTexts(
+    fingerRecordingText = "Levantá %d dedos",   // ovalLabelText mantiene "ALÉJESE"
+)
+```
+
+Cualquier campo en `null` o vacío hace que ese texto no se muestre, incluido `ovalLabelText`
+si se quiere ocultar la etiqueta sobre el óvalo.
+
+##### Android
+
+```kotlin
+VideoCameraConfig(
+    // ...
+    challengeTexts = VideoChallengeTexts(
+        ovalLabelText = "ALÉJESE",
+        fingerRecordingText = "Levantá %d dedos",
+    ),
+)
+```
+
+##### iOS
+
+En Swift los parámetros de Kotlin no tienen valores por defecto, así que hay que pasarlos todos (o pasar `challengeTexts: nil` para usar los del SDK):
+
+```swift
+VideoCameraConfig(
+    // ...
+    challengeTexts: VideoChallengeTexts(
+        ovalLabelText: "ALÉJESE",
+        fingerRecordingText: "Levantá %d dedos",
+        depthRecordingText: nil,
+        lookLeftRightRecordingText: nil,
+        lookUpDownRecordingText: nil,
+        openCloseMouthRecordingText: nil,
+        faceEyeCheckRecordingText: nil,
+        faceSmileCheckRecordingText: nil,
+        idOnFaceCheckRecordingText: nil
+    )
+)
+```
+
+#### Texto de ayuda debajo del óvalo
+
+El texto de la caja de ayuda se resuelve en el core con `utils.resolveVideoHelpText`, con esta precedencia:
+
+1. `VideoCameraConfig.customLiveValidationsText` (el texto de la validación activa), si viene.
+2. `captureModeConfig.overwriteDefaultTextWith`.
+3. Nada.
+
+Es decir, **si los dos vienen en `null` no se dibuja ninguna caja de ayuda**: dejar `overwriteDefaultTextWith` en `null` / `nil` es equivalente a pasar `""`. El SDK no impone un texto propio. El `%d` del texto elegido se reemplaza por la cantidad de dedos de `in_data.POL_VIDEO.config.versus_array` (2 si no viene), y ese número se resalta en negrita.
+
+La caja acompaña al óvalo: se muestra mientras el rostro no está encuadrado y desaparece junto con el óvalo cuando lo está.
+
+#### Colores del óvalo y de la etiqueta
+
+Los colores de la pantalla de grabación no se configuran con parámetros propios: salen del `DigiYoColorScheme` que se pasa en `VideoCameraConfig.colorScheme`. Si se deja en `null` se usa `DigiYoColorScheme.DEFAULT_COLOR_SCHEME`.
+
+| Elemento | Campo del `colorScheme` | Valor por defecto |
+|---|---|---|
+| Marco del óvalo mientras se busca el rostro (`NOTHING` / `NO_CENTER`) | `accentColor` | `0xE2EBF7` |
+| Marco del óvalo con el rostro encuadrado (`VALID`) | `successColor` | `DigiYoRGB(94, 240, 160)` |
+| Fondo de la etiqueta sobre el óvalo (`ovalLabelText`, p. ej. "ALÉJESE") | `successColor` | `DigiYoRGB(94, 240, 160)` |
+| Texto del `InfoBox` de ayuda | `successColor` / `accentColor` según el estado | — |
+
+En la práctica el marco del óvalo se ve con `accentColor`: al quedar el rostro encuadrado el óvalo desaparece junto con el fondo translúcido. El fondo de la etiqueta usa `successColor` de forma **fija** (en el desafío de profundidad cambiaba al detectar el rostro; acá no), y sus letras son siempre blancas y ExtraBold.
+
+##### Android
+
+```kotlin
+VideoCameraConfig(
+    // ...
+    colorScheme = DigiYoColorScheme.DEFAULT_COLOR_SCHEME.copy(
+        accentColor = DigiYoRGB(226, 235, 247),  // marco del óvalo
+        successColor = DigiYoRGB(94, 240, 160)   // fondo de "ALÉJESE" y marco al encuadrar
+    ),
+)
+```
+
+##### iOS
+
+En Swift el init de `DigiYoColorScheme` exige **los 7 campos**, en el orden en que están declarados: pasar solo el que interesa no compila. Los que no se quieran cambiar se copian de `DEFAULT_COLOR_SCHEME` (`0x2C365B`, `0x3DA9E0`, `0xE2EBF7`) o se dejan en `nil`, que hace que el SDK use su fallback. `copy` tampoco ayuda: Kotlin lo exporta como `doCopy(...)` y también pide los 7 argumentos.
+
+```swift
+VideoCameraConfig(
+    // ...
+    colorScheme: DigiYoColorScheme(
+        primaryColor: DigiYoRGB(red: 44, green: 54, blue: 91),
+        secondaryColor: DigiYoRGB(red: 61, green: 169, blue: 224),
+        accentColor: DigiYoRGB(red: 226, green: 235, blue: 247),  // marco del óvalo
+        primaryTextColor: nil,
+        secondaryTextColor: nil,
+        errorColor: nil,
+        successColor: DigiYoRGB(red: 94, green: 240, blue: 160)   // fondo de "ALÉJESE"
+    ),
+)
+```
+
+Ojo: ese mismo `colorScheme` alimenta el resto del overlay. `secondaryColor` es el fondo del botón de grabar **solo si** no se pasa `captureModeConfig.cameraButtonConfig`; si se pasa, el botón usa su propio `backgroundColor` y es independiente de la etiqueta.
+
 ---
 
 ### HelpScreenView
@@ -1974,8 +2165,54 @@ viewModel.digiyoSdk.getMediaPreviewScreenViewController(
 
 ---
 
+### Captura con poca luz (Android)
+
+En **Android** el SDK aplica siempre una mejora de captura pensada para ambientes con poca
+luz y para equipos de gama baja, donde la cédula salía oscura o borrosa (el caso de
+referencia fue un Samsung A04):
+
+- Sube la compensación de exposición de la cámara (AE bias): **+1.5 EV** en la trasera
+  (documentos) y **+3.0 EV** en la delantera (selfie y video). En la delantera es más fuerte
+  porque la exposición es la única palanca disponible: el video no usa `ImageCapture`, así
+  que no hay modo "calidad" que ayude. El valor se acota siempre al rango que soporta el
+  equipo, y si el dispositivo no soporta compensación de exposición se ignora sin error.
+- En la captura de fotos usa el modo de **máxima calidad** en lugar del de mínima latencia
+  (más procesamiento y reducción de ruido del fabricante).
+
+**No es configurable y no requiere ninguna acción:** se aplica en todos los casos, sin
+importar la luz ambiente. Solo afecta el brillo de la imagen; no toca la geometría del
+rostro, así que la detección y el liveness del óvalo se comportan igual.
+
+En **iOS** esta mejora no aplica: la implementación es específica de CameraX.
+
+---
+
+### Utilidades públicas del SDK
+
+Además de las vistas, el SDK expone las funciones con las que resuelve internamente el encuadre
+del rostro y el texto de ayuda. Sirven si la app necesita replicar exactamente el mismo criterio
+en una interfaz propia:
+
+| Función | Para qué sirve |
+|---|---|
+| `utils.guideOvalRect(viewWidthPx, viewHeightPx, verticalOffsetPx)` | Geometría del óvalo guía de la grabación de video. Es la única fórmula del óvalo: la usan tanto la vista de cada plataforma —que valida el rostro contra él— como el overlay que lo dibuja. |
+| `utils.evaluateFaceOvalFraming(ovalBounds, faceBounds)` | Criterio de encuadre del rostro. Devuelve un `FaceOvalFraming` con `insideOval`, `fitsOval` y la propiedad derivada `isFramed`. Es la misma lógica en Android y en iOS. |
+| `utils.resolveVideoHelpText(customValidationText, overwriteDefaultTextWith, amountOfFingers)` | Resolución del texto de ayuda debajo del óvalo, con la precedencia descrita más arriba y el reemplazo del `%d`. |
+
+---
+
 ### Lista de Cambios
 
+- #### VideoCameraConfig (1.5.0):
+  - **`challengeTexts`** (*VideoChallengeTexts?*): Personaliza los textos que el SDK dibuja
+    sobre la cámara durante la grabación. `null` = se usan los textos por defecto del SDK.
+    Ver [Textos sobre la cámara](#textos-sobre-la-cámara-challengetexts).
+  - **`showDetectedFaceOval`** (*Boolean?*): Permite dibujar u ocultar el óvalo del rostro detectado.
+  - **`overlayDimAlpha`** (*Float?*): Opacidad del fondo translúcido alrededor del óvalo guía.
+- #### SuccessAlertConfig (1.5.0):
+  - **`imageBase64`** (*String?*): Permite agregar una imagen personalizada al modal, codificada en Base64. Pueden utilizarse las imagenes presentes en el SDK en ```DigiYoIcons```:
+    - Android: ```DigiYoIcons.DocBackImage```
+    - iOS: ```DigiYoIcons.shared.DocBackImage```
 - #### CaptureModeConfig:
     - **`cameraButtonConfig`** (*ButtonConfig?*): Corresponde a la configuración de personalización del botón, incluyendo el título.
     - **`buttonType`** (*CaptureButtonType?*): Corresponde al tipo de botón.
