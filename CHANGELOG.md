@@ -107,6 +107,13 @@ la pantalla de grabación de video y el soporte de flujos que dependen del `dia_
   **no se muestra**. Antes el SDK imponía el texto
   `"Mantén tu cara dentro del óvalo y levante %d dedo(s)"`. Si dependías de ese texto, pasalo
   explícitamente.
+- **Se vaciaron dos mensajes por defecto del overlay de video.** En
+  `VideoStatusMapper.DEFAULT_MESSAGE_MAP`, `NO_CENTER` (era `"Centre su rostro"`) y `RECORDING`
+  (era `"Grabando..."`) pasaron a `""`, así que ya no se dibujan. Va en línea con el rediseño:
+  cuando el rostro no está centrado la guía es el propio óvalo, y durante la grabación el
+  indicador es el REC con el contador. Si tu app los necesita, se pasan explícitamente por
+  `customLiveValidationsText` / `overwriteDefaultTextWith`. Los mapas de documento y selfie no
+  cambiaron.
 - **Rediseño del overlay de grabación de video.** Se eliminó el recuadro que rodeaba al óvalo:
   queda solo el óvalo sobre el fondo translúcido, con el mismo tratamiento visual que la cámara
   de selfie. La guía (óvalo, fondo y texto de ayuda) desaparece cuando el rostro queda encuadrado
