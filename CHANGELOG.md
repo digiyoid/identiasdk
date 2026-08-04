@@ -15,6 +15,53 @@ resuelve Swift Package Manager, y en **Android** a los artefactos `com.roshka:di
 
 ---
 
+## [1.5.3] — 2026-08-04
+
+> **No requiere cambios de código.** Los dos cambios son **aditivos y no rompen
+> compatibilidad**: las configuraciones conservan sus constructores anteriores, así que las apps
+> ya integradas actualizan sin tocar código y **sin cambios de comportamiento**.
+
+### Agregado
+
+- **`VideoCameraConfig.requireFaceFraming`** (`Boolean`): permite desactivar el gate de encuadre
+  de la grabación de video. **`true` por defecto**, es decir el comportamiento de la 1.5.x: en
+  modo manual el botón se habilita recién con el rostro encuadrado en el óvalo, y en automático
+  la grabación arranca ahí. Con `false` el encuadre deja de condicionar el disparo —en manual el
+  botón está habilitado desde el arranque, y en automático se graba en cuanto se detecta un
+  rostro a cualquier distancia—.
+  - **La etiqueta del óvalo depende de este parámetro.** Con `true` se dibuja siempre: el texto
+    que pase la app en `challengeTexts.ovalLabelText` o, si no lo definió, el `"ALÉJESE"` del SDK.
+    Con `false` **no se dibuja**, porque si el encuadre no condiciona el disparo pedirle al
+    usuario que se aleje no sirve de nada. El óvalo sí se sigue mostrando como guía.
+  - **Ojo si tu app pasaba `ovalLabelText = null` para ocultar la etiqueta**: ahora eso muestra
+    el texto por defecto. La forma de ocultarla es `requireFaceFraming = false`.
+  - Resuelve el caso de los equipos con cámara frontal de campo visual angosto (un iPhone XR es
+    el de referencia), donde el rostro ocupa más del encuadre a la misma distancia física y el
+    usuario no llega a alejarse lo suficiente: el gate lo dejaba trabado sin poder grabar.
+- **`lowLightBoostEnabled`** (`Boolean`) en `DocumentCameraConfig`, `SelfieCameraConfig` y
+  `VideoCameraConfig`: permite apagar la mejora de captura para poca luz de **Android**, que
+  desde la 1.5.0 era fija. **`true` por defecto**, es decir el mismo comportamiento con el que se
+  publicó la 1.5.x: exposición aclarada (AE bias) y, en las fotos, captura de máxima calidad. Con
+  `false` la captura se hace con latencia mínima y sin corrección de exposición, algo útil para
+  comparar capturas en un dispositivo puntual.
+  - En **iOS se ignora**: la implementación es específica de CameraX.
+
+> **Nota de compatibilidad iOS:** las tres configuraciones mantienen sus constructores **sin**
+> los parámetros nuevos, porque la interfaz Objective-C que consume Swift no admite valores por
+> defecto y un campo nuevo cambiaría el selector. Las apps iOS no tienen que tocar nada, y los
+> constructores de compatibilidad conservan los valores que replican el comportamiento actual.
+> Al retirarlos (2.0.0) se avisará acá.
+>
+> `VideoCameraConfig` expone un `init` por cada **prefijo** de la firma: hasta `challengeTexts`,
+> hasta `lowLightBoostEnabled`, o completa. Es decir que en Swift se puede omitir un **sufijo** de
+> parámetros, pero **no** uno del medio: para pasar `requireFaceFraming` hay que enumerar también
+> `lowLightBoostEnabled`, aunque en iOS ese parámetro se ignore. No hay forma de evitarlo: un
+> constructor que termine en `requireFaceFraming: Boolean` choca en Kotlin con el que termina en
+> `lowLightBoostEnabled: Boolean`, porque tienen la misma cantidad de parámetros y los mismos
+> tipos. Ver "iOS: cómo omitir los parámetros nuevos" en el README.
+
+---
+
 ## [1.5.1] — 2026-07-30
 
 Versión de **compatibilidad**: recupera las firmas públicas que la 1.5.0 había cambiado sin
