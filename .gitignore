@@ -1,3 +1,9 @@
 .DS_Store
 *.zip
 .build
+
+# Preferencias locales de Xcode (orden de schemes, breakpoints, estado de la UI). Son de cada
+# máquina y usuario —el nombre de usuario queda en la ruta—, se regeneran solas y no afectan
+# al build ni a la resolución del paquete.
+.swiftpm/
+xcuserdata/

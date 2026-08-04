@@ -77,6 +77,8 @@ Este SDK emplea inteligencia artificial para la detección precisa y eficiente d
 - [DocumentCameraView](#documentcameraview)
 - [SelfieCameraView](#selfiecameraview)
 - [VideoCameraView](#videocameraview)
+  - [iOS: cómo omitir los parámetros nuevos](#ios-cómo-omitir-los-parámetros-nuevos)
+  - [Gate de encuadre (`requireFaceFraming`)](#gate-de-encuadre-requirefaceframing)
   - [Textos sobre la cámara (`challengeTexts`)](#textos-sobre-la-cámara-challengetexts)
   - [Texto de ayuda debajo del óvalo](#texto-de-ayuda-debajo-del-óvalo)
   - [Colores del óvalo y de la etiqueta](#colores-del-óvalo-y-de-la-etiqueta)
@@ -1065,6 +1067,7 @@ Configuración para la captura de documentos.
 - **`showDetectedObjectRect`** (*Boolean*): Activa el dibujado de un rectángulo sobre el objeto detectado.
 - **`smartCropEnabled`** (*Boolean*): Habilita el recorte inteligente basado en la detección.
 - **`shutterSoundEnabled`** (*Boolean*): Indica si el sonido del obturador está activado.
+- **`lowLightBoostEnabled`** (*Boolean*): Mejora de captura para poca luz en **Android**: aclara la exposición y toma la foto en modo de máxima calidad. **`true` por defecto.** En iOS se ignora. Ver [Captura con poca luz (Android)](#captura-con-poca-luz-android).
 
 ---
 
@@ -1077,6 +1080,7 @@ Configuración para la captura de selfies.
 - **`captureModeConfig`** (*CaptureModeConfig*): Configuración del modo de captura.
 - **`shutterSoundEnabled`** (*Boolean*): Indica si el sonido del obturador está activado.
 - **`customLiveValidationsText`** (*LiveValidationsText?*): Textos personalizados para las validaciones en vivo.
+- **`lowLightBoostEnabled`** (*Boolean*): Mejora de captura para poca luz en **Android**. **`true` por defecto.** En iOS se ignora. Ver [Captura con poca luz (Android)](#captura-con-poca-luz-android).
 
 ---
 
@@ -1095,6 +1099,8 @@ Configuración para la grabación de video.
 - **`showDetectedFaceOval`** (*Boolean?*): Dibuja o no el óvalo del rostro detectado, además del óvalo guía. `null` = no se dibuja.
 - **`overlayDimAlpha`** (*Float?*): Opacidad del fondo translúcido que rodea al óvalo guía, de 0 a 1. `null` = el valor por defecto del SDK.
 - **`challengeTexts`** (*VideoChallengeTexts?*): Textos que el SDK dibuja sobre la cámara durante la grabación. `null` = se usan los del SDK (`VideoChallengeTexts.DEFAULT`). Ver [Textos sobre la cámara](#textos-sobre-la-cámara-challengetexts).
+- **`lowLightBoostEnabled`** (*Boolean*): Mejora de captura para poca luz en **Android**. **`true` por defecto.** En iOS se ignora. Ver [Captura con poca luz (Android)](#captura-con-poca-luz-android).
+- **`requireFaceFraming`** (*Boolean*): Si el encuadre del rostro en el óvalo condiciona el inicio de la grabación. **`true` por defecto.** Ver [Gate de encuadre](#gate-de-encuadre-requirefaceframing).
 
 ---
 
@@ -1185,7 +1191,7 @@ Textos que el SDK dibuja **sobre la cámara** durante la grabación de video. Se
 `VideoCameraConfig.challengeTexts`; en `null` se usan los valores por defecto del SDK
 (`VideoChallengeTexts.DEFAULT`). Ver [Textos sobre la cámara](#textos-sobre-la-cámara-challengetexts).
 
-- **`ovalLabelText`** (*String?*): Etiqueta encima del óvalo, p. ej. `"ALÉJESE"`. `null` o vacío = no se muestra. Por defecto `"ALÉJESE"`.
+- **`ovalLabelText`** (*String?*): Etiqueta encima del óvalo, p. ej. `"ALÉJESE"`. Solo se dibuja con `VideoCameraConfig.requireFaceFraming = true`, y en `null` se usa `"ALÉJESE"`. Para ocultarla, `requireFaceFraming = false`.
 - **`fingerRecordingText`** (*String?*): Texto durante la grabación en el desafío de dedos (`versus_array`). El `%d` se reemplaza por la cantidad de dedos del array.
 - **`depthRecordingText`** (*String?*): Texto durante la grabación en el desafío 3D / profundidad (`pol_depth`).
 - **`lookLeftRightRecordingText`** (*String?*): `live_validations.look_left_right`.
@@ -1874,13 +1880,83 @@ digiyoSdk.getVideoCameraViewViewController(
 - **`onResult`** (*Callback*): Retorna la ruta del video grabado.
 - **`onClose`** (*Callback*): Se invoca al cerrar la cámara.
 
+#### iOS: cómo omitir los parámetros nuevos
+
+Kotlin exporta sus valores por defecto **solo a Kotlin**. En la interfaz Objective-C que consume
+Swift no existen, así que el `init` primario de `VideoCameraConfig` exige **todos** sus
+parámetros: cualquier llamada que no los enumere falla con *"Missing argument for parameter"*.
+
+Para que las apps iOS puedan omitirlos, el SDK expone un `init` por cada **prefijo** de la firma.
+Hoy son estos:
+
+| Último parámetro de la llamada | Qué valores se asumen |
+|---|---|
+| `videoRecordDurationMs` | `showDetectedFaceOval` y `overlayDimAlpha` en `nil`, `challengeTexts` en `nil`, `lowLightBoostEnabled = true`, `requireFaceFraming = true` |
+| `showDetectedFaceOval` | idem, desde `overlayDimAlpha` |
+| `overlayDimAlpha` | idem, desde `challengeTexts` |
+| `challengeTexts` | `lowLightBoostEnabled = true` y `requireFaceFraming = true` |
+| `lowLightBoostEnabled` | `requireFaceFraming = true` |
+| `requireFaceFraming` | ninguno: es la firma completa |
+
+**Solo se puede omitir un sufijo, no parámetros sueltos.** Es decir, se puede pasar hasta
+`lowLightBoostEnabled` y dejar afuera `requireFaceFraming`, pero **no** al revés: para llegar a
+`requireFaceFraming` hay que enumerar también `lowLightBoostEnabled` —aunque en iOS ese parámetro
+se ignore— porque no existe un `init` que salte uno del medio.
+
+> **Por qué no se puede agregar ese `init` intermedio:** un constructor que termine en
+> `requireFaceFraming: Boolean` tendría, del lado de Kotlin, la misma firma que el que termina en
+> `lowLightBoostEnabled: Boolean` —misma cantidad de parámetros y mismos tipos— y el compilador lo
+> rechaza por *conflicting overloads*. En Objective-C serían selectores distintos, porque incluyen
+> los nombres, pero el choque ocurre antes.
+
+Lo mismo aplica a `DocumentCameraConfig` y `SelfieCameraConfig`, que exponen su firma de la 1.5.x
+y la que agrega `lowLightBoostEnabled`.
+
+#### Gate de encuadre (`requireFaceFraming`)
+
+Por defecto el SDK **exige que el rostro esté bien encuadrado en el óvalo antes de dejar grabar**:
+en modo manual el botón está deshabilitado hasta ese momento, y en modo automático la grabación
+arranca recién ahí. Ese es el instante en que el óvalo y su etiqueta desaparecen.
+
+`VideoCameraConfig.requireFaceFraming = false` desactiva ese condicionamiento:
+
+| | `true` (por defecto) | `false` |
+|---|---|---|
+| `automaticReadingEnabled = false` | El botón se habilita al quedar el rostro encuadrado | El botón está habilitado desde el arranque; el usuario decide cuándo |
+| `automaticReadingEnabled = true` | La grabación arranca al quedar el rostro encuadrado | La grabación arranca en cuanto se detecta un rostro, **a cualquier distancia** |
+| Óvalo | Se muestra y desaparece según el encuadre | Se sigue mostrando como guía visual, pero no condiciona nada |
+| Etiqueta del óvalo ("ALÉJESE") | Se muestra siempre: el texto de la app o, si no lo definió, el del SDK | **No se dibuja**: si el encuadre no condiciona nada, pedir que se aleje no sirve |
+
+Con `false` el óvalo sigue apareciendo porque orienta al usuario, pero la etiqueta **no**: el SDK
+la omite. Y al revés, con `true` la etiqueta se muestra siempre, incluso si la app no pasa
+`challengeTexts` o lo pasa con `ovalLabelText = null`; en ese caso se usa el texto del SDK
+("ALÉJESE"). **La forma de ocultar la etiqueta es `requireFaceFraming = false`.**
+
+**Para qué sirve.** Hay equipos cuya cámara frontal tiene un campo visual angosto —el rostro ocupa
+más del encuadre a la misma distancia física— y el usuario no llega a alejarse lo suficiente: el
+gate lo deja trabado sin poder grabar. Un iPhone XR es el caso de referencia. Poniendo el
+parámetro en `false` el flujo no se bloquea.
+
+```kotlin
+// Android
+VideoCameraConfig(
+    // ...
+    requireFaceFraming = false,   // por defecto true
+)
+```
+
+```swift
+// iOS: como el init de Kotlin no exporta valores por defecto, o se pasa el parámetro
+// en la firma completa, o se usa uno de los init de compatibilidad (que dejan true).
+```
+
 #### Textos sobre la cámara (`challengeTexts`)
 
 Durante la grabación el SDK dibuja dos textos sobre la cámara, y ambos son parametrizables desde la app (igual que `CaptureModeConfig.overwriteDefaultTextWith`) a través de `VideoCameraConfig.challengeTexts`:
 
 | Texto | Cuándo se muestra | Estilo |
 |---|---|---|
-| `ovalLabelText` | Encima del óvalo, mientras el rostro todavía **no** está bien encuadrado. Desaparece junto con el óvalo, es decir cuando el rostro queda validado (y, en modo manual, cuando se habilita el botón de grabar). | Letras blancas ExtraBold sobre un fondo de color con esquinas redondeadas. El fondo se configura con `colorScheme.successColor` (`VideoCameraConfig.colorScheme`), el mismo color al que cambia el marco del óvalo cuando el rostro queda encuadrado. |
+| `ovalLabelText` | Encima del óvalo, mientras el rostro todavía **no** está bien encuadrado. Desaparece junto con el óvalo, es decir cuando el rostro queda validado (y, en modo manual, cuando se habilita el botón de grabar). **Solo con `requireFaceFraming = true`**; en `null` se usa `"ALÉJESE"`. | Letras blancas ExtraBold sobre un fondo de color con esquinas redondeadas. El fondo se configura con `colorScheme.successColor` (`VideoCameraConfig.colorScheme`), el mismo color al que cambia el marco del óvalo cuando el rostro queda encuadrado. |
 | Texto de grabación | Mientras se está grabando. Cuál se usa depende del desafío que devolvió `createDia` en `in_data.POL_VIDEO.config`. | Blanco, negritas |
 
 Los textos de grabación se eligen así, a partir de `in_data.POL_VIDEO.config`:
@@ -1915,8 +1991,9 @@ challengeTexts = VideoChallengeTexts(
 )
 ```
 
-Cualquier campo en `null` o vacío hace que ese texto no se muestre, incluido `ovalLabelText`
-si se quiere ocultar la etiqueta sobre el óvalo.
+Cualquier **texto de grabación** en `null` o vacío hace que no se muestre. `ovalLabelText` es la
+excepción: con `requireFaceFraming = true`, en `null` se cae al `"ALÉJESE"` del SDK, y para
+ocultar la etiqueta hay que usar `requireFaceFraming = false`.
 
 ##### Android
 
@@ -2167,7 +2244,7 @@ viewModel.digiyoSdk.getMediaPreviewScreenViewController(
 
 ### Captura con poca luz (Android)
 
-En **Android** el SDK aplica siempre una mejora de captura pensada para ambientes con poca
+En **Android** el SDK aplica una mejora de captura pensada para ambientes con poca
 luz y para equipos de gama baja, donde la cédula salía oscura o borrosa (el caso de
 referencia fue un Samsung A04):
 
@@ -2179,11 +2256,26 @@ referencia fue un Samsung A04):
 - En la captura de fotos usa el modo de **máxima calidad** en lugar del de mínima latencia
   (más procesamiento y reducción de ruido del fabricante).
 
-**No es configurable y no requiere ninguna acción:** se aplica en todos los casos, sin
-importar la luz ambiente. Solo afecta el brillo de la imagen; no toca la geometría del
-rostro, así que la detección y el liveness del óvalo se comportan igual.
+**Activada por defecto y configurable en las tres cámaras.** Se controla con
+`lowLightBoostEnabled`, presente en `DocumentCameraConfig`, `SelfieCameraConfig` y
+`VideoCameraConfig`, y vale `true` si no se pasa nada: así, actualizar el SDK no cambia el
+comportamiento de ninguna app. Pasar `false` la desactiva —la captura se hace con latencia mínima
+y sin corrección de exposición—, algo útil para comparar capturas en un dispositivo puntual.
 
-En **iOS** esta mejora no aplica: la implementación es específica de CameraX.
+```kotlin
+DocumentCameraConfig(
+    // ...
+    shutterSoundEnabled = false,
+    lowLightBoostEnabled = false,   // por defecto true
+)
+```
+
+Solo afecta el brillo de la imagen; no toca la geometría del rostro, así que la detección y el
+liveness del óvalo se comportan igual.
+
+En **iOS el parámetro se ignora**, porque la implementación es específica de CameraX. Las apps
+iOS **no necesitan tocar nada**: las tres configuraciones conservan sus constructores anteriores,
+así que siguen compilando y comportándose igual (ver la nota de compatibilidad).
 
 ---
 
@@ -2209,6 +2301,13 @@ en una interfaz propia:
     Ver [Textos sobre la cámara](#textos-sobre-la-cámara-challengetexts).
   - **`showDetectedFaceOval`** (*Boolean?*): Permite dibujar u ocultar el óvalo del rostro detectado.
   - **`overlayDimAlpha`** (*Float?*): Opacidad del fondo translúcido alrededor del óvalo guía.
+- #### VideoCameraConfig:
+  - **`requireFaceFraming`** (*Boolean*): Permite desactivar el gate de encuadre de la grabación
+    de video. **`true` por defecto**, así que actualizar no cambia el comportamiento actual.
+- #### DocumentCameraConfig, SelfieCameraConfig, VideoCameraConfig:
+  - **`lowLightBoostEnabled`** (*Boolean*): Permite desactivar la mejora de captura para poca luz
+    en Android. **`true` por defecto**, así que actualizar no cambia el comportamiento actual. En
+    iOS se ignora, y las tres configuraciones conservan sus constructores anteriores.
 - #### SuccessAlertConfig (1.5.0):
   - **`imageBase64`** (*String?*): Permite agregar una imagen personalizada al modal, codificada en Base64. Pueden utilizarse las imagenes presentes en el SDK en ```DigiYoIcons```:
     - Android: ```DigiYoIcons.DocBackImage```
