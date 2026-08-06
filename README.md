@@ -2288,7 +2288,8 @@ en una interfaz propia:
 | Función | Para qué sirve |
 |---|---|
 | `utils.guideOvalRect(viewWidthPx, viewHeightPx, verticalOffsetPx)` | Geometría del óvalo guía de la grabación de video. Es la única fórmula del óvalo: la usan tanto la vista de cada plataforma —que valida el rostro contra él— como el overlay que lo dibuja. |
-| `utils.evaluateFaceOvalFraming(ovalBounds, faceBounds)` | Criterio de encuadre del rostro. Devuelve un `FaceOvalFraming` con `insideOval`, `fitsOval` y la propiedad derivada `isFramed`. Es la misma lógica en Android y en iOS. |
+| `utils.evaluateFaceOvalFraming(ovalBounds, faceBounds, maxWidthFactor)` | Criterio de encuadre del rostro. Devuelve un `FaceOvalFraming` con `insideOval`, `fitsOval` y la propiedad derivada `isFramed`. `maxWidthFactor` afloja el umbral de tamaño para compensar el campo visual de la cámara; en `1f` (por defecto) el criterio es el mismo en Android y en iOS. |
+| `utils.faceWidthFactorForFieldOfView(fieldOfViewDegrees)` | Calcula ese factor a partir del campo visual horizontal de la cámara, contra `REFERENCE_FIELD_OF_VIEW_DEGREES` (73.7°). Solo puede aflojar el umbral, nunca endurecerlo. |
 | `utils.resolveVideoHelpText(customValidationText, overwriteDefaultTextWith, amountOfFingers)` | Resolución del texto de ayuda debajo del óvalo, con la precedencia descrita más arriba y el reemplazo del `%d`. |
 
 ---
