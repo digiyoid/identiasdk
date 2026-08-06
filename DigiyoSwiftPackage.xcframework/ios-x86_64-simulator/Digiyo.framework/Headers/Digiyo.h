@@ -1428,8 +1428,10 @@ __attribute__((swift_name("ExtensionsKt")))
 __attribute__((objc_subclassing_restricted))
 __attribute__((swift_name("FaceOvalFramingKt")))
 @interface DigiyoFaceOvalFramingKt : DigiyoBase
-+ (DigiyoFaceOvalFraming *)evaluateFaceOvalFramingOvalBounds:(DigiyoUi_geometryRect *)ovalBounds faceBounds:(DigiyoUi_geometryRect *)faceBounds __attribute__((swift_name("evaluateFaceOvalFraming(ovalBounds:faceBounds:)")));
++ (DigiyoFaceOvalFraming *)evaluateFaceOvalFramingOvalBounds:(DigiyoUi_geometryRect *)ovalBounds faceBounds:(DigiyoUi_geometryRect *)faceBounds maxWidthFactor:(float)maxWidthFactor __attribute__((swift_name("evaluateFaceOvalFraming(ovalBounds:faceBounds:maxWidthFactor:)")));
++ (float)faceWidthFactorForFieldOfViewFieldOfViewDegrees:(float)fieldOfViewDegrees referenceFieldOfViewDegrees:(float)referenceFieldOfViewDegrees __attribute__((swift_name("faceWidthFactorForFieldOfView(fieldOfViewDegrees:referenceFieldOfViewDegrees:)")));
 + (DigiyoUi_geometryRect * _Nullable)guideOvalRectViewWidthPx:(float)viewWidthPx viewHeightPx:(float)viewHeightPx verticalOffsetPx:(float)verticalOffsetPx __attribute__((swift_name("guideOvalRect(viewWidthPx:viewHeightPx:verticalOffsetPx:)")));
+@property (class, readonly) float REFERENCE_FIELD_OF_VIEW_DEGREES __attribute__((swift_name("REFERENCE_FIELD_OF_VIEW_DEGREES")));
 @end
 
 __attribute__((objc_subclassing_restricted))

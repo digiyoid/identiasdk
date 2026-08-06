@@ -15,6 +15,141 @@ resuelve Swift Package Manager, y en **Android** a los artefactos `com.roshka:di
 
 ---
 
+## [1.5.5] — 2026-08-06
+
+> **No requiere cambios de código.** No hay firmas nuevas: son tres correcciones de equipos
+> puntuales más diagnóstico. En iOS, el arreglo del encuadre **solo puede aflojar el criterio,
+> nunca endurecerlo**, así que ningún equipo que hoy valida bien cambia de comportamiento; en
+> Android, el arreglo del autofoco no toca la validación, solo deja de reiniciar el enfoque en cada
+> frame.
+>
+> Los parámetros `requireFaceFraming` y `lowLightBoostEnabled` siguen siendo los de la 1.5.3: esta
+> versión no toca la interfaz pública.
+
+### Corregido
+
+- **Android: la captura automática del documento demoraba o no llegaba a ocurrir en algunos
+  equipos** (reportado en un Vivo X200 Pro). El autofoco sobre el objeto detectado se disparaba
+  **dentro del callback del analizador**, sin throttle: 15 a 30 acciones de foco por segundo. Y en
+  CameraX cada `startFocusAndMetering` cancela la anterior y reinicia el barrido de AF desde cero,
+  así que el foco quedaba "cazando" de forma permanente. Los tres efectos se realimentaban: preview
+  borroso → el detector parpadea más → se reinicia la ventana de estabilidad del disparo; y
+  `takePicture` en `CAPTURE_MODE_MAXIMIZE_QUALITY`, que espera la convergencia de 3A antes de
+  obturar, agotaba su timeout interno.
+  - Ahora el enfoque por detección respeta un intervalo mínimo de 2 s y **las mismas dos guardas
+    que el ciclo de autofoco periódico ya usaba**: no se re-enfoca cuando el encuadre ya es válido
+    —re-disparar el AF justo antes de obturar era lo que trababa la convergencia— ni cuando el
+    usuario acaba de enfocar con un toque.
+  - Es el mismo criterio que documenta `CENTER_FOCUS_CANCEL_MS` desde la 1.5.0 para el A04
+    ("re-disparar el foco sin pausa lo mantiene cazando foco"), aplicado también al analizador.
+  - **En iOS no aplica**: el ciclo de foco es distinto.
+- **iOS: en equipos con cámara frontal de campo visual angosto el encuadre era inalcanzable.** El
+  criterio de tamaño compara el ancho del rostro contra el del óvalo, que es una fracción fija de
+  la pantalla. Pero el ancho de escena que abarca una cámara a una distancia `d` es
+  `2·d·tan(fov/2)`, así que un equipo con FOV más angosto muestra el mismo rostro **más grande** a
+  la misma distancia física, y el usuario tenía que alejarse más de lo que llega el brazo.
+  - Medido: un **iPhone XR reporta 61.16°** contra los **73.7° de un iPhone 14**. El factor
+    geométrico da 1.27 y el cociente entre los anchos de rostro medidos en los dos equipos fue
+    1.23 — la predicción se cumple con un 3 % de diferencia.
+  - Ahora el umbral se **normaliza por el campo visual** del formato activo:
+    `umbral = 0.90 × tan(73.7°/2) / tan(fov/2)`. En el XR queda en 1.14 y el encuadre se logra a
+    la misma distancia física que en un equipo de referencia.
+  - **Solo puede aflojar, nunca endurecer** (el factor tiene mínimo 1.0), así que ningún equipo
+    que hoy valida bien cambia de comportamiento. Tiene tope en 1.35 (≈57° de FOV) y se ignora si
+    el FOV informado está fuera de 40–100°.
+  - En **Android no aplica**: el campo visual no está disponible por la misma API y el criterio ya
+    está calibrado con ML Kit. `utils.evaluateFaceOvalFraming` recibe el factor como parámetro
+    opcional (`maxWidthFactor`, por defecto `1f`), así que el comportamiento en Android es
+    idéntico al de la 1.5.x.
+- **iOS: el rect del rostro se construía invertido.** `getFaceBounds` mapeaba las coordenadas
+  normalizadas de Vision con una función que invierte los dos ejes (para espejar la cámara
+  frontal), así que la esquina que se tomaba como superior izquierda era en realidad la inferior
+  derecha: el rect salía con `left > right` y `top > bottom`, y su ancho y alto eran **negativos**.
+  La validación del encuadre no se veía afectada porque normaliza el rect antes de usarlo, pero
+  cualquier otro consumidor de `getFaceBounds` —y el log de diagnóstico— recibía valores
+  inservibles.
+
+### Diagnóstico
+
+- **Android, captura de documento:** tres líneas nuevas con tag `digiyo`, pensadas para
+  diagnosticar a distancia los equipos que no tenemos —igual que se hizo con el `camara iOS` del
+  campo visual—. No cambian ningún comportamiento.
+
+  ```
+  doc camara [dia=<diaId>]: equipo=<fabricante> <modelo> (Android NN) camara=<id> minFoco=<cm|FOCO_FIJO>
+              focal=<mm> sensor=<mm> modosAF=[…] zoom=… | modoCaptura=QUALITY|LATENCY
+              resAnalisis=1280x720 resCaptura=2048x1536 marco=[l,t,r,b] anchoMarco=…
+              tolerancia=… umbralArea=0.5 vista=WxH
+
+  doc encuadre: dia=<diaId> estado=… dentro=… areaRel=… umbralArea=0.5 marco=[…] anchoMarco=…
+                box=[…] anchoBox=… framesValidosSeguidos=… reinicios=… foco=OK|FALLO|CANCELADO
+
+  doc captura: dia=<diaId> solicitada framesValidosSeguidos=… reinicios=… foco=… modoCaptura=…
+  doc captura: dia=<diaId> callback=+NNNNms via=takePicture|respaldo foco=…
+  ```
+
+  - **`minFoco`** es la distancia mínima de foco de la cámara que eligió CameraX, convertida a cm
+    desde las dioptrías que informa Camera2 (`FOCO_FIJO` = lente sin autofoco). Los equipos con
+    sensor grande no enfocan de cerca, y el criterio de área obliga a acercar la cédula: si la
+    distancia necesaria queda por debajo de `minFoco`, ese equipo **no puede** enfocar el
+    documento por más intentos que haga.
+  - **`reinicios`** cuenta cuántas veces se cortó una racha de frames válidos. El marco se pinta
+    del color de validado con **un** frame válido, mientras que la captura exige que el estado se
+    mantenga válido durante toda la ventana de espera —cualquier frame que salga lo reinicia desde
+    cero—. Si un cliente reporta que el marco cambia de color y no captura, y este contador sube
+    mientras `framesValidosSeguidos` se queda bajo, la causa es el parpadeo de la detección.
+  - **`foco`** registra el resultado real del autofoco (`OK` / `FALLO` / `CANCELADO`). Hoy **no
+    condiciona la captura**: es el dato previo necesario para poder condicionarla. Mientras el
+    foco se re-disparaba en cada frame el resultado era siempre `CANCELADO` y el foco era
+    inobservable.
+  - **`callback=+NNNNms`** mide cuánto tarda el HAL en responder al obturador, que es lo que
+    separa una demora de convergencia de 3A de un problema del criterio de validación.
+  - Todas las líneas locales llevan `dia=<diaId>` (o `dia=sin-dia` si la pantalla se abrió antes de
+    que existiera un DIA), para poder cruzar un logcat con lo que quedó registrado del lado del
+    servidor. El `LogData` remoto ya traía el `diaId` como campo propio. Se resuelve **una vez por
+    pantalla**: leerlo cuesta un acceso a Realm y el log de encuadre corre por frame.
+  - El log de encuadre se emite en los cambios de estado y cada 15 frames, para no inundar el
+    logcat.
+- **Los dos eventos clave se envían también al backend**, por el endpoint de logs que el SDK ya
+  tenía (`DigiYoCore.log` → `POST /idb-logging/log`), así que un caso soportado se puede
+  reconstruir **sin pedirle un logcat al usuario final**. Llegan con el `diaId`, el `partnerId`, el
+  `deviceId` y los timestamps que resuelve el core.
+  - `type=doc-camara`, `location=DocumentCameraView`, `subLocation=<tipo de documento>`: al abrir
+    la pantalla, con las características de la cámara.
+  - `type=doc-resumen`: **al cerrar la pantalla, haya capturado o no**. Es el que importa: el caso
+    que no se podía diagnosticar de ninguna otra forma es el del usuario que abandona sin lograr la
+    captura, porque ahí no llegaba ningún evento al servidor.
+
+    ```
+    doc resumen: dia=<diaId> capturo=false estadoFinal=VALID duracionMs=24310 framesAnalizados=486 fps=20.0
+                 framesValidosSeguidos=3 reinicios=17 foco=OK callbackCapturaMs=-1
+                 modoAutomatico=true | ultimoEncuadre: estado=VALID dentro=true areaRel=0.55 …
+    ```
+
+    `fps` está para poder leer el resto: la ventana de estabilidad del disparo se mide en
+    milisegundos pero se consume en frames, así que sin los fps no se sabe cuántos frames seguidos
+    hacían falta. `callbackCapturaMs=-1` significa que el HAL nunca respondió al obturador.
+  - Son **dos requests por pantalla de documento**, no uno por frame: el log de encuadre por frame
+    queda solo en el logcat. El envío es fire-and-forget en el scope del core, así que sobrevive al
+    cierre de la pantalla.
+
+- El log del SDK (tag `digiyo`) ahora incluye el **cociente** entre el ancho del rostro y el del
+  óvalo, junto con el umbral, en las dos plataformas:
+
+  ```
+  encuadre: dentro=false tamañoOK=false ratio=1.12 umbral=1.14 (base=0.9 factorFov=1.27) | ovalo=[…] ancho=579 | rostro=[…] ancho=650
+  ```
+
+- En **iOS** se agregó además una línea por pantalla con los datos de la cámara, que son los que
+  explican por qué en algunos modelos el rostro nunca "entra" en el óvalo: campo visual del
+  formato activo, resolución del buffer que analiza Vision, y tamaños del preview y de la vista.
+
+  ```
+  camara iOS: fov=…° formato=WxH (aspecto=…) | preview=WxH | vista=WxH | umbralBase=0.9 factorFov=… umbralEfectivo=… fovReferencia=73.7 infladoRostro=1.3
+  ```
+
+---
+
 ## [1.5.3] — 2026-08-04
 
 > **No requiere cambios de código.** Los dos cambios son **aditivos y no rompen
