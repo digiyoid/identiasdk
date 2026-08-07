@@ -155,6 +155,63 @@ En iOS, puedes instalar Digiyo SDK utilizando **Swift Package Manager**. Para el
 git@github.com:Digiyoid/identiasdk.git
 ```
 
+### Usar una versión pre-release
+
+De vez en cuando se publica una versión **pre-release** —por ejemplo `2.0.0-beta.1`— para poder
+probar lo que viene antes de que sea estable. Se reconocen por el sufijo después del guion y en
+GitHub aparecen con la etiqueta **Pre-release**, así que **no** figuran como la versión "Latest" del
+repositorio.
+
+> **No usar en producción.** Una pre-release puede cambiar de comportamiento o de firmas antes de
+> la versión final, y puede volver a publicarse con el mismo número. Es para probar e informar.
+
+Hay que **pedirla explícitamente**: ni Swift Package Manager ni un rango de Gradle la van a tomar
+solas.
+
+#### iOS (Swift Package Manager)
+
+SPM trata todo lo que tiene sufijo como *prerelease* de versionado semántico y lo **excluye de los
+rangos**: con "Up to Next Major Version" o `from:` nunca se resuelve. Hay que fijar la versión
+exacta.
+
+Desde Xcode: **File → Add Package Dependencies…**, o el paquete ya agregado en
+*Package Dependencies* → click derecho → **Update Package** → y en **Dependency Rule** elegir
+**Exact Version**, escribiendo la versión **sin la `v` del tag**:
+
+```
+2.0.0-beta.1
+```
+
+Desde un `Package.swift`:
+
+```swift
+dependencies: [
+    .package(
+        url: "https://github.com/Digiyoid/identiasdk.git",
+        exact: "2.0.0-beta.1"
+    )
+]
+```
+
+Para volver a una estable, se cambia la regla a **Up to Next Major Version** con el número estable
+(por ejemplo `1.5.6`) y se hace *Update Package*.
+
+#### Android (Gradle / GitHub Packages)
+
+En Gradle no existe el concepto de prerelease: alcanza con escribir la versión completa, con el
+sufijo incluido.
+
+```groovy
+implementation "com.roshka:digiyocore:2.0.0-beta.1"
+implementation "com.roshka:digiyo:2.0.0-beta.1"
+```
+
+> **Ojo con las versiones dinámicas.** Justamente porque Gradle no distingue prereleases, un
+> `2.+` o un `latest.release` **sí** puede traerse una beta sin que te enteres. Fijá siempre la
+> versión exacta.
+
+Para volver a una estable, se cambia el número y se sincroniza el proyecto.
+
 ---
 
 ## Configuración e inicialización
@@ -1942,6 +1999,12 @@ Con `false` el óvalo sigue apareciendo porque orienta al usuario, pero la etiqu
 la omite. Y al revés, con `true` la etiqueta se muestra siempre, incluso si la app no pasa
 `challengeTexts` o lo pasa con `ovalLabelText = null`; en ese caso se usa el texto del SDK
 ("ALÉJESE"). **La forma de ocultar la etiqueta es `requireFaceFraming = false`.**
+
+**No aplica al desafío de profundidad (`pol_depth`).** El gate y la etiqueta son parte del diseño
+del **óvalo guía fijo**, es decir de los DIA cuyo `in_data.POL_VIDEO.config` trae `versus_array` o
+`live_validations`. En profundidad el condicionamiento lo manda la fase: el botón se habilita cuando
+el rostro entra en el óvalo grande, y las etiquetas **ACÉRQUESE** / **ALÉJESE** las decide el
+desafío, no la app. Ahí `requireFaceFraming` y `challengeTexts.ovalLabelText` se ignoran.
 
 **Para qué sirve.** Hay equipos cuya cámara frontal tiene un campo visual angosto —el rostro ocupa
 más del encuadre a la misma distancia física— y el usuario no llega a alejarse lo suficiente: el

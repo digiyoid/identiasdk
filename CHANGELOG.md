@@ -15,6 +15,156 @@ resuelve Swift Package Manager, y en **Android** a los artefactos `com.roshka:di
 
 ---
 
+## [2.0.0-beta.1] — 2026-08-07
+
+Primera **beta de la 2.0.0**. Sube a mayor por las dos capacidades nuevas que agrega al producto:
+el **desafío de profundidad** (`pol_depth`) para la prueba de vida y el **NFC** de la cédula (OCR
+del MRZ en el SDK, lectura del chip con una librería por plataforma). Trae además el **loader de
+subida** del SDK.
+
+> **Incluye todo lo publicado hasta la 1.5.6**: los parámetros `requireFaceFraming` y
+> `lowLightBoostEnabled`, la normalización del encuadre por campo visual (iPhone XR), el watchdog
+> del obturador en Android y el diagnóstico remoto. Las entradas de la 1.5.x siguen abajo, sin
+> cambios.
+
+> **No requiere cambios de código, aunque sea una mayor.** El salto a 2.0.0 es por alcance
+> funcional, **no** por ruptura: ninguna firma pública se quitó y los constructores de
+> compatibilidad de las tres configuraciones —y el alias `sendImageAysnchronously`— **siguen
+> vigentes**. Cuando se retiren se avisará en una mayor posterior. Basta con actualizar la
+> dependencia (Android) o el paquete (iOS): todo lo nuevo es opcional. Sí conviene leer los
+> [cambios de comportamiento](#cambiado) y, en iOS, el punto sobre
+> [remontar la cámara al volver del preview](#guía-de-migración-a-200-beta1).
+
+### Agregado
+
+- **Desafío de profundidad (`in_data.POL_VIDEO.config.pol_depth`).** Cuando `createDia`
+  devuelve esa configuración, la pantalla de grabación cambia por completo: fondo opaco con un
+  recorte ovalado, un óvalo grande (fase NEAR) que se pone del color de éxito al capturar el
+  rostro y luego se reduce (fase FAR), las etiquetas **ACÉRQUESE** y **ALÉJESE** sobre el borde
+  del óvalo y los mensajes de ayuda, captura y reintento debajo. La grabación se corta en
+  cuanto se capturan las dos fases, sin esperar el límite de duración, y se fuerza una duración
+  mínima de 12 s porque hay que reubicar el teléfono entre fases.
+  - **Sin parámetros nuevos.** Las dos variantes del flujo se derivan de
+    `captureModeConfig.automaticReadingEnabled`, que la app ya configuraba: en `true` no hay
+    botón y la captura del rostro en el óvalo grande dispara la grabación; en `false` el botón
+    funciona como un "Estoy listo", habilitado cuando el rostro entra en el óvalo grande.
+  - En modo automático, un ciclo que vence sin capturar **no muestra popup de error**: vuelve
+    al óvalo grande con el mensaje de reintento debajo.
+  - Los desafíos de `versus_array` y `live_validations` mantienen el diseño de la 1.5.0 (óvalo
+    guía fijo con su etiqueta), sin cambios.
+- **Loader de subida del SDK** (`UploadLoaderScreen`), para no tener que armar uno en cada app:
+  - Android: `digiyo.getUploadLoaderView(state, uploadingText, completedText, colorScheme, onCompletedTimeout)`.
+  - iOS: `sdk.getUploadLoaderViewController(...)`, pensado para envolverlo en un
+    `UIViewControllerRepresentable` (el sample incluye `Components/UploadLoaderView.swift`).
+  - Dos estados: `UPLOADING` (círculo que late) y `COMPLETED` (círculo con check blanco, que a
+    los 5 s invoca `onCompletedTimeout`).
+  - Los textos son **opcionales**: en `null` / `nil` se ve solo la animación o solo el check. El
+    color del círculo de éxito sale de `colorScheme.successColor`, el mismo con el que se pinta
+    el óvalo; el check es siempre blanco.
+- **OCR del MRZ del dorso, en el SDK** (`nfc.MrzReader`), que es el insumo para leer el chip NFC
+  de la cédula: `extractMrz(imagePath) { info -> … }` devuelve número de documento, fecha de
+  nacimiento y de vencimiento —los tres datos de la clave de acceso BAC—, más el número de
+  cédula visible. Corre **on-device y sin conexión** (ML Kit en Android, Vision en iOS) y valida
+  los dígitos verificadores del MRZ, así que una lectura dudosa devuelve `null` en lugar de
+  llegar al chip. Incluye `nfc.MrzInfo`, `nfc.MrzKey`, `nfc.MrzParser` y `models.ParsedMrzData`.
+  - **El SDK no lee el chip**: eso lo hace una librería externa por plataforma (AAR
+    `NfcDocReader` en Android, paquete Swift `NFCIdentiaReader` en iOS). El README documenta
+    cómo agregarlas y el sample tiene la implementación completa.
+- **`models.OnboardingDiaType` y `models.ValidationDiaType`**: catálogos de `dia_type` de prueba
+  con su sigla (`POL1`, `POL2`, `POL3`), para elegir el onboarding o la validación a probar sin
+  escribir el nombre completo.
+- **`live_validations.look_to_the_side`**: nueva validación reconocida en
+  `LiveValidationOptions` y con su texto en `LiveValidationsText`.
+
+### Cambiado
+
+- **`requireFaceFraming` y la etiqueta `ALÉJESE` no aplican al desafío de profundidad.** Son parte
+  del diseño del **óvalo guía fijo**, o sea de los DIA donde `createDia` responde
+  `in_data.POL_VIDEO.config` con `versus_array` o con `live_validations`. Ahí el gate condiciona el
+  disparo y la etiqueta indica qué hacer para lograr el encuadre.
+  - En `pol_depth` el condicionamiento es **propio de las fases**: el botón "Estoy listo" se
+    habilita cuando el rostro entra en el óvalo grande, y las etiquetas las manda la fase
+    (**ACÉRQUESE** en NEAR, **ALÉJESE** en FAR), no la app. Pasar `requireFaceFraming = false` no
+    tiene efecto en ese desafío, y `challengeTexts.ovalLabelText` tampoco se usa.
+  - Es la primera versión en que las dos cosas conviven: el gate salió en la 1.5.3 y el desafío de
+    profundidad, acá.
+- **`VideoCameraConfig.cameraTitle` ahora aparece recién cuando el rostro queda encuadrado**, y
+  se mantiene durante la grabación. Antes se dibujaba desde que abría la cámara. El título es la
+  consigna del desafío ("Levantá 2 dedos", "Sonría"), así que ahora se intercambia con la
+  etiqueta del óvalo en lugar de competir con ella: mientras se busca el encuadre se ve el óvalo
+  con **ALÉJESE**, y al validarse aparece el título. En el desafío de profundidad **no se dibuja
+  nunca**, porque ACÉRQUESE / ALÉJESE ya cumplen esa función.
+  - No cambia ninguna firma. Si tu app usaba el título como encabezado de la pantalla (por
+    ejemplo "Video"), conviene un encabezado propio por encima de la vista del SDK.
+  - **Nada quedó obsoleto.** `challengeTexts.fingerRecordingText` y familia siguen funcionando
+    igual: se dibujan **abajo** del óvalo y solo **durante** la grabación, mientras el título va
+    arriba y desde el encuadre. Lo único a evitar es poner el mismo texto en los dos, porque
+    durante la grabación se vería duplicado. El README compara los dos casos.
+- El desafío de profundidad ignora `overlayDimAlpha`: su fondo es opaco a propósito, para que
+  solo se vea la cámara dentro del óvalo.
+
+### Corregido
+
+- **El desafío de profundidad no se activaba nunca.** El backend envía `"pol_depth": {}` —un
+  mapa vacío— en los `dia_type` de profundidad, y el SDK exigía que tuviera contenido. El
+  resultado era que esos DIA caían en el diseño del óvalo guía fijo. Ahora alcanza con que la
+  clave esté **presente**.
+- **iOS: crash intermitente al leer el DIA guardado**
+  (`RLM_ERR_FILE_OPERATION_FAILED`, *"thread constructor failed: Resource temporarily
+  unavailable"*). Cada llamada del SDK abría una instancia nueva de Realm sin cerrarla, y cada
+  instancia crea sus propios hilos internos: el proceso terminaba agotando los hilos
+  disponibles. Ahora la instancia se abre una vez y se comparte.
+- **Compatibilidad de `LiveValidationOptions` y `LiveValidationsText` con Swift.** Al agregar
+  `look_to_the_side` se sumaron constructores con las firmas previas, porque la interfaz
+  Objective-C no admite valores por defecto y un campo nuevo cambia el selector. Las apps ya
+  integradas compilan sin tocar código.
+- **iOS: al volver a la pantalla de grabación no se podía grabar de nuevo.** No es un defecto
+  del SDK sino del ciclo de vida de SwiftUI: empujar el preview encima no destruye la pantalla
+  de abajo, así que el estado interno de la cámara sobrevivía —el video ya guardado y, en
+  profundidad, la fase completada— y al regresar se veía el óvalo chico con ALÉJESE y el botón
+  no se habilitaba. La app tiene que **remontar** la vista al regresar; el README explica cómo y
+  el sample lo implementa. Android no está afectado.
+
+## Guía de migración a 2.0.0-beta.1
+
+**No hay que tocar código.** Solo actualizar la versión de la dependencia (Android) o del
+paquete (iOS).
+
+### Puntos a revisar, aunque no rompan la compilación
+
+- **iOS — remontar la cámara al volver del preview.** Si tu app vuelve a la pantalla de
+  grabación (el típico "Volver a grabar video"), tiene que **recrear** la vista del SDK. En iOS
+  `makeUIViewController` se llama una sola vez por identidad, así que el estado interno de la
+  cámara sobrevive y no se puede grabar de nuevo. La solución es cambiar la identidad al
+  regresar:
+
+  ```swift
+  @Published var cameraSessionId = UUID()   // en el ViewModel
+
+  Step5ViewControllerRepresentable(viewModel: viewModel)
+      .id(viewModel.cameraSessionId)
+  .onChange(of: viewModel.navigateToNextScreen) { isActive in
+      if !isActive { viewModel.cameraSessionId = UUID() }
+  }
+  ```
+
+  En Android no hace falta: Navigation Compose descarta la composición del destino que no está
+  visible.
+
+- **Visibilidad de `cameraTitle`.** Ahora aparece con el rostro encuadrado y no antes. Conviene
+  una pasada visual, y mover a un encabezado propio cualquier texto que sirviera de título de
+  pantalla.
+
+- **Desafío de profundidad.** Si tus `dia_type` incluyen `pol_depth`, la pantalla de grabación
+  se ve distinta a partir de esta versión. Vale la pena probar los dos modos:
+  `automaticReadingEnabled = true` (sin botón, arranca al capturar el rostro) y `false` (botón
+  tipo "Estoy listo"); conviene también cambiar la etiqueta del botón en ese caso.
+
+- **`in_data` sin `POL_VIDEO`.** Si tu app asume que siempre hay video, revisá el paso posterior
+  a la selfie: cuando el DIA no pide `POL_VIDEO`, el commit va ahí.
+
+---
+
 ## [1.5.6] — 2026-08-07
 
 > **No requiere cambios de código.** Correcciones de comportamiento en la captura de documento de
