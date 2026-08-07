@@ -1636,8 +1636,19 @@ digiyoSdk.getDocumentCameraViewController(
 **Parámetros**
 
 - **`config`** (*DocumentCameraConfig*): Configuración de la cámara.
-- **`onResult`** (*Callback*): Retorna las rutas de las imágenes capturadas.
+- **`onResult`** (*Callback*): Retorna las rutas de las imágenes capturadas. **Se invoca una sola
+  vez por pantalla**: desde la 1.5.6 la primera captura que se procesa gana y las demás se
+  descartan. Antes, en Android, una secuencia rápida de encuadre válido → inválido → válido podía
+  disparar dos capturas e invocarlo dos veces.
 - **`onClose`** (*Callback*): Se invoca al cerrar la cámara.
+
+**Qué pasa si la cámara del equipo no responde (Android).** Hay dispositivos donde la petición de
+foto queda sin respuesta: el HAL no devuelve ni la imagen ni un error. Desde la **1.5.6** el SDK no
+se queda esperando indefinidamente —antes la pantalla quedaba con el marco en el color de validado y
+el usuario tenía que cerrarla—: espera 4 segundos, reintenta una vez y, si tampoco hay respuesta,
+entrega una captura de menor calidad tomada del preview antes que dejar el flujo trabado. Toda la
+escalada queda registrada en el log del SDK (tag `digiyo`), así que si aparece se puede identificar
+el equipo. **La app no tiene que hacer nada**: `onResult` llega igual.
 
 ---
 

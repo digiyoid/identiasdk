@@ -15,7 +15,60 @@ resuelve Swift Package Manager, y en **Android** a los artefactos `com.roshka:di
 
 ---
 
-## [1.5.5] — 2026-08-06
+## [1.5.6] — 2026-08-07
+
+> **No requiere cambios de código.** Correcciones de comportamiento en la captura de documento de
+> **Android**, ninguna con firmas nuevas y ninguna que endurezca un criterio de validación. Las tres
+> salieron de los datos que dejó el diagnóstico de la 1.5.5, no de poder reproducir el problema: el
+> caso del obturador trabado nunca se reprodujo a pedido.
+
+### Corregido
+
+- **Android: si el HAL de la cámara no respondía al obturador, la pantalla de captura quedaba
+  trabada para siempre.** Hay equipos donde `takePicture` **no invoca ninguno de sus dos
+  callbacks**: ni `onCaptureSuccess` ni `onError`. Confirmado en un **Samsung S24** con el log de
+  diagnóstico —la solicitud salió y la línea del callback nunca llegó— y es el mismo síntoma que se
+  reportó en un Vivo X200 Pro. Como el respaldo del screenshot vivía dentro de `onError`, tampoco se
+  activaba: no había ninguna salida y el usuario tenía que cerrar la pantalla.
+  - Ahora hay un **watchdog de 4 s** por intento: si no llega respuesta, se reintenta una vez y,
+    agotados los intentos, se cae al screenshot del preview. Es de menor calidad —por eso se dejó de
+    usar como camino principal en la 1.5.0— pero es preferible a una pantalla trabada, y cada paso
+    de la escalada queda en el log.
+  - Los 4 s son holgados a propósito: en el S24 una captura sana responde en **340 ms** con
+    `lowLightBoostEnabled = false` y en **457-463 ms** con `true`, así que el watchdog no se dispara
+    en el camino feliz ni en equipos lentos.
+  - **`reinicios=0` en el caso que falló**, o sea que la detección se mantuvo válida sin una sola
+    interrupción y el problema no estaba ni en el criterio de validación ni en el autofoco
+    (`foco=OK`). El diagnóstico remoto es lo que permitió descartarlos.
+
+  El formato de las líneas de captura queda así:
+
+  ```
+  doc captura: dia=<diaId> solicitada intento=N/2 framesValidosSeguidos=… reinicios=… foco=… modoCaptura=…
+  doc captura: dia=<diaId> SIN RESPUESTA del HAL en 4000ms intento=N/2
+  doc captura: dia=<diaId> callback=+NNNNms via=takePicture|respaldo|respaldo-timeout intento=N foco=…
+  ```
+- **Android: se podían disparar dos capturas para el mismo documento.** El disparo vive en un
+  `LaunchedEffect` keyed por el estado de la detección, así que la secuencia
+  válido → no válido → válido lo relanzaba y volvía a llamar `takePicture` con una captura todavía
+  en vuelo: dos fotos escribían los mismos dos archivos y `onResult` se invocaba dos veces. Ahora la
+  primera foto que se procesa gana y las demás se descartan con una línea en el log.
+- **El SDK imprimía cada línea de log duplicada.** `Napier.base(DebugAntilog())` se llamaba en el
+  `init` de `DigiYoCore` **y** en el de `DigiYo`, que hereda del primero: quedaban dos `Antilog`
+  registrados. Afectaba a todas las apps integradas.
+
+### Diagnóstico
+
+- **`doc resumen` agrega `intentosCaptura`, `timeoutCaptura` y `modoCaptura`**, para poder separar
+  en el campo una captura sana de una recuperada por el watchdog sin tener que reproducir nada.
+- **El resultado del autofoco periódico también se registra.** Antes solo se instrumentaba el foco
+  por detección, que no se dispara cuando el encuadre ya es válido: en las sesiones donde la cédula
+  entra en válido de inmediato el diagnóstico reportaba `foco=SIN_DATO`, que se confunde con "no
+  enfocó".
+
+---
+
+## [1.5.5] — 2026-08-07
 
 > **No requiere cambios de código.** No hay firmas nuevas: son tres correcciones de equipos
 > puntuales más diagnóstico. En iOS, el arreglo del encuadre **solo puede aflojar el criterio,
@@ -147,6 +200,8 @@ resuelve Swift Package Manager, y en **Android** a los artefactos `com.roshka:di
   ```
   camara iOS: fov=…° formato=WxH (aspecto=…) | preview=WxH | vista=WxH | umbralBase=0.9 factorFov=… umbralEfectivo=… fovReferencia=73.7 infladoRostro=1.3
   ```
+
+---
 
 ---
 
