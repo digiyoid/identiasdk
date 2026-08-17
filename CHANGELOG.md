@@ -15,6 +15,96 @@ resuelve Swift Package Manager, y en **Android** a los artefactos `com.roshka:di
 
 ---
 
+## [2.0.0] — 2026-08-17
+
+Segunda beta de la 2.0.0. Lo central es la **firma de capturas**: cada subida de imagen o video
+viaja acompañada de headers que le permiten al backend verificar que la captura salió del SDK y que
+el archivo no cambió en el camino. Trae además el control del logging y la personalización del botón
+de cerrar.
+
+> **No requiere cambios de código.** La firma es automática: no hay ningún método nuevo que llamar
+> ni ningún parámetro que configurar. Los dos parámetros que se agregan son opcionales y en `null`
+> dejan el comportamiento anterior. En Swift se agregaron los inicializadores de compatibilidad
+> correspondientes, así que las apps ya integradas compilan sin tocar nada. Basta con actualizar la
+> dependencia (Android) o el paquete (iOS).
+
+### Agregado
+
+- **Firma de capturas.** El `createDia` ahora devuelve un objeto `challenge` por cada requisito que
+  recibe un archivo (`in_data`), y el SDK lo usa para firmar la subida. Los headers que agrega:
+
+  | Header | Contenido |
+  |---|---|
+  | `X-Challenge-Id` | identificador del desafío |
+  | `X-challenge-type` | le indica al backend con qué esquema verificar |
+  | `X-signature` | la firma |
+  | `X-timestamp` | momento de la firma, ISO-8601 en UTC con milisegundos |
+  | `X-device-id` | identificador del dispositivo |
+  | `X-sdk-version` | versión del SDK |
+  | `X-platform` | `android` / `ios` |
+
+  - **Nada que hacer del lado de la app.** El SDK lee el desafío del DIA y firma solo, en cada
+    `sendImage` y `sendVideo`.
+  - La firma incorpora una huella de **los bytes exactos que se suben**, así que un archivo sustituido
+    entre la captura y el envío deja de verificar.
+  - **El esquema de firma no se documenta**: es contrato interno entre el SDK y el backend de Digiyo, y
+    una app que integra el SDK no necesita reproducirlo ni conocerlo. Lo único relevante del lado del
+    cliente son los headers de la tabla, por si hay un gateway o un WAF en el camino que pueda
+    descartarlos.
+  - **La firma nunca bloquea una captura.** Si no se puede firmar, la subida sale igual y es el
+    backend el que decide si la acepta.
+  - **Los desafíos vencen.** Se emiten todos al crear el DIA, así que el tiempo se consume a lo largo
+    del flujo y el último paso —normalmente el video— es el que menos margen tiene. Si vence, hay que
+    **crear un DIA nuevo**: no existe un endpoint para renovarlo. Conviene tenerlo en cuenta en flujos
+    donde el usuario pueda demorarse entre pasos.
+  - Se agrega el modelo `ChallengeModel`, accesible en `DataRequireModel.challenge`. Es informativo:
+    la app no necesita usarlo.
+
+- **`DigiYoConfig.loggingEnabled`** — controla si el SDK escribe en la consola de la plataforma
+  (Logcat en Android, consola de Xcode en iOS). `null` por defecto: autodetecta según si la app que
+  integra el SDK es un build de desarrollo. Ver
+  [Logging del SDK](README.md#logging-del-sdk-loggingenabled).
+  - Poner `true` es lo que hay que hacer para depurar en **TestFlight** o en el **simulador de iOS**,
+    donde la autodetección da `false`.
+  - **Cambio de comportamiento respecto de versiones anteriores:** hasta la 2.0.0-beta.1 el SDK
+    escribía en el log **también en builds de distribución**. Ahora, por defecto, solo lo hace en
+    builds de desarrollo. Si una app dependía de ver esos mensajes en producción, tiene que pasar
+    `loggingEnabled = true` explícitamente.
+
+- **`closeButtonConfig`** en `DocumentCameraConfig`, `SelfieCameraConfig` y `VideoCameraConfig` —
+  texto, ícono y ubicación del botón de cerrar, todo en un solo parámetro. Ver
+  [Botón de cerrar](README.md#botón-de-cerrar-closebuttonconfig).
+  - Texto personalizable. `"CERRAR"` es un **respaldo** para que el botón no quede vacío y aparece
+    solo si no se configuró ni texto ni ícono; pasar únicamente un ícono **no** agrega "CERRAR" al
+    lado.
+  - Ícono opcional, a la izquierda o a la derecha del texto.
+  - Sin texto queda **solo el ícono** y el botón se dibuja cuadrado. La altura no cambia nunca; el
+    ancho se ajusta al contenido.
+  - `position` elige de qué lado de la pantalla va el botón: `END` (derecha, el valor por defecto y
+    la ubicación de siempre) o `START` (izquierda).
+  - En `null` el botón se ve exactamente como antes.
+
+### Corregido
+
+- **`X-timestamp` y las marcas de tiempo del SDK ahora son UTC.** La utilidad de fecha ISO-8601 del
+  SDK devolvía la **hora local** con el sufijo `Z` de UTC en Android, y un formato distinto —con
+  offset local y sin milisegundos— en iOS. Con la firma esa cadena pasó a ser parte del protocolo, así
+  que ahora las dos plataformas producen el mismo formato en UTC.
+- **Los mensajes del SDK ya no se duplican en el log.** Crear más de una instancia del SDK en el
+  mismo proceso hacía que cada línea se imprimiera una vez por instancia. Si la app anfitriona usaba
+  la misma librería de logging, también se le duplicaban sus propias líneas.
+
+### Seguridad
+
+- **Qué aporta la firma.** Impide tres cosas: subir un archivo por la API sin pasar por el SDK,
+  reusar una captura de otro DIA o de un intento anterior, y sustituir el archivo después de
+  capturarlo.
+- **Qué no cubre.** No prueba que el archivo provenga de la cámara del dispositivo. Esa capa
+  —atestación de plataforma— está prevista para una versión posterior mediante el header
+  `X-integrity-token`, que hoy se reserva y no se envía.
+
+---
+
 ## [2.0.0-beta.1] — 2026-08-07
 
 Primera **beta de la 2.0.0**. Sube a mayor por las dos capacidades nuevas que agrega al producto:

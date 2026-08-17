@@ -72,6 +72,7 @@ Este SDK emplea inteligencia artificial para la detección precisa y eficiente d
 - [CaptureButtonType](#capturebuttontype)
 - [CaptureButtonBehavior](#capturebuttonbehavior)
 - [InfoBoxConfig](#infoboxconfig)
+- [Botón de cerrar (`closeButtonConfig`)](#botón-de-cerrar-closebuttonconfig)
 - [DigiYoIcons](#digiyoicons)
 ### [Componentes de UI](#componentes-de-ui)
 - [DocumentCameraView](#documentcameraview)
@@ -85,6 +86,7 @@ Este SDK emplea inteligencia artificial para la detección precisa y eficiente d
 - [HelpScreenView](#helpscreenview)
 - [MediaPreviewScreen](#mediapreviewscreen)
 ### Otros
+- [Logging del SDK (`loggingEnabled`)](#logging-del-sdk-loggingenabled)
 - [Captura con poca luz (Android)](#captura-con-poca-luz-android)
 - [Utilidades públicas del SDK](#utilidades-públicas-del-sdk)
 - [Lista de Cambios](#lista-de-cambios)
@@ -1036,6 +1038,7 @@ Define los parámetros de conexión y seguridad del SDK.
 - **`apiKey`** (*String*): Token para autenticación de peticiones.
 - **`enforceSslPinning`** (*Boolean*): Habilita la validación estricta de certificados SSL.
 - **`requestTimeoutInMillis`** (*Long*): Tiempo máximo (ms) de espera para respuestas del servidor.
+- **`loggingEnabled`** (*Boolean?*): Si el SDK escribe sus mensajes en la consola de la plataforma. `null` (por defecto) autodetecta. Ver [Logging del SDK](#logging-del-sdk-loggingenabled).
 
 ---
 
@@ -1061,6 +1064,18 @@ Contiene los metadatos de un requisito de entrada.
 - **`value`** (*String*): Valor o identificador del dato.
 - **`contentType`** (*String*): Formato esperado (ej. "image/jpeg", "video/mp4").
 - **`config`** (*InDataConfigModel*): Configuraciones específicas de validación.
+- **`challenge`** (*ChallengeModel?*): Desafío que el backend emite para firmar la captura de este requisito. Solo viene en los que reciben archivo; los de texto no lo traen. **La app no lo usa directamente**: el SDK lo consume solo al subir el archivo.
+
+---
+
+### ChallengeModel
+Desafío de firma que acompaña a un requisito de archivo. Lo emite el backend en `createDia` y el SDK lo usa de forma automática al subir la captura.
+- **`challengeId`** (*String?*): Identificador del desafío.
+- **`challengeType`** (*String?*): Identifica el esquema de firma que el SDK debe aplicar. Es de uso interno del SDK.
+- **`challengeData`** (*String?*): Dato aleatorio que entra en la firma.
+- **`expiresAt`** (*String?*): Vencimiento en ISO-8601 UTC.
+
+> **Los desafíos vencen.** Se emiten todos al crear el DIA, así que el tiempo se consume a lo largo del flujo y el último paso —normalmente el video— es el que menos margen tiene. Si vence, hay que **crear un DIA nuevo**: no existe un endpoint para renovarlo.
 
 ---
 
@@ -1125,6 +1140,7 @@ Configuración para la captura de documentos.
 - **`smartCropEnabled`** (*Boolean*): Habilita el recorte inteligente basado en la detección.
 - **`shutterSoundEnabled`** (*Boolean*): Indica si el sonido del obturador está activado.
 - **`lowLightBoostEnabled`** (*Boolean*): Mejora de captura para poca luz en **Android**: aclara la exposición y toma la foto en modo de máxima calidad. **`true` por defecto.** En iOS se ignora. Ver [Captura con poca luz (Android)](#captura-con-poca-luz-android).
+- **`closeButtonConfig`** (*CloseButtonConfig?*): Texto, ícono y ubicación del botón de cerrar. `null` = el botón de siempre. Ver [Botón de cerrar](#botón-de-cerrar-closebuttonconfig).
 
 ---
 
@@ -1138,6 +1154,7 @@ Configuración para la captura de selfies.
 - **`shutterSoundEnabled`** (*Boolean*): Indica si el sonido del obturador está activado.
 - **`customLiveValidationsText`** (*LiveValidationsText?*): Textos personalizados para las validaciones en vivo.
 - **`lowLightBoostEnabled`** (*Boolean*): Mejora de captura para poca luz en **Android**. **`true` por defecto.** En iOS se ignora. Ver [Captura con poca luz (Android)](#captura-con-poca-luz-android).
+- **`closeButtonConfig`** (*CloseButtonConfig?*): Texto, ícono y ubicación del botón de cerrar. `null` = el botón de siempre. Ver [Botón de cerrar](#botón-de-cerrar-closebuttonconfig).
 
 ---
 
@@ -1158,6 +1175,7 @@ Configuración para la grabación de video.
 - **`challengeTexts`** (*VideoChallengeTexts?*): Textos que el SDK dibuja sobre la cámara durante la grabación. `null` = se usan los del SDK (`VideoChallengeTexts.DEFAULT`). Ver [Textos sobre la cámara](#textos-sobre-la-cámara-challengetexts).
 - **`lowLightBoostEnabled`** (*Boolean*): Mejora de captura para poca luz en **Android**. **`true` por defecto.** En iOS se ignora. Ver [Captura con poca luz (Android)](#captura-con-poca-luz-android).
 - **`requireFaceFraming`** (*Boolean*): Si el encuadre del rostro en el óvalo condiciona el inicio de la grabación. **`true` por defecto.** Ver [Gate de encuadre](#gate-de-encuadre-requirefaceframing).
+- **`closeButtonConfig`** (*CloseButtonConfig?*): Texto, ícono y ubicación del botón de cerrar. `null` = el botón de siempre. Ver [Botón de cerrar](#botón-de-cerrar-closebuttonconfig).
 
 ---
 
@@ -1554,6 +1572,156 @@ Configuración de personalización de la información desplegada durante la capt
 - **`backgroundColor`** (*DigiYoRGB?*): Color del cuadro de texto. Si es nulo, usa un valor predeterminado.
 - **`contentColor`** (*DigiYoRGB?*): Color del texto. Si es nulo, usa un valor predeterminado.
 - **`infoBoxStyle`** (*InfoBoxStyle*): Corresponde al layout del contenido del cuadro. Puede ser `InfoBoxStyle.Vertical` o `InfoBoxStyle.Horizontal`
+
+---
+
+### Botón de cerrar (`closeButtonConfig`)
+
+Las tres vistas de cámara aceptan `closeButtonConfig`, que agrupa **en un solo parámetro** el contenido y la ubicación del botón de cerrar. Sigue dependiendo de `showCloseButton = true` para que el botón exista.
+
+| Campo | Tipo | Por defecto | Qué hace |
+|---|---|---|---|
+| `text` | *String?* | `null` | Texto del botón. Ver la nota de abajo sobre `"CERRAR"`. |
+| `icon` | *DigiYoImageAsset?* | `null` | Ícono opcional. Mismo tipo que el resto del SDK, ver [DigiYoImageAsset](#digiyoimageasset). |
+| `iconPosition` | *CloseButtonIconPosition* | `END` | De qué lado del **texto** va el ícono: `START` o `END`. |
+| `iconSize` | *Double* | `16.0` | Lado del ícono en dp. |
+| `contentColor` | *DigiYoRGB?* | `null` (blanco) | Color del texto, del ícono y del borde. |
+| `position` | *CloseButtonPosition* | `END` | De qué lado de la **pantalla** va el botón: `START` (izquierda) o `END` (derecha). |
+
+Con `closeButtonConfig = null` el botón se ve exactamente como en versiones anteriores, así que no hace falta tocar nada al actualizar.
+
+#### Cuándo aparece `"CERRAR"`
+
+`"CERRAR"` es un **respaldo para que el botón nunca quede vacío**, no un valor por defecto de `text`. Se aplica solo cuando no se configuró contenido de ninguna clase:
+
+| `text` | `icon` | Qué se ve |
+|---|---|---|
+| con texto | cualquiera | ese texto |
+| `null` o vacío | con ícono | **solo el ícono** |
+| `null` o vacío | `null` | `"CERRAR"` |
+
+O sea que si pasás únicamente un ícono, **no** te aparece "CERRAR" al lado.
+
+#### Cómo se dimensiona
+
+La **altura es siempre la misma**; lo único que varía es el ancho, que se ajusta al contenido con un mínimo igual a la altura:
+
+| Contenido | Resultado |
+|---|---|
+| texto + ícono | el más ancho |
+| solo texto | más angosto |
+| solo ícono | **cuadrado perfecto** |
+| un texto de un carácter | cuadrado también |
+
+El contenido va siempre en **una sola línea**, con el ícono al lado del texto.
+
+#### `START` / `END` en lugar de izquierda / derecha
+
+`position` se ancla al borde inicial o final del layout, que **respeta la dirección de lectura**. En español `START` es la izquierda y `END` la derecha; si la app corre en un idioma que se lee al revés, el botón se refleja solo, que es lo esperable de un botón de cerrar.
+
+No confundir `position` con `iconPosition`: la primera decide dónde va el botón en la pantalla, la segunda dónde va el ícono dentro del botón.
+
+#### Cómo agregar el ícono
+
+**El SDK no trae un ícono de cerrar**: cada app aporta el suyo. `DigiYoImageAsset` es el mismo tipo que usa el resto del SDK, pero su constructor **difiere por plataforma**, así que el ícono se agrega dos veces —una por plataforma— y esa parte del código no se comparte.
+
+**Android — hay que convertir el SVG.** `res/drawable` solo acepta `.xml`, `.png`, `.webp`, `.jpg` y `.9.png`. Un `.svg` ahí **hace fallar el build** con un error de aapt2 por extensión no soportada.
+
+1. Click derecho sobre `res` → **New → Vector Asset**.
+2. Elegí **Local file (SVG, PSD)** y seleccioná tu archivo.
+3. Next → Finish. Se genera `res/drawable/ic_close.xml`.
+4. Asegurate de que el `.svg` original **no** quede dentro de `res/drawable`.
+
+El nombre del recurso sale del nombre del `.xml`, sin extensión.
+
+**iOS — el SVG va tal cual.** Los asset catalogs aceptan SVG desde Xcode 12.
+
+1. Abrí `Assets.xcassets` en Xcode.
+2. Arrastrá el `ic_close.svg` al panel. Se crea un **image set**.
+3. El nombre que se usa en el código es el del **image set**, no el del archivo. Si querés cambiarlo, renombralo desde Xcode y no en el disco.
+
+#### Nitidez del ícono
+
+El SDK convierte todo `DigiYoImageAsset` a un **PNG en base64** antes de dibujarlo, así que lo vectorial se pierde en ese paso y lo que importa es a cuántos píxeles se rasterizó. Las dos plataformas se comportan distinto:
+
+| Plataforma | Rasterización |
+|---|---|
+| **Android** | El tamaño intrínseco del Vector Drawable **ya viene escalado por densidad**: un vector de `24dp` da 72 px en un equipo 3x. Alcanza de sobra para los 16 dp del botón. |
+| **iOS** | `UIImage(named:)` sobre un image set con un solo slot **1x** devuelve la imagen a su tamaño natural con escala 1: un SVG de 24×24 produce un PNG de **24 px**. En una pantalla 3x el botón dibuja 16 dp = 48 px, o sea que lo agranda y el ícono se ve blando. |
+
+Para que iOS quede parejo con Android, cualquiera de estas dos opciones sirve:
+
+- Darle al SVG un **tamaño natural más grande** —48×48 o 64×64— y dejar `iconSize` en 16. Se rasteriza grande y se reduce, que es la dirección que no pierde calidad.
+- Marcar **Preserve Vector Data** en el inspector de atributos del image set.
+
+> **El color del SVG no importa.** El botón tiñe el ícono con `contentColor` (blanco por defecto), así que cualquier color de origen se reemplaza. Lo que sí importa es la forma: si el ícono está sobre fondo transparente sale bien; si el SVG trae un fondo opaco, se tiñe todo el rectángulo. Por lo mismo no hace falta marcarlo como *Template Image* en Xcode.
+
+> **En iOS, un nombre de asset equivocado lanza una excepción**, no deja el ícono en blanco. Y se evalúa cuando el overlay dibuja el botón, o sea **al abrir la cámara**, no al construir el config — que es donde uno buscaría el error.
+
+#### Android
+
+```kotlin
+val context = LocalContext.current
+val closeIcon = remember { ImageAsset(context, R.drawable.ic_close) }
+
+DocumentCameraConfig(
+    cameraTitle = "Foto frontal de tu cédula",
+    // …
+    showCloseButton = true,
+    closeButtonConfig = CloseButtonConfig(
+        text = "SALIR",
+        icon = closeIcon,
+        iconPosition = CloseButtonIconPosition.START,
+        position = CloseButtonPosition.START,
+    ),
+)
+```
+
+Conviene envolverlo en `remember`: `ImageAsset` decodifica el drawable a base64 la primera vez que se le pide la imagen, así que una instancia nueva por recomposición vuelve a decodificar.
+
+Solo ícono, que da el cuadrado:
+
+```kotlin
+closeButtonConfig = CloseButtonConfig(icon = closeIcon)
+```
+
+#### iOS
+
+La interfaz Objective-C no admite valores por defecto, así que hay dos caminos: enumerar todos los campos, o usar uno de los inicializadores cortos.
+
+`CloseButtonConfig` e `ImageAsset` van **sin prefijo**, igual que `CaptureModeConfig` o `DocumentCameraConfig`. El prefijo `Digiyocore` es solo para los tipos de datos —`DigiyocoreDiaModel`, `DigiyocoreDigiYoConfig`— porque viven en otro módulo.
+
+Los **enums de Kotlin no admiten la forma corta `.start`** de Swift: hay que escribir el tipo completo.
+
+```swift
+// Inicializadores cortos
+CloseButtonConfig(text: "SALIR")
+CloseButtonConfig(text: "SALIR", position: CloseButtonPosition.start)
+CloseButtonConfig(icon: ImageAsset(assetName: "ic_close"))
+
+// Todos los campos
+CloseButtonConfig(
+    text: "SALIR",
+    icon: ImageAsset(assetName: "ic_close"),
+    iconPosition: CloseButtonIconPosition.start,
+    iconSize: 16,
+    contentColor: nil,
+    position: CloseButtonPosition.start
+)
+```
+
+Y dentro del config de la cámara, igual que cualquier otro parámetro:
+
+```swift
+DocumentCameraConfig(
+    cameraTitle: "Foto frontal de tu cédula",
+    // …
+    showCloseButton: true,
+    captureModeConfig: CaptureModeConfig(/* … */),
+    // …
+    closeButtonConfig: CloseButtonConfig(text: "SALIR", position: CloseButtonPosition.start)
+)
+```
 
 ---
 
@@ -2313,6 +2481,48 @@ viewModel.digiyoSdk.getMediaPreviewScreenViewController(
 - **`config`** (*MediaPreviewConfig*): Configuración de la pantalla de vista previa.
 - **`onPrimaryButtonPressed`** (*Callback*): Acción a realizar al presionar el botón principal.
 - **`onSecondaryButtonPressed`** (*Callback*): Acción a realizar al presionar el botón secundario.
+
+---
+
+### Logging del SDK (`loggingEnabled`)
+
+`DigiYoConfig.loggingEnabled` controla si el SDK escribe sus mensajes en la consola de la plataforma: **Logcat** en Android, la **consola de Xcode** en iOS.
+
+| Valor | Comportamiento |
+|---|---|
+| `null` (por defecto) | **Autodetecta**: se activa solo si la app que integra el SDK es un build de desarrollo. |
+| `true` | Fuerza el logging, incluso en un build de distribución. |
+| `false` | Lo apaga siempre. |
+
+La autodetección pregunta por la **app anfitriona**, no por el SDK: en Android consulta la bandera `FLAG_DEBUGGABLE` de la app, y en iOS la presencia de `embedded.mobileprovision`, que existe en builds de desarrollo, ad-hoc y enterprise, y **no** en los distribuidos por la App Store.
+
+**Cuándo conviene poner `true` explícitamente:**
+
+- Para depurar en **TestFlight** o en el **simulador de iOS**, donde la autodetección da `false` porque esos builds no llevan el archivo de aprovisionamiento.
+- Si interesan las **primeras líneas del arranque**. Con `true` el logging queda activo de inmediato; con autodetección, en Android la decisión recién puede tomarse cuando el SDK recibe el `Context` de la app, y las líneas anteriores a ese momento no se imprimen.
+
+```kotlin
+// Android
+DigiYoConfig(
+    baseUrl = BuildConfig.DIGIYO_BASE_URL,
+    apiKey = BuildConfig.DIGIYO_API_KEY,
+    enforceSslPinning = true,
+    loggingEnabled = true,
+)
+```
+
+```swift
+// iOS
+DigiyocoreDigiYoConfig(
+    baseUrl: baseUrl,
+    apiKey: apiKey,
+    enforceSslPinning: true,
+    requestTimeoutInMillis: 20000,
+    loggingEnabled: true
+)
+```
+
+> **En producción conviene dejarlo en `null` o `false`.** El log de una app puede ser leído por cualquier SDK embebido en ella —los reportadores de crashes suelen adjuntar las últimas líneas al reporte—, así que el logging activo en un build publicado expone datos como el `dia_id` y el identificador del dispositivo a componentes de terceros.
 
 ---
 
