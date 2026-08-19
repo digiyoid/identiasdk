@@ -39,7 +39,9 @@ Este SDK emplea inteligencia artificial para la detección precisa y eficiente d
 - [checkEnrollment](#checkenrollment)
 - [getSubWorkflow](#getsubworkflow)
 - [sendImage (SubWorkflow automático)](#sendimage-con-subworkflow-automático)
+- [getCameraAvailability](#getcameraavailability)
 ### [Modelo de datos](#modelo-de-datos)
+- [CameraAvailability](#cameraavailability)
 - [DigiYoConfig](#digiyoconfig)
 - [DiaModel](#diamodel)
 - [InDataEntryModel](#indataentrymodel)
@@ -439,6 +441,14 @@ digiyoSdk.cancelDia(diaId: digiyoSdk.getSavedDia()?.diaId ?? "") { [weak self] r
 
 Sube imágenes capturadas.
 
+> **El archivo tiene que provenir de una vista de cámara del SDK.** Desde la 2.0.2 el SDK verifica que
+> la imagen la haya capturado `DocumentCameraView` o `SelfieCameraView`, y que no se haya modificado
+> después. Una ruta de otro origen —la galería, otra cámara, un archivo descargado— se rechaza por
+> `onError` y no se sube.
+>
+> Es lo que permite que el backend confíe en el origen de la captura. Si tu flujo necesita capturar por
+> otro medio, escribinos antes de actualizar.
+
 #### Android
 
 ```kotlin
@@ -548,6 +558,9 @@ digiyoSdk.sendImageAsynchronously(
 ### sendVideo
 
 Sube un video grabado.
+
+> **El archivo tiene que provenir de `VideoCameraView`.** Aplica la misma verificación de origen que
+> [sendImage](#sendimage).
 
 #### Android
 
@@ -1026,6 +1039,34 @@ DigiyoSDK.sendImage(
 
 ---
 
+### getCameraAvailability
+
+Informa qué cámaras tiene el dispositivo. Sirve para decidir **antes** de abrir una vista: un equipo sin cámara delantera no puede hacer selfie ni prueba de vida, y sin la trasera no puede capturar el documento. Hasta la 2.0.2 eso se descubría cuando la cámara fallaba al abrir, con un error genérico.
+
+#### Android
+
+```kotlin
+val camaras = digiyo.getCameraAvailability()
+
+if (!camaras.canCaptureSelfie) {
+    // saltear el paso, o mostrar tu propio mensaje
+}
+```
+
+#### iOS
+
+```swift
+let camaras = digiyoSDK.getCameraAvailability()
+
+if !camaras.canCaptureSelfie {
+    // saltear el paso, o mostrar tu propio mensaje
+}
+```
+
+No requiere permisos de cámara ni abrirla. Ver [CameraAvailability](#cameraavailability).
+
+---
+
 ## Modelo de datos
 
 A continuación se detallan los modelos de datos (objetos) utilizados por el SDK para la gestión de identidades y comunicación con el backend.
@@ -1065,6 +1106,20 @@ Contiene los metadatos de un requisito de entrada.
 - **`contentType`** (*String*): Formato esperado (ej. "image/jpeg", "video/mp4").
 - **`config`** (*InDataConfigModel*): Configuraciones específicas de validación.
 - **`challenge`** (*ChallengeModel?*): Desafío que el backend emite para firmar la captura de este requisito. Solo viene en los que reciben archivo; los de texto no lo traen. **La app no lo usa directamente**: el SDK lo consume solo al subir el archivo.
+
+---
+
+### CameraAvailability
+Cámaras que el dispositivo pone a disposición de la app. Lo devuelve [getCameraAvailability](#getcameraavailability).
+- **`total`** (*Int*): Todas las cámaras disponibles.
+- **`front`** (*Int*): Cámaras frontales. En `0` no hay selfie ni prueba de vida posible.
+- **`back`** (*Int*): Cámaras traseras. En `0` no se puede capturar el documento.
+- **`canCaptureSelfie`** (*Boolean*): Atajo de `front > 0`.
+- **`canCaptureDocument`** (*Boolean*): Atajo de `back > 0`.
+
+Cuenta cámaras **lógicas** —las que se pueden abrir—, no sensores físicos: un teléfono con tres lentes traseros normalmente informa `back = 1`, porque el sistema decide qué sensor usar según el zoom.
+
+Si no se pudo consultar el hardware devuelve `CameraAvailability.UNKNOWN`, con todo en `0`. Comparar contra esa constante permite distinguir "no hay cámara" de "no se pudo averiguar".
 
 ---
 

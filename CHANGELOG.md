@@ -15,6 +15,76 @@ resuelve Swift Package Manager, y en **Android** a los artefactos `com.roshka:di
 
 ---
 
+## [2.0.2] — 2026-08-19
+
+Refuerza la firma de capturas, agrega la limpieza automática de capturas abandonadas y permite consultar
+las cámaras del dispositivo antes de abrir una vista.
+
+> ⚠️ **Cambio de comportamiento que puede requerir cambios de código.** El SDK ahora solo sube archivos
+> capturados con **sus propias vistas de cámara**. Si tu app captura por otro medio y usa `sendImage` o
+> `sendVideo` para subir ese archivo, deja de funcionar. Ver
+> [Origen de las capturas](#origen-de-las-capturas).
+
+### Agregado
+
+#### Origen de las capturas
+
+`sendImage` y `sendVideo` ahora **verifican que el archivo provenga de las vistas de cámara del SDK** y
+que no se haya modificado desde que se capturó. Si la verificación falla, la subida se rechaza por
+`onError` y no se envía nada.
+
+Es la contraparte necesaria de la firma de capturas que introdujo la 2.0.0: la firma garantiza que la
+subida salió del SDK y que el archivo llegó íntegro, pero no podía garantizar que el archivo viniera de
+la cámara. Ahora sí.
+
+**Qué hacer según tu integración:**
+
+| Tu app… | Acción |
+|---|---|
+| Usa `DocumentCameraView`, `SelfieCameraView` y `VideoCameraView` del SDK | Nada. Sigue funcionando igual. |
+| Captura con su propia cámara o toma archivos de la galería | **Hay que migrar a las vistas del SDK.** Contactanos si tu flujo lo impide. |
+
+Los mensajes de `onError` distinguen los dos motivos: que el archivo no lo capturó el SDK, o que cambió
+después de capturarse.
+
+#### Limpieza automática — `cancelDia` pasa a ser opcional
+
+Hasta ahora, si el usuario abandonaba el flujo, las capturas quedaban en el dispositivo y el DIA abierto
+en el backend hasta que la app llamara a `cancelDia`. La mayoría de las apps no lo hacen, porque no hay
+ningún evento del sistema que avise que el usuario se fue.
+
+El SDK ahora se encarga solo:
+
+- Al crear un DIA nuevo, cierra el anterior si quedó sin comitear y borra sus capturas del dispositivo.
+- Y descarta las capturas de más de **2 horas** que nunca se subieron.
+
+Seguís pudiendo llamar a `cancelDia` cuando tenga sentido en tu flujo —al tocar "cancelar", por
+ejemplo—; simplemente ya no es obligatorio para que el dispositivo quede limpio.
+
+#### `getCameraAvailability()`
+
+Informa qué cámaras tiene el dispositivo, para poder decidir **antes** de abrir una vista:
+
+```kotlin
+val camaras = digiyo.getCameraAvailability()
+if (!camaras.canCaptureSelfie) { /* saltear el paso, o avisar al usuario */ }
+```
+
+Un equipo sin cámara delantera no puede hacer selfie ni prueba de vida; hasta ahora eso se descubría
+cuando la cámara fallaba al abrir, con un error genérico. Ver
+[CameraAvailability](README.md#cameraavailability).
+
+### Corregido
+
+- **iOS: las capturas legítimas se rechazaban al subir desde el puente de React Native.** El SDK
+  comparaba la ruta del archivo tal como la recibía, y en iOS la ruta que entrega la cámara y la que
+  necesita el core para leer el archivo se escriben distinto. Ahora la comparación es indiferente al
+  formato de la ruta, así que un integrador puede transformarla sin que la subida se rechace.
+- **El arranque del onboarding podía demorar más de un minuto** cuando la limpieza del DIA anterior no
+  obtenía respuesta del servidor. Esa limpieza ya no bloquea el `createDia`.
+
+---
+
 ## [2.0.0] — 2026-08-17
 
 Segunda beta de la 2.0.0. Lo central es la **firma de capturas**: cada subida de imagen o video
