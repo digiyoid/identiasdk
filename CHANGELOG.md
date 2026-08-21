@@ -15,6 +15,129 @@ resuelve Swift Package Manager, y en **Android** a los artefactos `com.roshka:di
 
 ---
 
+## [2.1.0] — 2026-08-21
+
+Convierte el desafío `look_left_right` en una verificación real del movimiento de cabeza, y abre a
+personalización el estilo de los textos sobre el óvalo y la forma del botón obturador.
+
+Sin cambios rompientes: **una app integrada en la 2.0.2 compila y funciona sin tocar código.**
+
+### Agregado
+
+#### Secuencia de giros de cabeza (`look_left_right`)
+
+Cuando `createDia` devuelve `in_data.POL_VIDEO.config.live_validations.look_left_right = true`, la
+pantalla de video ahora pide cuatro poses **en orden** y las verifica contra el ángulo del rostro:
+
+`girar a la izquierda` → `volver al frente` → `girar a la derecha` → `volver al frente` → completada
+
+Antes, ese desafío mostraba una animación de una cabeza girando y **no comprobaba nada**: se cumplía
+dejando el teléfono apoyado. El video que llegaba al backend podía no tener un solo giro.
+
+- Al completarse, la grabación **se corta sola** —sin esperar el límite de duración—, el marco del óvalo
+  pasa al `successColor` del `colorScheme` y el mensaje de completado se dibuja en ese mismo color.
+- En este desafío el marco **no** se pone del color de éxito al encuadrar el rostro, como sí hace en los
+  demás: se mantiene neutro hasta completar los cuatro giros, así ese color señala una sola cosa.
+- **El óvalo no desaparece al encuadrar el rostro**, a diferencia del resto de los desafíos: se mantiene
+  desde ese momento y durante toda la grabación, porque es la referencia contra la que el usuario acomoda
+  la cabeza mientras gira. Lo que sí se oculta al quedar encuadrado es `ovalLabelText`, junto con la caja
+  de ayuda de debajo del óvalo. El botón de disparo no cambia.
+- Un giro brusco no alcanza: cada pose hay que sostenerla un instante. Es lo que hace que el video sirva
+  para la verificación del backend.
+- Si el usuario no completa la secuencia, aparece un mensaje que indica **en qué giro se quedó**.
+
+> ⚠️ **La duración de la grabación tiene un piso de 20 segundos con este desafío.** Si tu app pasa un
+> `VideoCameraConfig.videoRecordDurationMs` menor, se ignora y se usan 20 s. Son cuatro poses que el
+> usuario tiene que leer, ejecutar y sostener: con los 5 s por defecto no se llegaba ni a la mitad y el
+> intento terminaba siempre en el mensaje de fallo. **No alarga el caso exitoso**, porque al completarse
+> la secuencia la grabación se corta antes del límite. Un valor **mayor** que el piso sí se respeta. Es
+> el mismo criterio que ya tenía `pol_depth`, con un piso de 12 s.
+
+#### `VideoChallengeTexts`: estilo de los textos sobre el óvalo
+
+| Campo nuevo | Para qué | Sin definir |
+|---|---|---|
+| `ovalLabelBackgroundColor` | Fondo de los textos sobre el óvalo | el `successColor` del `colorScheme`, como estaba fijo antes |
+| `ovalLabelFontSize` | Tamaño en sp | `34.0`, el valor de siempre |
+
+Sirve para el caso en que el color de éxito del esquema no da suficiente contraste con letras blancas, o
+simplemente no es el que la marca quiere ahí. Con `DigiYoRGB.TRANSPARENT` se ve solo el texto.
+
+#### `VideoChallengeTexts`: instrucciones de la secuencia
+
+Cuatro campos nuevos —`lookLeftInstructionText`, `lookFrontInstructionText`,
+`lookRightInstructionText`, `lookSequenceCompletedText`— para la consigna de cada fase.
+
+- **No tienen texto por defecto.** Sin definir, esa fase no muestra nada. Se pueden definir de a una.
+- **Que no haya texto no afecta la validación.** Los cuatro giros se verifican igual: sin textos el
+  desafío se cumple exactamente igual, el usuario solo no ve la consigna.
+- Se truncan a 40 caracteres. Sin `look_left_right` activo no tienen ningún efecto.
+
+`ovalLabelText` no cambia: sigue cayendo en `"ALÉJESE"` cuando no se define.
+
+#### `DigiYoRGB.alpha` y `DigiYoRGB.TRANSPARENT`
+
+`DigiYoRGB` gana un cuarto canal opcional, `alpha`, de `0` a `255` y por defecto `255`. Hasta ahora no
+había forma de pedir un color transparente o semitransparente.
+
+```kotlin
+DigiYoRGB(61, 169, 224)            // opaco, como siempre
+DigiYoRGB(0, 0, 0, alpha = 120)    // semitransparente
+DigiYoRGB.TRANSPARENT              // invisible
+```
+
+El constructor de tres componentes sigue existiendo, así que el código ya escrito no cambia.
+
+#### `ShutterButtonConfig`: apariencia de los obturadores circulares
+
+Nuevo campo `CaptureModeConfig.shutterButtonConfig`, para configurar **diámetro, relleno y aro** de los
+botones `ShutterButtonType1` y `ShutterButtonType2`. Con `DefaultButton` no tiene efecto.
+
+| Campo | Qué controla | Sin definir |
+|---|---|---|
+| `diameter` | Lado total en dp (piso de 40 dp) | `64.0` |
+| `backgroundColor` | Relleno interior: la superficie más visible | celeste claro / blanco según el tipo |
+| `borderColor` | Color del aro | blanco |
+| `borderWidth` | Grosor del aro en dp | proporcional al diámetro |
+| `outerColor` | Círculo exterior, apenas perceptible | el del preset del SDK |
+
+Cada campo es opcional por separado. El aro y el disco se escalan con el `diameter`, así que el botón
+crece proporcionado sin tocar los otros campos.
+
+Va aparte de `cameraButtonConfig` porque describen cosas distintas: `ButtonConfig` es un botón
+rectangular con texto —`label`, `shape`, `buttonStyle`— y ninguno de esos campos significa algo en un
+círculo.
+
+### Corregido
+
+- **`CaptureModeConfig.buttonType` se ignoraba en la cámara de documentos.** `DocumentCameraView`
+  dibujaba siempre el botón rectangular: aceptaba `ShutterButtonType1` y `ShutterButtonType2` sin hacer
+  nada con ellos y sin ningún aviso. En `SelfieCameraView` y `VideoCameraView` venía funcionando. Si tu
+  app ya pasaba un `buttonType` de obturador para capturar cédulas, **el botón va a cambiar de aspecto**
+  al actualizar: ahora se respeta lo que pediste.
+
+- **El contador y el indicador REC se apoyaban sobre el borde inferior del óvalo** durante la grabación.
+  Ahora quedan por debajo, con separación.
+
+- **Al disparar, el obturador circular mostraba un círculo gris por detrás del disco**, pisando el
+  `outerColor` configurado incluso si se había pedido transparente. Ahora, cuando la app pasa
+  `shutterButtonConfig`, el círculo exterior conserva su color y la señal de deshabilitado la da el aro,
+  que se apaga hacia el gris. **Sin `shutterButtonConfig` el botón queda exactamente igual que antes.**
+
+### Compatibilidad
+
+Tres clases ganaron campos, y las tres conservan un `init` con la firma de la 2.0.2 para que las apps
+**Swift** no tengan que tocar código —la interfaz Objective-C no admite valores por defecto, así que cada
+campo nuevo cambiaría el selector—:
+
+| Clase | Firma preservada |
+|---|---|
+| `CaptureModeConfig` | los 7 parámetros anteriores a `shutterButtonConfig` |
+| `VideoChallengeTexts` | los 9 parámetros anteriores a los de estilo y secuencia |
+| `DigiYoRGB` | `DigiYoRGB(red, green, blue)` |
+
+---
+
 ## [2.0.2] — 2026-08-19
 
 Refuerza la firma de capturas, agrega la limpieza automática de capturas abandonadas y permite consultar

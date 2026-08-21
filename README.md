@@ -68,6 +68,7 @@ Este SDK emplea inteligencia artificial para la detección precisa y eficiente d
 - [DigiyoColorScheme](#digiyocolorscheme)
 - [DigiYoImageAsset](#digiyoimageasset)
 - [CaptureModeConfig](#capturemodeconfig)
+- [ShutterButtonConfig](#shutterbuttonconfig)
 - [ButtonConfig](#buttonconfig)
 - [DigiYoShape](#digiyoshape)
 - [DigiYoButtonStyle](#digiyobuttonstyle)
@@ -83,6 +84,8 @@ Este SDK emplea inteligencia artificial para la detección precisa y eficiente d
   - [iOS: cómo omitir los parámetros nuevos](#ios-cómo-omitir-los-parámetros-nuevos)
   - [Gate de encuadre (`requireFaceFraming`)](#gate-de-encuadre-requirefaceframing)
   - [Textos sobre la cámara (`challengeTexts`)](#textos-sobre-la-cámara-challengetexts)
+  - [Estilo de los textos sobre el óvalo](#estilo-de-los-textos-sobre-el-óvalo)
+  - [Secuencia de giros de cabeza (`look_left_right`)](#secuencia-de-giros-de-cabeza-look_left_right)
   - [Texto de ayuda debajo del óvalo](#texto-de-ayuda-debajo-del-óvalo)
   - [Colores del óvalo y de la etiqueta](#colores-del-óvalo-y-de-la-etiqueta)
 - [HelpScreenView](#helpscreenview)
@@ -1334,6 +1337,22 @@ Textos que el SDK dibuja **sobre la cámara** durante la grabación de video. Se
 Todos los textos de grabación están **vacíos por defecto**: si la app no define uno, el SDK
 no dibuja ningún mensaje mientras se graba.
 
+**Estilo de los textos sobre el óvalo** (desde la 2.1.0)
+
+- **`ovalLabelBackgroundColor`** (*DigiYoRGB?*): Fondo de los textos que se dibujan sobre el óvalo. En `null` se usa el `successColor` del `colorScheme`, que es el comportamiento de versiones anteriores. Con `DigiYoRGB.TRANSPARENT` se ve solo el texto.
+- **`ovalLabelFontSize`** (*Double?*): Tamaño en sp. En `null`, `34.0`. Es un tamaño fijo, no autoajustable: un tamaño que varía según el largo del texto se mide distinto en Android y en iOS.
+
+**Instrucciones de la secuencia de giros** (desde la 2.1.0, ver [Secuencia de giros de cabeza](#secuencia-de-giros-de-cabeza-look_left_right))
+
+- **`lookLeftInstructionText`** (*String?*): Consigna de girar hacia su propia izquierda.
+- **`lookFrontInstructionText`** (*String?*): Consigna de volver al frente. Se usa **dos veces**: después de cada giro.
+- **`lookRightInstructionText`** (*String?*): Consigna de girar hacia su propia derecha.
+- **`lookSequenceCompletedText`** (*String?*): Mensaje al completar la secuencia.
+
+Estos cuatro **no tienen texto por defecto**: sin definir, esa fase no muestra nada. Se pueden definir de
+a una. Y no afectan la validación: los cuatro giros se verifican igual, con o sin textos. Se truncan a 40
+caracteres. Sin `look_left_right` activo no tienen ningún efecto.
+
 ---
 
 ### DigiYoRGB
@@ -1341,6 +1360,18 @@ Representación de colores en formato RGB.
 - **`red`** (*Int*): Componente rojo (0-255).
 - **`green`** (*Int*): Componente verde (0-255).
 - **`blue`** (*Int*): Componente azul (0-255).
+- **`alpha`** (*Int*): Opacidad (0-255), desde la 2.1.0. `0` es invisible y `255` opaco. Por defecto `255`, que es cómo se comportaban todos los colores antes de que este campo existiera.
+
+Atajo: **`DigiYoRGB.TRANSPARENT`** es `alpha = 0`. Sirve para que de un elemento se vea solo su contenido
+y no su fondo, por ejemplo `VideoChallengeTexts.ovalLabelBackgroundColor`.
+
+```kotlin
+DigiYoRGB(61, 169, 224)                  // opaco, como siempre
+DigiYoRGB(0, 0, 0, alpha = 120)          // negro semitransparente
+DigiYoRGB.TRANSPARENT                    // invisible
+```
+
+El constructor de tres componentes sigue existiendo, así que el código ya escrito no cambia.
 
 ---
 
@@ -1525,10 +1556,97 @@ digiyoSdk.getDocumentCameraViewController(
 - **`automaticReadingEnabled`** (*Boolean*): Activa o desactiva el modo de captura automática.
 - **`automaticModeTimeoutMillis`** (*Long?*): Si no es nulo, define el tiempo en milisegundos en que la captura automática estará activada antes de pasar a modo manual.
 - **`cameraButtonConfig`** (*ButtonConfig?*): Corresponde a la configuración de personalización del botón, incluyendo el título.
-- **`buttonType`** (*CaptureButtonType?*): Corresponde al tipo de botón.
+- **`buttonType`** (*CaptureButtonType?*): Corresponde al tipo de botón: `DefaultButton` (rectangular con texto), `ShutterButtonType1` o `ShutterButtonType2` (obturadores circulares, sin texto). Aplica en las tres cámaras: documento, selfie y video.
 - **`buttonBehavior`** (*CaptureButtonBehavior?*): Corresponde al comportamiento del botón al capturar la foto o el video. Por defecto, el botón queda desactivado.
 - **`infoBoxConfig`** (*InfoBoxConfig?*): Corresponde a la configuración de personalización de la información que se despliega en la captura.
 - **`overwriteDefaultTextWith`** (String?): Permite reemplazar el texto por defecto del infoBox. (Si existen validaciones activas, el texto de las validaciones tienen prioridad, por lo que deben de personalizarse desde `customLiveValidationsText` en la configuración correspondiente)
+- **`shutterButtonConfig`** (*ShutterButtonConfig?*): Diámetro y colores de los obturadores circulares. Solo aplica con `buttonType` en `ShutterButtonType1` o `ShutterButtonType2`; con `DefaultButton` no tiene efecto. Ver [ShutterButtonConfig](#shutterbuttonconfig).
+
+> El `init` de Swift **sin** `shutterButtonConfig` sigue existiendo, así que una app ya integrada no
+> necesita tocar nada al subir a la 2.1.0.
+
+---
+
+### ShutterButtonConfig
+
+Apariencia de los botones obturadores circulares (`buttonType = ShutterButtonType1` o
+`ShutterButtonType2`). Va aparte de `ButtonConfig` porque describen cosas distintas: `ButtonConfig` es un
+botón rectangular con texto —`label`, `shape`, `buttonStyle`— y ninguno de esos campos significa algo en
+un círculo.
+
+El obturador son tres círculos concéntricos:
+
+| Campo | Tipo | Qué capa controla | Por defecto |
+|---|---|---|---|
+| `diameter` | `Double?` | Lado total del botón, en dp. Piso de 40 dp. | `64.0` |
+| `backgroundColor` | `DigiYoRGB?` | **Relleno interior**: la superficie más grande, la que se percibe como "el color del botón". | celeste claro en `ShutterButtonType1`, blanco en `ShutterButtonType2` |
+| `borderColor` | `DigiYoRGB?` | El aro, lo que le da la forma de obturador. | blanco |
+| `borderWidth` | `Double?` | Grosor del aro, en dp. | proporcional al `diameter` (4 dp con el diámetro por defecto) |
+| `outerColor` | `DigiYoRGB?` | Círculo exterior: se ve como un **anillo por detrás del aro**. | el del preset del SDK (el `secondaryColor` del esquema) |
+
+Si lo que buscás es "cambiarle el color al botón", el campo es `backgroundColor`.
+
+> **El círculo exterior no desaparece si no lo configurás.** Sin `outerColor` queda el color del esquema
+> y se ve como un anillo alrededor de tu diseño; es el aspecto con el que se publicó el botón. Para que
+> se vea **solo** lo que configuraste, `outerColor = DigiYoRGB.TRANSPARENT`. Con el exterior transparente
+> el SDK además desactiva la sombra del botón, que si no quedaría flotando como un halo.
+
+Cada campo es opcional por separado: `ShutterButtonConfig(backgroundColor = ...)` cambia solo el relleno.
+Con `shutterButtonConfig = null` el botón se dibuja como en versiones anteriores.
+
+El aro y el disco interior **se escalan con el `diameter`**, así que el botón crece proporcionado sin
+tocar los otros campos.
+
+**La reacción al toque no se configura: la resuelve el SDK a partir de tus colores.** Al tocar, el relleno
+destella brevemente con el color que le **contrasta** —un relleno oscuro destella claro y uno claro
+destella oscuro—. Corre siempre, con o sin `shutterButtonConfig`: es la única confirmación del toque en un
+botón sin texto.
+
+La señal de **deshabilitado** depende de si configuraste el obturador. Son dos formas de lo mismo y no
+coexisten, porque juntas darían dos anillos grises superpuestos:
+
+| | Círculo exterior al deshabilitarse | Aro |
+|---|---|---|
+| **con** `shutterButtonConfig` | conserva tu color | se **apaga hacia el gris** |
+| **sin** `shutterButtonConfig` | gris, como en versiones anteriores | sin cambios |
+
+Es decir: si no pasás `shutterButtonConfig`, el botón se ve y se comporta exactamente como antes.
+
+**Android**
+
+```kotlin
+captureModeConfig = CaptureModeConfig(
+    automaticReadingEnabled = false,
+    buttonType = CaptureButtonType.ShutterButtonType1,
+    shutterButtonConfig = ShutterButtonConfig(
+        diameter = 80.0,
+        backgroundColor = DigiYoRGB(255, 255, 255),
+        borderColor = DigiYoRGB(61, 169, 224),
+    ),
+)
+```
+
+**iOS**
+
+```swift
+captureModeConfig: CaptureModeConfig(
+    automaticReadingEnabled: false,
+    automaticModeTimeoutMillis: nil,
+    cameraButtonConfig: nil,
+    buttonType: CaptureButtonType.shutterButtonType1,
+    buttonBehavior: nil,
+    infoBoxConfig: nil,
+    overwriteDefaultTextWith: nil,
+    shutterButtonConfig: ShutterButtonConfig(
+        diameter: 80.0,
+        backgroundColor: DigiYoRGB(red: 255, green: 255, blue: 255),
+        borderColor: DigiYoRGB(red: 61, green: 169, blue: 224)
+    )
+)
+```
+
+El cuadradito de `ShutterButtonType2` acompaña al `diameter`, pero su **color** sale del `contentColor` de
+`cameraButtonConfig`, no de acá.
 
 ---
 
@@ -2324,6 +2442,97 @@ VideoCameraConfig(
     )
 )
 ```
+
+Ese `init` de nueve parámetros es el **constructor de compatibilidad** con la firma de la 2.0.2: existe
+para que una app ya integrada no tenga que tocar nada al subir de versión. Para usar los campos de estilo
+o de la secuencia hay que pasar los quince.
+
+#### Estilo de los textos sobre el óvalo
+
+| Campo de `challengeTexts` | Qué controla | Sin definir |
+|---|---|---|
+| `ovalLabelBackgroundColor` | Fondo de los textos sobre el óvalo | el `successColor` del `colorScheme` |
+| `ovalLabelFontSize` | Tamaño en sp | `34.0` |
+
+```kotlin
+challengeTexts = VideoChallengeTexts(
+    ovalLabelText = "Colocá tu rostro dentro del óvalo",
+    ovalLabelFontSize = 20.0,
+    ovalLabelBackgroundColor = DigiYoRGB.TRANSPARENT,   // que se vea solo el texto
+)
+```
+
+Sin fondo, el texto blanco puede volverse ilegible sobre una escena clara —una pared blanca, una
+ventana—, porque pierde el contraste que le daba la caja de color. Si eso pasa, el intermedio es un fondo
+semitransparente: `DigiYoRGB(0, 0, 0, alpha = 120)`.
+
+#### Secuencia de giros de cabeza (`look_left_right`)
+
+Cuando `createDia` devuelve `in_data.POL_VIDEO.config.live_validations.look_left_right = true`, la
+pantalla de video pide cuatro poses **en orden** y las verifica contra el ángulo del rostro:
+
+`girar a la izquierda` → `volver al frente` → `girar a la derecha` → `volver al frente` → completada
+
+Al completarse, la grabación **se corta sola** y el marco del óvalo pasa al `successColor` del
+`colorScheme`.
+
+**El óvalo no desaparece al encuadrar el rostro**, a diferencia del resto de los desafíos: se queda desde
+ese momento y durante toda la grabación, porque es la referencia contra la que el usuario acomoda la
+cabeza mientras gira. Lo que sí se oculta al quedar encuadrado es `ovalLabelText`, junto con la caja de
+ayuda de debajo del óvalo.
+
+| Momento | Óvalo | Texto sobre el óvalo |
+|---|---|---|
+| Buscando el encuadre | visible, neutro | `ovalLabelText` (`"ALÉJESE"` por defecto), en blanco |
+| Encuadrado, esperando el disparo | **visible**, neutro | nada |
+| Girando | visible, neutro | la instrucción del giro, en blanco |
+| Secuencia completada | **color de éxito** | `lookSequenceCompletedText`, **en el color de éxito** |
+
+**En este desafío el marco no reacciona al encuadre**: se mantiene neutro —el `accentColor` del
+`colorScheme`— durante todo el recorrido y pasa al `successColor` una sola vez, al completar los cuatro
+giros. Es distinto del resto de los desafíos, donde el marco cambia en cuanto el rostro queda encuadrado.
+Acá el color de éxito queda reservado para un único significado: el desafío se cumplió.
+
+El mensaje de completado se dibuja en ese mismo color, para que marco y texto se lean como una sola señal.
+
+> Ese texto se mantiene **blanco** en un caso: cuando el fondo de la etiqueta es el propio color de éxito,
+> que es el valor por defecto de `ovalLabelBackgroundColor`. Letras y fondo del mismo color darían un texto
+> invisible. Si definís cualquier otro fondo —o `DigiYoRGB.TRANSPARENT`—, el texto toma el color de éxito.
+
+El botón de disparo no cambia: con `automaticReadingEnabled = false` sigue apareciendo y habilitándose al
+quedar el rostro encuadrado.
+
+La consigna de cada fase se configura con cuatro campos de `challengeTexts`, y se dibuja sobre el óvalo
+con el mismo estilo que `ovalLabelText`:
+
+| Campo | Fase |
+|---|---|
+| `lookLeftInstructionText` | girar hacia su propia izquierda |
+| `lookFrontInstructionText` | volver al frente (se usa **dos veces**) |
+| `lookRightInstructionText` | girar hacia su propia derecha |
+| `lookSequenceCompletedText` | secuencia cumplida |
+
+```kotlin
+challengeTexts = VideoChallengeTexts(
+    lookLeftInstructionText = "Girá lentamente a la izquierda",
+    lookFrontInstructionText = "Mirá al frente",
+    lookRightInstructionText = "Girá lentamente a la derecha",
+    lookSequenceCompletedText = "¡Verificación completada!",
+)
+```
+
+- **No tienen texto por defecto.** Sin definir, esa fase no muestra nada. Se pueden definir de a una. Es
+  distinto de `ovalLabelText`, que sí cae en `"ALÉJESE"`.
+- **Que no haya texto no afecta la validación.** Los cuatro giros se verifican igual. Sin textos el
+  desafío se cumple exactamente igual; el usuario solo no ve la consigna.
+- Se truncan a **40 caracteres**. Se leen contra reloj, mientras el usuario gira la cabeza.
+- Sin `look_left_right` activo **no tienen ningún efecto**.
+
+> **La duración de la grabación tiene un piso de 20 segundos con este desafío.** Un
+> `videoRecordDurationMs` menor se ignora: se aplica `maxOf(valorDeLaApp, 20_000)`. Son cuatro poses que
+> hay que leer, ejecutar y sostener; con los 5 s por defecto no se llega ni a la mitad y el intento
+> termina siempre en el mensaje de fallo. **No penaliza el caso exitoso**, porque al completarse la
+> secuencia la grabación se corta sin esperar el límite. Un valor **mayor** que el piso sí se respeta.
 
 #### Texto de ayuda debajo del óvalo
 
