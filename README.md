@@ -912,7 +912,9 @@ digiyoSdk.verifyTasksAndCommit(diaId: digiyoSdk.getSavedDia()?.diaId ?? "") { st
 
 ### checkEnrollment
 
-Verifica el estado del enrolamiento.
+Consulta si un número de documento **ya tiene un enrolamiento** y si todavía le quedan intentos
+disponibles. Se llama antes de arrancar el flujo: la respuesta decide si hay que empezar de cero, retomar
+un onboarding anterior o cortar.
 
 #### Android
 
@@ -920,8 +922,19 @@ Verifica el estado del enrolamiento.
 digiyoSdk.checkEnrollment(
     diaId = digiyoSdk.getSavedDia()?.diaId ?: "",
     idNumber = "1234567",
-    onSuccess = { status ->
-        // Success
+    onSuccess = { enrollment ->
+        when {
+            enrollment?.isEnrolled == true -> {
+                // Ya tiene un enrolamiento: enrollment.dia trae los datos del intento anterior
+                val idInfo = enrollment.dia?.task?.result?.idInfo
+            }
+            enrollment?.isAllowedToRetry == false -> {
+                // Sin cupos para continuar
+            }
+            else -> {
+                // Sin enrolamiento previo y con cupos: flujo normal
+            }
+        }
     },
     onError = {
         // Error
@@ -935,8 +948,12 @@ digiyoSdk.checkEnrollment(
 digiyoSdk.checkEnrollment(
     diaId: digiyoSdk.getSavedDia()?.diaId ?? "",
     idNumber: "1234567",
-    onSuccess: { status in
-        // Success
+    onSuccess: { enrollment in
+        if enrollment?.isEnrolled == true {
+            let idInfo = enrollment?.dia?.task?.result?.idInfo
+        } else if enrollment?.isAllowedToRetry == false {
+            // Sin cupos para continuar
+        }
     },
     onError: { error in
         // Error
@@ -948,6 +965,22 @@ digiyoSdk.checkEnrollment(
 
 - **`diaId`** (*String*): ID del DIA que se desea procesar.
 - **`idNumber`** (*String*): El número de documento que se desea verificar.
+
+**Cómo leer la respuesta (`EnrollmentData`)**
+
+| Campo | Valor | Qué significa |
+|---|---|---|
+| `isEnrolled` | `true` | Ese documento **ya tiene un enrolamiento realizado**. `dia` viene con los datos de ese enrolamiento anterior —los datos leídos de la cédula y su resultado—, para **retomar el onboarding desde ahí** en vez de volver a pedirle al usuario lo que ya entregó. |
+| | `false` | No hay enrolamiento previo para ese documento. |
+| `isAllowedToRetry` | `true` | Todavía **quedan cupos disponibles para reintentar**. |
+| | `false` | **Ya no tiene cupos disponibles para continuar.** Reintentar no va a prosperar: corresponde cortar el flujo e informárselo al usuario. |
+| `dia` | `DiaModel?` | El DIA del enrolamiento anterior cuando `isEnrolled = true`; `null` cuando no hay uno previo. Los datos de la cédula salen de `dia.task.result.idInfo` y el resultado de ese intento del resto de `dia.task.result`. |
+
+Los dos flags se leen por separado y responden preguntas distintas: `isEnrolled` dice **si hay algo que
+retomar**, `isAllowedToRetry` dice **si el sistema todavía acepta un intento más**. Conviene consultar los
+dos antes de decidir qué pantalla mostrar.
+
+---
 
 ### getSubWorkflow
 
@@ -1145,10 +1178,16 @@ Configuraciones avanzadas para la validación de un dato.
 ---
 
 ### EnrollmentData
-Información sobre el registro previo de un usuario.
-- **`isEnrolled`** (*Boolean*): Indica si el usuario ya está enrolado en el sistema.
-- **`isAllowedToRetry`** (*Boolean*): Determina si se permite intentar el flujo nuevamente.
-- **`dia`** (*DiaModel*): Datos del último proceso asociado al usuario.
+Respuesta de [`checkEnrollment`](#checkenrollment): dice si el documento consultado ya tiene un
+enrolamiento y si le quedan intentos.
+- **`isEnrolled`** (*Boolean*): `true` = ese documento ya tiene un enrolamiento realizado, y `dia` trae
+  los datos de ese enrolamiento anterior para retomar el onboarding desde ahí. `false` = no hay uno previo.
+- **`isAllowedToRetry`** (*Boolean*): `true` = todavía quedan cupos disponibles para reintentar. `false` =
+  ya no tiene cupos para continuar; reintentar no va a prosperar.
+- **`dia`** (*DiaModel?*): el DIA del enrolamiento anterior cuando `isEnrolled = true`, `null` cuando no
+  hay uno previo. Los datos de la cédula salen de `dia.task.result.idInfo`.
+
+Ver [checkEnrollment](#checkenrollment) para la tabla completa de combinaciones.
 
 ---
 
