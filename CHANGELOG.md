@@ -15,6 +15,103 @@ resuelve Swift Package Manager, y en **Android** a los artefactos `com.roshka:di
 
 ---
 
+## [2.1.1] — 2026-08-25
+
+Hace que los envíos al backend sobrevivan los cortes de red, y que un fallo de conexión llegue a tu app
+como un error identificable y reintentable en lugar de uno genérico. Acorta además el plazo de la
+secuencia de giros de cabeza.
+
+Un solo punto a mirar: si tu app **construye** un `DigiYoError` en Swift, la firma cambió. Leerlo en los
+`onError` sigue igual que antes.
+
+### Corregido
+
+- **En iOS los envíos no se reintentaban nunca.** El SDK ya traía reintentos automáticos para cortes de
+  red, pero la detección no reconocía las excepciones del motor HTTP de iOS: en la práctica, cualquier
+  fallo de transporte terminaba el envío en el primer intento. Ahora iOS reintenta ante conexión perdida,
+  timeout, host inalcanzable y falta de red, y **no** reintenta lo que el usuario canceló ni los fallos de
+  TLS o de certificate pinning, donde repetir sólo repite el rechazo. En Android la detección tampoco
+  cubría toda la familia de errores de E/S —quedaban afuera los fallos de TLS, los resets de HTTP/2 y los
+  de resolución de nombres—; ahora sí.
+
+  El caso concreto: grabar el video, tocar enviar y pasar la app a segundo plano. iOS corta la conexión
+  del envío ("The network connection was lost") y hasta esta versión eso terminaba el intento. Ahora el
+  reintento queda programado y, si el sistema no terminó el proceso, el envío se completa al volver a la
+  app sin que el usuario tenga que hacer nada.
+
+- **Un corte de red llegaba a tu app como "Error inesperado".** Sólo los rechazos HTTP traían código; los
+  problemas de red y las respuestas ilegibles caían todos en el mismo error genérico, sin código y con
+  `userVisible = false`. No había forma de saber que el fallo era transitorio ni qué mostrarle al usuario.
+  Ahora:
+
+  | Qué pasó | `code` | `userVisible` | `retryable` |
+  |---|---|---|---|
+  | el servidor rechazó (4xx/5xx) | el código de estado | `false` | `false` |
+  | se cortó la red, timeout, sin conexión | `NETWORK_ERROR` | `true` | `true` |
+  | la respuesta no se pudo interpretar | `SERIALIZATION_ERROR` | `false` | `false` |
+
+  `DigiYoError` gana el campo **`retryable`**. Cuando viene en `true`, la captura sigue en disco
+  —`sendImage` y `sendVideo` reciben una ruta, no bytes—, así que reintentar es volver a llamar la misma
+  función con los mismos argumentos: es el momento de ofrecer un botón "reintentar" en lugar de cortar el
+  flujo.
+
+  **Si tu app muestra el error tal como viene** (el objeto serializado, `{"detail":"…"}`), ahora conviene
+  leer `detail` y decidir con `userVisible` y `retryable`: el `toString()` incluye más campos que antes.
+
+- **Un fallo interno de `sendVideo` se reportaba como si el envío hubiera salido.** Cuando el cliente HTTP
+  no estaba disponible, el PATCH no se emitía pero el error viajaba con el mismo mensaje genérico que un
+  rechazo del servidor. Ahora entrega `code = "SDK_SERVICE_UNAVAILABLE"` y se registra como previo al
+  envío.
+
+### Cambiado
+
+- **Los reintentos bajan de 5 a 3, con espera creciente entre intentos.** Con los reintentos recién
+  funcionando en iOS, cinco intentos ponían en juego seis subidas completas del video —decenas de MB cada
+  una, sin reanudación— sobre los datos móviles del usuario. Y un corte de conexión no se resuelve en los
+  250 ms de la espera anterior.
+
+- **La secuencia de giros baja su piso de 20 s a 7 s.** Como la grabación se corta sola al completarse la
+  secuencia, ese número nunca fue el largo del video: es el **plazo** que tiene el usuario para completar
+  los cuatro giros. `videoRecordDurationMs` sigue funcionando como piso: si tu app pide más de 7000 se
+  respeta; si pide menos, se aplican 7000 (antes, cualquier valor por debajo de 20000 quedaba en 20 s).
+
+  **Medí antes de actualizar si tus usuarios recorren el flujo por primera vez.** De los 7 s, el
+  sostenimiento de las cuatro poses y el acuse de recibo ya consumen ~2,4 s: quedan ~4,6 s para leer las
+  consignas y mover la cabeza. Si tu tasa de reintentos sube, pasá un `videoRecordDurationMs` mayor.
+
+### Diagnóstico
+
+- **Los logs que el SDK envía al backend ahora dicen de dónde vino el fallo.** El mensaje lleva un prefijo
+  estable, `origin=<backend|transport|sdk> op=<operación>`. Al reportar un problema de envío, ese prefijo
+  separa tres cosas que antes eran indistinguibles en el log: el servidor rechazó, la red se cortó, o el
+  SDK no llegó a emitir el request. `transport` es un origen propio a propósito: en un corte de conexión
+  el request pudo haber llegado igual, así que un envío marcado `origin=transport` que **sí** aparece en
+  el log del servidor indica que la subida llegó y la respuesta se perdió.
+
+### Compatibilidad
+
+`DigiYoError` ganó el campo `retryable`, y el efecto depende de la plataforma:
+
+- **Android / Kotlin.** El campo tiene valor por defecto: tu código compila sin cambios, alcanza con
+  actualizar la dependencia.
+- **iOS / Swift.** La interfaz Objective-C no admite valores por defecto, así que el `init` pasa a ser
+  `DigiYoError(code:detail:userVisible:retryable:)`. Si tu app **construye** un `DigiYoError` —poco
+  habitual: normalmente sólo se lee el que llega en los `onError`—, hay que agregar el parámetro. A
+  diferencia de la 2.1.0, esta versión no conserva un `init` con la firma anterior para esta clase.
+
+Si integrás a través de un bridge propio, revisá que reenvíe el campo nuevo: por ejemplo el bridge de
+React Native expone hoy `code`, `detail` y `userVisible`, y necesita una línea más por plataforma.
+
+### Lo que esta versión no resuelve
+
+El envío sigue siendo una petición en primer plano. Los reintentos cubren el corte y la reconexión, pero
+si el sistema **suspende** la app —segundo plano el tiempo suficiente— el envío muere y el video se sube
+de nuevo desde cero al reintentar. Resolverlo requiere subida en segundo plano gestionada por el sistema
+(`URLSession` background con el archivo en disco en iOS), lo que además obliga a que la app host declare
+el handler correspondiente. Queda para una versión propia.
+
+---
+
 ## [2.1.0] — 2026-08-21
 
 Convierte el desafío `look_left_right` en una verificación real del movimiento de cabeza, y abre a

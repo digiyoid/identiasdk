@@ -1818,14 +1818,15 @@ __attribute__((swift_name("DigiyocoreDigiYoConfig")))
 __attribute__((objc_subclassing_restricted))
 __attribute__((swift_name("DigiyocoreDigiYoError")))
 @interface DigiyoDigiyocoreDigiYoError : DigiyoBase
-- (instancetype)initWithCode:(NSString * _Nullable)code detail:(NSString * _Nullable)detail userVisible:(BOOL)userVisible __attribute__((swift_name("init(code:detail:userVisible:)"))) __attribute__((objc_designated_initializer));
+- (instancetype)initWithCode:(NSString * _Nullable)code detail:(NSString * _Nullable)detail userVisible:(BOOL)userVisible retryable:(BOOL)retryable __attribute__((swift_name("init(code:detail:userVisible:retryable:)"))) __attribute__((objc_designated_initializer));
 @property (class, readonly, getter=companion) DigiyoDigiyocoreDigiYoErrorCompanion *companion __attribute__((swift_name("companion")));
-- (DigiyoDigiyocoreDigiYoError *)doCopyCode:(NSString * _Nullable)code detail:(NSString * _Nullable)detail userVisible:(BOOL)userVisible __attribute__((swift_name("doCopy(code:detail:userVisible:)")));
+- (DigiyoDigiyocoreDigiYoError *)doCopyCode:(NSString * _Nullable)code detail:(NSString * _Nullable)detail userVisible:(BOOL)userVisible retryable:(BOOL)retryable __attribute__((swift_name("doCopy(code:detail:userVisible:retryable:)")));
 - (BOOL)isEqual:(id _Nullable)other __attribute__((swift_name("isEqual(_:)")));
 - (NSUInteger)hash __attribute__((swift_name("hash()")));
 - (NSString *)description __attribute__((swift_name("description()")));
 @property (readonly) NSString * _Nullable code __attribute__((swift_name("code")));
 @property (readonly) NSString * _Nullable detail __attribute__((swift_name("detail")));
+@property (readonly) BOOL retryable __attribute__((swift_name("retryable")));
 @property (readonly) BOOL userVisible __attribute__((swift_name("userVisible")));
 @end
 

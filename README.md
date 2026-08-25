@@ -2528,11 +2528,14 @@ challengeTexts = VideoChallengeTexts(
 - Se truncan a **40 caracteres**. Se leen contra reloj, mientras el usuario gira la cabeza.
 - Sin `look_left_right` activo **no tienen ningún efecto**.
 
-> **La duración de la grabación tiene un piso de 20 segundos con este desafío.** Un
-> `videoRecordDurationMs` menor se ignora: se aplica `maxOf(valorDeLaApp, 20_000)`. Son cuatro poses que
+> **La duración de la grabación tiene un piso de 7 segundos con este desafío** (20 s hasta la 2.1.0). Un
+> `videoRecordDurationMs` menor se ignora: se aplica `maxOf(valorDeLaApp, 7_000)`. Son cuatro poses que
 > hay que leer, ejecutar y sostener; con los 5 s por defecto no se llega ni a la mitad y el intento
 > termina siempre en el mensaje de fallo. **No penaliza el caso exitoso**, porque al completarse la
-> secuencia la grabación se corta sin esperar el límite. Un valor **mayor** que el piso sí se respeta.
+> secuencia la grabación se corta sin esperar el límite: el piso es el **plazo** que tiene el usuario para
+> completar los cuatro giros, no el largo del video. Un valor **mayor** que el piso sí se respeta, y es lo
+> recomendable si tus usuarios usan el flujo por primera vez: de los 7 s, el sostenimiento de las poses ya
+> consume ~2,4 s.
 
 #### Texto de ayuda debajo del óvalo
 
