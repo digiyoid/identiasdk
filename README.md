@@ -40,6 +40,7 @@ Este SDK emplea inteligencia artificial para la detección precisa y eficiente d
 - [getSubWorkflow](#getsubworkflow)
 - [sendImage (SubWorkflow automático)](#sendimage-con-subworkflow-automático)
 - [getCameraAvailability](#getcameraavailability)
+- [getCameraAccess](#getcameraaccess)
 ### [Modelo de datos](#modelo-de-datos)
 - [CameraAvailability](#cameraavailability)
 - [DigiYoConfig](#digiyoconfig)
@@ -106,8 +107,8 @@ Este SDK emplea inteligencia artificial para la detección precisa y eficiente d
 El SDK requiere un mínimo de **API 24**. Para instalar la librería en una aplicación Android, agrega la siguiente dependencia en el archivo `build.gradle` o `build.gradle.kts` de tu módulo App:
 
 ```groovy
-implementation "com.roshka:digiyocore:1.5.1"
-implementation "com.roshka:digiyo:1.5.1"
+implementation "com.roshka:digiyocore:2.1.2"
+implementation "com.roshka:digiyo:2.1.2"
 ```
 
 > Ver el historial de versiones y los cambios de cada una en [CHANGELOG.md](CHANGELOG.md).
@@ -1103,6 +1104,45 @@ No requiere permisos de cámara ni abrirla. Ver [CameraAvailability](#cameraavai
 
 ---
 
+### getCameraAccess
+
+Informa si la cámara que un paso del flujo necesita **se puede abrir ahora**. Es la consulta a hacer antes de mostrar una vista de cámara.
+
+Se diferencia de [getCameraAvailability](#getcameraavailability) en que además del hardware mira el **permiso**, y hace falta porque el hardware solo lleva a la conclusión equivocada —en direcciones opuestas según la plataforma—:
+
+- En **Android** el sistema informa las cámaras del equipo sin importar el permiso: un dispositivo con el permiso denegado se ve idéntico a uno autorizado.
+- En **iOS** es al revés: el sistema le esconde las cámaras a una app no autorizada, así que la lista viene vacía y "no hay cámara" se vuelve indistinguible de "me lo negaron".
+
+#### Android
+
+```kotlin
+when (val acceso = digiyo.getCameraAccess(CameraFacing.BACK)) {
+    CameraAccess.DENIED -> mandarAAjustesDelSistema()   // sólo el usuario lo resuelve
+    CameraAccess.NO_CAMERA -> saltearElPaso()
+    else -> abrirCamaraDeDocumento()
+}
+```
+
+#### iOS
+
+```swift
+let acceso = digiyoSDK.getCameraAccess(facing: .back)
+
+if acceso.canOpenCamera {
+    abrirCamaraDeDocumento()
+} else if acceso.isFixableBySettings {
+    mandarAAjustesDelSistema()
+} else {
+    saltearElPaso()
+}
+```
+
+Si sólo se necesita decidir si abrir la pantalla, `acceso.canOpenCamera` alcanza. Ver [CameraAccess](#cameraaccess).
+
+**El SDK no pide el permiso**, y es deliberado: el momento en que se pide, el texto que lo acompaña y la declaración en el manifiesto (`android.permission.CAMERA`) o en el `Info.plist` (`NSCameraUsageDescription`) son decisiones de la app integradora. Lo que sí hace el SDK desde la 2.1.2 es verificarlo como salvaguarda: si la cámara no se puede abrir, la vista avisa con un diálogo y cierra por `onClose`, en lugar de crashear en iOS o quedar en negro en Android.
+
+---
+
 ## Modelo de datos
 
 A continuación se detallan los modelos de datos (objetos) utilizados por el SDK para la gestión de identidades y comunicación con el backend.
@@ -1156,6 +1196,25 @@ Cámaras que el dispositivo pone a disposición de la app. Lo devuelve [getCamer
 Cuenta cámaras **lógicas** —las que se pueden abrir—, no sensores físicos: un teléfono con tres lentes traseros normalmente informa `back = 1`, porque el sistema decide qué sensor usar según el zoom.
 
 Si no se pudo consultar el hardware devuelve `CameraAvailability.UNKNOWN`, con todo en `0`. Comparar contra esa constante permite distinguir "no hay cámara" de "no se pudo averiguar".
+
+---
+
+### CameraAccess
+Si la app puede abrir la cámara ahora, y si no, por qué no. Lo devuelve [getCameraAccess](#getcameraaccess).
+- **`GRANTED`**: hay cámara y la app está autorizada.
+- **`NOT_DETERMINED`**: **sólo iOS.** El usuario todavía no respondió. La cámara **sí** se puede abrir: el diálogo del sistema lo dispara la propia vista al tocar el hardware. Android no informa este estado nunca —no distingue "nunca se preguntó" de "se negó" sin un `Activity`, y además nunca pide el permiso por su cuenta—.
+- **`DENIED`**: el permiso está negado o restringido por una política del dispositivo. Reintentar no cambia nada: la única salida es que el usuario lo habilite en los ajustes. En Android también se informa esto cuando el permiso nunca se pidió, porque el efecto es el mismo.
+- **`NO_CAMERA`**: el equipo no tiene la cámara que ese paso necesita. Ningún permiso lo resuelve.
+- **`UNKNOWN`**: no se pudo averiguar. En Android pasa si se consulta antes de inicializar el SDK con el `Context`.
+- **`canOpenCamera`** (*Boolean*): si tiene sentido abrir la vista. Agrupa `GRANTED`, `NOT_DETERMINED` y `UNKNOWN` —ante la duda se intenta, no se bloquea—.
+- **`isFixableBySettings`** (*Boolean*): si el usuario puede resolverlo desde los ajustes del sistema. Es el que decide si ofrecerle ir ahí.
+
+---
+
+### CameraFacing
+Cuál de las dos cámaras necesita un paso del flujo. Es el parámetro de [getCameraAccess](#getcameraaccess).
+- **`BACK`**: captura de documento.
+- **`FRONT`**: selfie y prueba de vida.
 
 ---
 

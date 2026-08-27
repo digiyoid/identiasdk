@@ -15,6 +15,122 @@ resuelve Swift Package Manager, y en **Android** a los artefactos `com.roshka:di
 
 ---
 
+## [2.1.2] — 2026-08-27
+
+Cierra los cuatro lugares donde una pantalla del SDK podía **crashear o quedarse sin salida**: el montaje
+de las vistas de cámara en Android, la confirmación de la captura de documento en iOS, un video rechazado
+y el permiso de cámara denegado. Y devuelve a Swift el `init` de `DigiYoError` que la 2.1.1 había cambiado.
+
+El criterio detrás de todo esto: **un estado esperable del dispositivo o del flujo no puede terminar en un
+crash ni en una pantalla muda.** Un permiso denegado, un desafío que no valida o un equipo sin cámara
+trasera tienen que llegar a tu app como un mensaje y un `onClose`, no como una app cerrada o un usuario
+atrapado.
+
+Sin cambios rompientes: **una app integrada en la 2.1.1 compila y funciona sin tocar código** — y con la
+2.1.2 vuelve a compilar el `init` de `DigiYoError` que la 2.1.1 le había roto a Swift.
+
+### Agregado
+
+- **`getCameraAccess(facing)`: preguntá si la cámara se puede abrir, antes de mostrar la pantalla.**
+  Ya existía `getCameraAvailability()`, que mira el **hardware**; esta agrega el **permiso**, y hace falta
+  porque el hardware solo te engaña —en direcciones opuestas según la plataforma—: en Android el sistema
+  te informa las cámaras igual aunque el permiso esté denegado, y en iOS te las esconde cuando lo está,
+  así que "no hay cámara" y "me lo negaron" se ven idénticos.
+
+  ```kotlin
+  when (val acceso = digiyo.getCameraAccess(CameraFacing.BACK)) {
+      CameraAccess.DENIED -> mandarAAjustes()      // sólo el usuario lo resuelve
+      CameraAccess.NO_CAMERA -> saltearElPaso()
+      else -> abrirCamaraDeDocumento()
+  }
+  ```
+
+  Si sólo querés decidir si abrir la pantalla, `acceso.canOpenCamera` alcanza.
+
+  **El SDK sigue sin pedir el permiso**, y es a propósito: el momento en que se pide, el texto que lo
+  acompaña y la declaración en tu manifiesto o tu `Info.plist` son decisiones de tu app, no del SDK.
+
+### Corregido
+
+- **Las vistas de cámara podían crashear al abrirse, en Android.** Si tu app monta una vista del SDK en
+  una pantalla que el sistema mide **antes** de adjuntarla a una ventana, la app se caía con:
+
+  ```
+  IllegalStateException: Cannot locate windowRecomposer;
+  View androidx.compose.ui.platform.ComposeView{...} is not attached to a window
+  ```
+
+  No era un caso raro: pasa con React Native cuando la app usa `react-native-screens` (que es lo que usan
+  react-navigation y casi cualquier app con navegación), y también con Fragments en transición,
+  `ViewPager2` o `BottomSheetDialog` en apps nativas. Es una **condición de carrera**: el mismo código
+  funciona o falla según el frame en que caiga el montaje, y aparece con más frecuencia justo después de
+  que el usuario responde el diálogo de permisos, porque ahí la pantalla se reactiva.
+
+  Las cinco vistas —documento, selfie, video, ayuda y previsualización— ahora se entregan dentro de un
+  contenedor que inserta la UI en el árbol recién cuando hay ventana. **No cambia nada de cómo se usan
+  desde tu código**: el tipo devuelto sigue siendo el mismo y no hay props ni parámetros nuevos.
+
+- **Sin permiso de cámara, la pantalla de captura no avisaba nada.** Un caso frecuente —el usuario negó el
+  permiso, o tu app todavía no lo pidió— y el resultado era distinto en cada plataforma pero igual de
+  terminal para el usuario final:
+
+  - En **iOS** la app se **caía** al abrir la pantalla, con un `NullPointerException` desde dentro del SDK.
+  - En **Android** no se caía, y era peor: la pantalla de captura se abría completa, con su overlay y sus
+    instrucciones, pero el preview quedaba **negro**. Ningún mensaje, ninguna salida más que cerrar.
+
+  Ahora las seis pantallas de cámara —documento, selfie y video, en las dos plataformas— avisan con un
+  diálogo y su botón cierra la cámara, devolviéndote el control por `onClose`. Si tu configuración de
+  cámara trae `errorAlertConfig` se usan tus textos; si no, los del SDK, distinguiendo "habilitá el
+  permiso en los ajustes" de "este dispositivo no tiene esa cámara". No hay nada que cambiar en tu código
+  para obtenerlo.
+
+  Dos cosas que conviene saber, porque afectan lo que vas a ver al probarlo:
+
+  - En **Android**, si el usuario concede el permiso con la pantalla abierta —respondiendo el pedido del
+    sistema, o volviendo de los ajustes— la cámara **abre sola**, sin que tengas que remontar la vista. Y
+    el diálogo espera medio segundo antes de aparecer: si tu app monta la vista y pide el permiso al mismo
+    tiempo —patrón habitual en React Native—, no vas a ver el aviso del SDK parpadear detrás del pedido
+    del sistema.
+  - En **iOS**, si el usuario **nunca respondió** el permiso, no cambia nada: el diálogo del sistema lo
+    sigue disparando la propia pantalla del SDK y ese primer uso funciona como siempre.
+
+  Lo que sigue siendo tuyo es pedir el permiso en el momento adecuado —y con `getCameraAccess` podés
+  evitar la pantalla del todo—. Lo que cambia es que el SDK ya no se queda callado cuando no puede.
+
+- **Un video rechazado ya no deja la pantalla sin salida.** Si el desafío de liveness no validaba, la
+  pantalla de video se quedaba como estaba: el video grabado, ningún mensaje, ningún callback hacia tu
+  app, y para el usuario sólo el botón de cerrar —perdiendo la captura y teniendo que reiniciar el flujo—.
+  El diálogo que explica el motivo existía, pero sólo si tu app pasaba `errorAlertConfig`.
+
+  Ahora **el SDK siempre avisa**: si configuraste `errorAlertConfig` se usan tus textos, y si no, los del
+  SDK. En los dos casos el motivo concreto lo escribe el validador del desafío ("No se detectó el giro
+  hacia la izquierda…", "No se logró capturar su rostro en el óvalo reducido…") y el botón permite
+  reintentar sin salir de la pantalla. No hay nada que cambiar en tu código para obtenerlo.
+
+- **iOS: la captura de documento podía romper la app al confirmarla.** La cámara de documentos avisaba el
+  resultado antes de terminar de escribir los archivos, así que tu app recibía un primer aviso con las
+  rutas vacías y —si navegás en ese callback, que es lo natural— desmontaba la cámara a mitad de la
+  captura. En React Native con la nueva arquitectura eso terminaba en un crash de render; en una
+  integración nativa, en un view controller a medio destruir. Ahora el aviso llega una sola vez y con la
+  captura ya en disco. La cámara de selfie no estaba afectada.
+
+- **El SDK podía informar en tus DIA una versión que no era la instalada.** El número que el SDK reporta
+  en `ADDITIONAL_INFO.digiyo_version` se congelaba al subir de versión: podías ver un caso soportado
+  diciendo `1.4.4-patch` cuando la app tenía otra versión. Era un problema de nuestro build, no de tu
+  integración, pero afectaba directamente el diagnóstico —el dato que usamos para saber qué versión
+  reprodujo un problema—. Ya está corregido: a partir de esta versión el número que viaja es el publicado.
+
+### Compatibilidad
+
+- **iOS / Swift: se restituye `DigiYoError(code:detail:userVisible:)`.** Al agregar `retryable`, la 2.1.1
+  cambió el `init` a `DigiYoError(code:detail:userVisible:retryable:)` y una app Swift que **construyera**
+  el error dejaba de compilar. La 2.1.2 mantiene el `init` de tres parámetros además del nuevo, igual que
+  la 2.1.0 hizo con `CaptureModeConfig`, `VideoChallengeTexts` y `DigiYoRGB`. Si venías de la 2.1.1 y
+  tuviste que agregar el parámetro, tu código sigue compilando: los dos `init` conviven.
+- **Android / Kotlin.** Nada que hacer: alcanza con recompilar contra la versión nueva.
+
+---
+
 ## [2.1.1] — 2026-08-25
 
 Hace que los envíos al backend sobrevivan los cortes de red, y que un fallo de conexión llegue a tu app
