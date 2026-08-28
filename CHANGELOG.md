@@ -15,6 +15,92 @@ resuelve Swift Package Manager, y en **Android** a los artefactos `com.roshka:di
 
 ---
 
+## [2.1.3] — 2026-08-28
+
+Apaga el certificate pinning por defecto, corrige un rechazo de subida que afectaba capturas **hechas
+con el SDK**, y arregla dos defectos visuales y de comportamiento que sólo aparecían con ciertos temas o
+en iOS.
+
+Un solo punto a mirar al actualizar, y está en la primera entrada.
+
+### Cambiado
+
+- **⚠️ Si no pasás `enforceSslPinning`, ahora el pinning queda APAGADO.** Hasta la 2.1.2 el valor por
+  defecto era `true`: una app que no conocía el parámetro heredaba validación estricta de certificados
+  sin haberla pedido, y en cualquier entorno que no presente exactamente el certificado esperado —un
+  proxy corporativo, un backend intermedio, un entorno de prueba— los envíos fallaban con lo que
+  parecía un error de red genérico.
+
+  **Si tu app depende de que el SDK valide certificados, tenés que pedirlo explícitamente:**
+
+  ```kotlin
+  DigiYoConfig(baseUrl = url, apiKey = key, enforceSslPinning = true)
+  ```
+
+  Es lo recomendado en producción contra el backend de Digiyo. El valor se guarda con el resto de la
+  configuración, así que cuando el SDK arranca desde su caché se respeta lo que pediste antes —eso
+  también se corrigió en esta versión—.
+
+### Agregado
+
+- **iOS: tres `init` de `DigiYoConfig` que te permiten no pasar `enforceSslPinning`.** En Kotlin el
+  parámetro siempre se pudo omitir, pero en Swift no: la interfaz Objective-C no admite valores por
+  defecto, así que cada `init` obliga a pasar todos sus parámetros. Sin estas variantes, "no pasar
+  `enforceSslPinning`" era imposible y había que escribir `enforceSslPinning: false` a mano.
+
+  ```swift
+  DigiyocoreDigiYoConfig(baseUrl:apiKey:requestTimeoutInMillis:loggingEnabled:)
+  DigiyocoreDigiYoConfig(baseUrl:apiKey:requestTimeoutInMillis:)
+  DigiyocoreDigiYoConfig(baseUrl:apiKey:)
+  ```
+
+  Los `init` anteriores siguen existiendo: nada de lo que tengas hoy deja de compilar.
+
+  Para cualquier otra combinación, sin depender de que exista el selector exacto, los cinco campos son
+  propiedades asignables:
+
+  ```swift
+  let config = DigiyocoreDigiYoConfig(baseUrl: url, apiKey: key)
+  config.requestTimeoutInMillis = 20000
+  config.loggingEnabled = false
+  ```
+
+### Corregido
+
+- **Un envío rápido podía ser rechazado como si el archivo no lo hubiera capturado el SDK.** Si tu app
+  dispara `sendImage` o `sendVideo` inmediatamente después de recibir la ruta —lo natural si el envío
+  sale del callback de la cámara—, el SDK podía abortar la subida diciendo que el archivo no lo produjo
+  una de sus cámaras. **Era un falso positivo**, y el archivo sí era del SDK.
+
+  La verificación de origen compara el archivo contra un registro que la cámara crea al escribirlo, y
+  ese registro se calcula en segundo plano para no congelar la pantalla al terminar de grabar. Cuando la
+  subida llegaba primero, no encontraba el registro y concluía lo peor. Ahora espera a que termine antes
+  de decidir.
+
+  No hay nada que cambiar en tu código. Si querés confirmarlo en los logs, cuando la espera hace falta
+  queda registrada: *"el registro estaba EN CURSO; se esperó Nms y apareció"*.
+
+- **iOS: la cámara de video podía avisar el resultado más de una vez, y con la ruta vacía.** Cuando tu
+  app no configura `successAlertConfig`, el aviso se emitía desde el cuerpo del render, así que se
+  repetía en cada redibujado y podía llegar antes de que el archivo tuviera ruta. Es la otra mitad del
+  rechazo descrito arriba. Ahora llega **una sola vez y con la captura ya en disco**. Android no estaba
+  afectado.
+
+- **El texto del botón de los diálogos podía quedar invisible.** Si tu tema define `primaryTextColor` y
+  no define `secondaryTextColor`, el SDK pintaba la etiqueta del botón con tu color de texto sobre un
+  botón de tu color primario. Con dos colores parecidos —que es lo habitual— el texto desaparecía: se
+  veían el título y el mensaje, y el botón sin label. Ahora el color de la etiqueta se calcula para
+  contrastar con el fondo real del botón. Si definís `secondaryTextColor`, se sigue respetando.
+
+### Compatibilidad
+
+**Nada deja de compilar**: los `init` nuevos son aditivos y los existentes no cambiaron.
+
+Lo único a revisar es de comportamiento, y es el pinning: si tu app no lo pasaba explícitamente y
+confiaba en el default, **dejá `enforceSslPinning = true` antes de subir a producción**.
+
+---
+
 ## [2.1.2] — 2026-08-27
 
 Cierra los cuatro lugares donde una pantalla del SDK podía **crashear o quedarse sin salida**: el montaje

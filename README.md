@@ -92,6 +92,7 @@ Este SDK emplea inteligencia artificial para la detección precisa y eficiente d
 - [HelpScreenView](#helpscreenview)
 - [MediaPreviewScreen](#mediapreviewscreen)
 ### Otros
+- [SSL Pinning (`enforceSslPinning`)](#ssl-pinning-enforcesslpinning)
 - [Logging del SDK (`loggingEnabled`)](#logging-del-sdk-loggingenabled)
 - [Captura con poca luz (Android)](#captura-con-poca-luz-android)
 - [Utilidades públicas del SDK](#utilidades-públicas-del-sdk)
@@ -237,7 +238,7 @@ import DigiyoSDK
 private val config = DigiyoConfig(
     baseUrl = BuildConfig.Digiyo_BASE_URL,  // URL base definida en BuildConfig.
     apiKey = BuildConfig.Digiyo_API_KEY,    // Clave API definida en BuildConfig.
-    enforceSslPinning: null,                // Cuando el valor no es asignado explícitamente, el SSL Pinning es activado por defecto.
+    enforceSslPinning = true,               // DESDE 2.1.3: sin valor explícito el pinning queda APAGADO. Ver el detalle más abajo.
     requestTimeoutInMillis = null           // Timeout opcional (Cuando no es definida usa el valor por defecto de 60 segundos)
 )
 ```
@@ -276,9 +277,47 @@ import Digiyo
 let digiyoConfig = DigiyocoreDigiyoConfig(
     baseUrl: ProcessInfo.processInfo.environment["Digiyo_BASE_URL"],
     apiKey: ProcessInfo.processInfo.environment["Digiyo_API_KEY"],
-    enforceSslPinning: nil,
+    enforceSslPinning: true,   // DESDE 2.1.3: con nil el pinning queda APAGADO. Ver el detalle más abajo.
     requestTimeoutInMillis: nil
 )
+```
+
+### SSL Pinning (`enforceSslPinning`)
+
+**Sin valor explícito, el pinning queda apagado.** Cambió en la **2.1.3**: hasta la 2.1.2 el default era
+`true`, y eso hacía que una app que no conocía el parámetro heredara validación estricta de certificados
+sin haberla pedido. En cualquier entorno que no presente exactamente el certificado esperado —un proxy
+corporativo, un backend intermedio, un entorno de prueba— los envíos fallaban, y el error llegaba como un
+problema de red genérico difícil de atribuir.
+
+**Si tu app depende de que el SDK valide certificados, pedilo explícitamente.** Es lo recomendado en
+producción contra el backend de Digiyo:
+
+```kotlin
+DigiYoConfig(baseUrl = url, apiKey = key, enforceSslPinning = true)
+```
+
+El valor se guarda con el resto de la configuración, así que cuando el SDK arranca desde su caché se
+respeta lo que pediste en la ejecución anterior.
+
+#### Omitirlo desde Swift
+
+La interfaz Objective-C no admite valores por defecto, así que cada `init` obliga a pasar todos los
+parámetros de su selector. Desde la 2.1.3 hay tres variantes que no incluyen `enforceSslPinning`:
+
+```swift
+DigiyocoreDigiYoConfig(baseUrl:apiKey:requestTimeoutInMillis:loggingEnabled:)
+DigiyocoreDigiYoConfig(baseUrl:apiKey:requestTimeoutInMillis:)
+DigiyocoreDigiYoConfig(baseUrl:apiKey:)
+```
+
+Y para cualquier otra combinación, sin depender de que exista el selector exacto: los cinco campos son
+propiedades asignables.
+
+```swift
+let config = DigiyocoreDigiYoConfig(baseUrl: url, apiKey: key)
+config.requestTimeoutInMillis = 20000
+config.loggingEnabled = false        // KotlinBoolean acepta el literal
 ```
 
 #### Inicialización directa de la instancia
@@ -1153,7 +1192,7 @@ A continuación se detallan los modelos de datos (objetos) utilizados por el SDK
 Define los parámetros de conexión y seguridad del SDK.
 - **`baseUrl`** (*String*): Dirección URL de los servicios de Digiyo.
 - **`apiKey`** (*String*): Token para autenticación de peticiones.
-- **`enforceSslPinning`** (*Boolean*): Habilita la validación estricta de certificados SSL.
+- **`enforceSslPinning`** (*Boolean?*): Habilita la validación estricta de certificados SSL (certificate pinning). **`null` significa `false`: apagado.** Hasta la 2.1.2 el valor por defecto era `true`. Se persiste con el resto de la configuración, así que al arrancar desde el caché se respeta lo que la app pidió antes. Ver [SSL Pinning](#ssl-pinning-enforcesslpinning).
 - **`requestTimeoutInMillis`** (*Long*): Tiempo máximo (ms) de espera para respuestas del servidor.
 - **`loggingEnabled`** (*Boolean?*): Si el SDK escribe sus mensajes en la consola de la plataforma. `null` (por defecto) autodetecta. Ver [Logging del SDK](#logging-del-sdk-loggingenabled).
 
@@ -1289,7 +1328,7 @@ Configuración para la captura de documentos.
 - **`cameraSubtitle`** (*String?*): Subtítulo opcional de la pantalla de la cámara.
 - **`documentType`** (*DocumentType*): Tipo de documento a capturar.
 - **`colorScheme`** (*DigiyoColorScheme?*): Configuración de colores personalizada.
-- **`successAlertConfig`** (*SuccessAlertConfig?*): Configuración de la alerta de éxito.
+- **`successAlertConfig`** (*SuccessAlertConfig?*): Configuración de la alerta de éxito. **Con `null` el SDK no pide confirmación**: entrega el resultado por `onResult` en cuanto la captura se valida. Configurándolo, el resultado se entrega recién cuando el usuario toca el botón del diálogo, lo que además le da la oportunidad de revisar lo capturado.
 - **`showCloseButton`** (*Boolean?*): Indica si se debe mostrar el botón de cerrar.
 - **`captureModeConfig`** (*CaptureModeConfig*): Configuración del modo de captura.
 - **`showDetectedObjectRect`** (*Boolean*): Activa el dibujado de un rectángulo sobre el objeto detectado.
@@ -1304,7 +1343,7 @@ Configuración para la captura de documentos.
 Configuración para la captura de selfies.
 - **`cameraTitle`** (*String*): Título de la pantalla de selfie.
 - **`colorScheme`** (*DigiyoColorScheme?*): Configuración de colores personalizada.
-- **`successAlertConfig`** (*SuccessAlertConfig?*): Configuración de la alerta de éxito.
+- **`successAlertConfig`** (*SuccessAlertConfig?*): Configuración de la alerta de éxito. **Con `null` el SDK no pide confirmación**: entrega el resultado por `onResult` en cuanto la captura se valida. Configurándolo, el resultado se entrega recién cuando el usuario toca el botón del diálogo, lo que además le da la oportunidad de revisar lo capturado.
 - **`showCloseButton`** (*Boolean?*): Indica si se debe mostrar el botón de cerrar.
 - **`captureModeConfig`** (*CaptureModeConfig*): Configuración del modo de captura.
 - **`shutterSoundEnabled`** (*Boolean*): Indica si el sonido del obturador está activado.
@@ -1318,7 +1357,7 @@ Configuración para la captura de selfies.
 Configuración para la grabación de video.
 - **`cameraTitle`** (*String*): Título de la pantalla de video.
 - **`colorScheme`** (*DigiyoColorScheme?*): Configuración de colores personalizada.
-- **`successAlertConfig`** (*SuccessAlertConfig?*): Configuración de la alerta de éxito.
+- **`successAlertConfig`** (*SuccessAlertConfig?*): Configuración de la alerta de éxito. **Con `null` el SDK no pide confirmación**: entrega el resultado por `onResult` en cuanto la captura se valida. Configurándolo, el resultado se entrega recién cuando el usuario toca el botón del diálogo, lo que además le da la oportunidad de revisar lo capturado.
 - **`errorAlertConfig`** (*ErrorAlertConfig?*): Configuración de la alerta de error.
 - **`showCloseButton`** (*Boolean?*): Indica si se debe mostrar el botón de cerrar.
 - **`captureModeConfig`** (*CaptureModeConfig*): Configuración del modo de captura.
