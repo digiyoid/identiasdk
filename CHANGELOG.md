@@ -15,6 +15,11 @@ resuelve Swift Package Manager, y en **Android** a los artefactos `com.roshka:di
 
 ---
 
+## [2.1.3-ktor2] — 2026-09-01
+
+Actualiza la version de Ktor por **2.3.10**.
+
+---
 ## [2.1.3] — 2026-08-28
 
 Apaga el certificate pinning por defecto, corrige un rechazo de subida que afectaba capturas **hechas
