@@ -64,6 +64,8 @@ Este SDK emplea inteligencia artificial para la detección precisa y eficiente d
 - [ErrorAlertConfig](#erroralertconfig)
 - [LiveValidationsText](#livevalidationstext)
 - [VideoChallengeTexts](#videochallengetexts)
+- [VideoChallengeImages](#videochallengeimages)
+- [LookSequenceConfig](#looksequenceconfig)
 - [DigiYoRGB](#digiyorgb)
 ### [Personalización y estilos](#personalización-y-estilos)
 - [DigiyoColorScheme](#digiyocolorscheme)
@@ -87,11 +89,13 @@ Este SDK emplea inteligencia artificial para la detección precisa y eficiente d
   - [Textos sobre la cámara (`challengeTexts`)](#textos-sobre-la-cámara-challengetexts)
   - [Estilo de los textos sobre el óvalo](#estilo-de-los-textos-sobre-el-óvalo)
   - [Secuencia de giros de cabeza (`look_left_right`)](#secuencia-de-giros-de-cabeza-look_left_right)
+  - [Marcas de agua del desafío de giros (`challengeImages`)](#marcas-de-agua-del-desafío-de-giros-challengeimages)
   - [Texto de ayuda debajo del óvalo](#texto-de-ayuda-debajo-del-óvalo)
   - [Colores del óvalo y de la etiqueta](#colores-del-óvalo-y-de-la-etiqueta)
 - [HelpScreenView](#helpscreenview)
 - [MediaPreviewScreen](#mediapreviewscreen)
 ### Otros
+- [Atestación de capturas](#atestación-de-capturas)
 - [SSL Pinning (`enforceSslPinning`)](#ssl-pinning-enforcesslpinning)
 - [Logging del SDK (`loggingEnabled`)](#logging-del-sdk-loggingenabled)
 - [Captura con poca luz (Android)](#captura-con-poca-luz-android)
@@ -108,8 +112,8 @@ Este SDK emplea inteligencia artificial para la detección precisa y eficiente d
 El SDK requiere un mínimo de **API 24**. Para instalar la librería en una aplicación Android, agrega la siguiente dependencia en el archivo `build.gradle` o `build.gradle.kts` de tu módulo App:
 
 ```groovy
-implementation "com.roshka:digiyocore:2.1.2"
-implementation "com.roshka:digiyo:2.1.2"
+implementation "com.roshka:digiyocore:2.2.0"
+implementation "com.roshka:digiyo:2.2.0"
 ```
 
 > Ver el historial de versiones y los cambios de cada una en [CHANGELOG.md](CHANGELOG.md).
@@ -147,6 +151,13 @@ export GITHUB_PAT="tu Personal Access Token"
 
 **Nota**: Maven Registry en Github Packages necesita autenticación para acceder a la lista de paquetes incluso cuando son públicos, por ello, el Username y un Personal Access Token de Github son necesarios.
 Se recomienda definir ambos como variables de entorno.
+
+___
+
+**Dependencia transitiva (desde 2.2.0)**: el SDK usa `io.github.roshkamobile:signet` para firmar las
+capturas, y se publica en **Maven Central**. No hay que declarar ningún repositorio adicional —el
+`mavenCentral()` que tu proyecto ya tiene alcanza, y no pide credenciales—; solo vas a verla aparecer
+en el árbol de dependencias.
 
 ___
 
@@ -281,6 +292,73 @@ let digiyoConfig = DigiyocoreDigiyoConfig(
     requestTimeoutInMillis: nil
 )
 ```
+
+### Atestación de capturas
+
+Desde la **2.2.0**, el SDK acompaña cada imagen y cada video que sube con evidencia de que el archivo
+lo produjo una app legítima en un dispositivo real. Es un control adicional al que ya existía desde la
+2.0.2 —que verifica que el archivo salió de una cámara del SDK—: son dos cosas distintas y el backend
+las evalúa por separado.
+
+**No hay que hacer nada para que funcione, y nunca bloquea una captura.** El SDK registra una clave
+por dispositivo al arrancar la app y firma con ella cada subida. Un equipo viejo, sin Play Services,
+sin red, o al que todavía no se le registró la clave captura y sube igual: la evidencia queda vacía y
+el backend decide qué significa su ausencia.
+
+El registro ocurre **al arrancar la app y no dentro de un DIA**. En iOS atestiguar exige un viaje a
+los servidores de Apple y es sensiblemente más lento que en Android, donde es local; dentro de un DIA
+esa espera caería sobre una subida que el usuario está mirando.
+
+Hay dos cosas **opcionales** que conviene configurar para que la evidencia sea completa.
+
+#### Android: Play Integrity
+
+Habilita el token de Play Integrity, que se adjunta atado a cada captura. Sin esto la atestación
+funciona igual, solo que no se adjunta token.
+
+```kotlin
+class MyApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
+
+        utils.DigiyoIntegrity.configure(
+            context = applicationContext,
+            cloudProjectNumber = 123456789012L,
+        )
+
+        // ...después, la inicialización del SDK
+    }
+}
+```
+
+`cloudProjectNumber` es el **número** del proyecto de Google Cloud vinculado a tu app en Play
+Console, no el id.
+
+**Llamalo antes de inicializar el SDK.** La preparación del API de Play Integrity es costosa y se hace
+una sola vez; cuanto antes arranque, más chance de que el token esté listo cuando llegue la primera
+captura.
+
+No es un campo de `DigiYoConfig` a propósito: necesita un `Context` y el número de proyecto, que son
+propiedades de tu aplicación y no del SDK, y agregarle un parámetro a esa clase rompería la
+compilación de los clientes iOS —que además no usan Play Integrity—.
+
+#### iOS: entitlements de App Attest
+
+Tu app necesita estos dos entitlements. Sin ellos funciona igual, pero no se adjunta la evidencia de
+iOS.
+
+```xml
+<key>com.apple.developer.devicecheck.app-attest-opt-in</key>
+<array>
+    <string>CDhash</string>
+</array>
+<key>com.apple.developer.devicecheck.appattest-environment</key>
+<string>production</string>
+```
+
+Se agregan en el archivo `.entitlements` del target de tu app.
+
+---
 
 ### SSL Pinning (`enforceSslPinning`)
 
@@ -1371,6 +1449,8 @@ Configuración para la grabación de video.
 - **`lowLightBoostEnabled`** (*Boolean*): Mejora de captura para poca luz en **Android**. **`true` por defecto.** En iOS se ignora. Ver [Captura con poca luz (Android)](#captura-con-poca-luz-android).
 - **`requireFaceFraming`** (*Boolean*): Si el encuadre del rostro en el óvalo condiciona el inicio de la grabación. **`true` por defecto.** Ver [Gate de encuadre](#gate-de-encuadre-requirefaceframing).
 - **`closeButtonConfig`** (*CloseButtonConfig?*): Texto, ícono y ubicación del botón de cerrar. `null` = el botón de siempre. Ver [Botón de cerrar](#botón-de-cerrar-closebuttonconfig).
+- **`challengeImages`** (*VideoChallengeImages?*): Marca de agua con silueta de cabeza sobre la cámara durante el desafío de `look_left_right`. `null` = no se dibuja ninguna. **Convive con `challengeTexts`**: se pueden usar uno, el otro o los dos. Ver [Marcas de agua del desafío de giros](#marcas-de-agua-del-desafío-de-giros-challengeimages).
+- **`lookSequenceConfig`** (*LookSequenceConfig?*): Por qué lado empieza el giro, forma y trazo del marco de la grabación, y el número de paso. `null` = `LookSequenceConfig.DEFAULT`. Ver [LookSequenceConfig](#looksequenceconfig).
 
 ---
 
@@ -1489,6 +1569,80 @@ no dibuja ningún mensaje mientras se graba.
 Estos cuatro **no tienen texto por defecto**: sin definir, esa fase no muestra nada. Se pueden definir de
 a una. Y no afectan la validación: los cuatro giros se verifican igual, con o sin textos. Se truncan a 40
 caracteres. Sin `look_left_right` activo no tienen ningún efecto.
+
+---
+
+### VideoChallengeImages
+
+Marca de agua con silueta de cabeza que el SDK dibuja **sobre la cámara** durante el desafío de
+`live_validations.look_left_right`. Se pasa en `VideoCameraConfig.challengeImages`; en `null` no se
+dibuja ninguna, que es el comportamiento anterior a la 2.2.0.
+
+Es el gemelo de [VideoChallengeTexts](#videochallengetexts) para imágenes, y **los dos conviven**.
+
+| Campo | Tipo | Qué es |
+|---|---|---|
+| `lookLeftImage` | `DigiYoImageAsset?` | Silueta del giro hacia la **izquierda** del usuario |
+| `lookFrontImage` | `DigiYoImageAsset?` | Volver al frente. Se usa **dos veces**, después de cada giro |
+| `lookRightImage` | `DigiYoImageAsset?` | Silueta del giro hacia la **derecha** del usuario |
+| `lookSequenceCompletedImage` | `DigiYoImageAsset?` | Al completar los cuatro giros. `null` no dibuja nada |
+| `opacity` | `Float?` | Opacidad de 0 a 1. `null` = `0.5` |
+| `tintColor` | `DigiYoRGB?` | Color con el que se pinta. Ver abajo |
+| `sizeFraction` | `Float?` | Cuánto del marco ocupa. `null` = el marco completo |
+
+**Las imágenes van por LADO, no por orden.** Si cambiás `LookSequenceConfig.startSide`, no hay que
+reordenar nada: `lookRightImage` es la silueta del giro a la derecha, sea el primero o el segundo.
+
+**No hace falta que traigan el número quemado.** El "1." al "4." lo dibuja el SDK por separado y sale
+de la posición real en la secuencia; se apaga con `LookSequenceConfig.showStepNumber`.
+
+`tintColor` se comporta distinto según de quién sea la imagen, porque el problema que resuelve es
+distinto:
+
+- **Siluetas del SDK**: se pintan siempre. Son line art negro sobre fondo transparente, y negro sobre
+  el preview de una cámara es invisible. `null` cae en `colorScheme.accent`.
+- **Imágenes tuyas**: se pintan solo si definís este campo. Con `null` la imagen se dibuja con sus
+  propios colores, para no arruinar una ilustración diseñada a propósito.
+
+**Estas imágenes no se graban en el video.** Igual que el óvalo, son interfaz dibujada por encima del
+preview; el archivo que llega al backend no las tiene.
+
+---
+
+### LookSequenceConfig
+
+Comportamiento y marco del desafío de giros. Se pasa en `VideoCameraConfig.lookSequenceConfig`; en
+`null` se usa `LookSequenceConfig.DEFAULT`.
+
+| Campo | Tipo | Por defecto | Qué es |
+|---|---|---|---|
+| `startSide` | `LookSequenceSide` | `LEFT` | Hacia qué lado se pide el **primer** giro |
+| `frameShape` | `LookSequenceFrameShape` | `OVAL` | Óvalo o rectángulo redondeado durante la grabación |
+| `frameStrokeWidth` | `Double?` | `4.0` dp | Grosor del trazo del marco. Se acota entre 1 y 24 |
+| `frameColor` | `DigiYoRGB?` | `colorScheme.accent` | Color del trazo mientras el desafío está en curso |
+| `showStepNumber` | `Boolean` | `true` | El "1." al "4." en el borde inferior izquierdo |
+| `stepNumberColor` | `DigiYoRGB?` | blanco | Color del número |
+| `stepNumberFontSize` | `Double?` | `28.0` sp | Tamaño del número en sp |
+
+`LookSequenceSide` es `LEFT` o `RIGHT`. `LookSequenceFrameShape` es `OVAL` o `ROUNDED_SQUARE`.
+
+**`startSide` no es cosmético:** cambia el orden que el SDK espera. Con `RIGHT` la secuencia es
+derecha → frente → izquierda → frente, y la numeración acompaña sola.
+
+Los números son la **posición en la secuencia**: las cuatro fases se numeran 1, 2, 3 y 4, así que las
+dos vueltas al frente llevan números distintos —2 y 4—.
+
+**Las medidas del marco no son configurables**, y es a propósito: están atadas entre sí y a la
+silueta —la marca de agua se dimensiona contra el marco, y el marco contra el óvalo que se compara
+con tu rostro—, así que elegirlas desde afuera rompe esa relación en silencio. Lo que sí se
+configura es el trazo: `frameStrokeWidth` y `frameColor`.
+
+Al completarse los cuatro giros el marco pasa a `colorScheme.onSuccessColor` **ignorando
+`frameColor`**. Ese color es el acuse de recibo de "el desafío se cumplió" y aparece justo antes de
+que se corte la grabación; para cambiarlo, el lugar es `colorScheme.onSuccessColor`.
+
+**En Swift**, los enums de Kotlin llegan en minúsculas: `LookSequenceSide.left`, `.right`,
+`LookSequenceFrameShape.oval`, `.roundedSquare`.
 
 ---
 
@@ -2442,7 +2596,10 @@ Hoy son estos:
 | `overlayDimAlpha` | idem, desde `challengeTexts` |
 | `challengeTexts` | `lowLightBoostEnabled = true` y `requireFaceFraming = true` |
 | `lowLightBoostEnabled` | `requireFaceFraming = true` |
-| `requireFaceFraming` | ninguno: es la firma completa |
+| `requireFaceFraming` | `closeButtonConfig`, `challengeImages` y `lookSequenceConfig` en `nil` |
+| `closeButtonConfig` | `challengeImages` y `lookSequenceConfig` en `nil` |
+| `challengeImages` | `lookSequenceConfig` en `nil` |
+| `lookSequenceConfig` | ninguno: es la firma completa |
 
 **Solo se puede omitir un sufijo, no parámetros sueltos.** Es decir, se puede pasar hasta
 `lowLightBoostEnabled` y dejar afuera `requireFaceFraming`, pero **no** al revés: para llegar a
@@ -2673,6 +2830,72 @@ challengeTexts = VideoChallengeTexts(
 > completar los cuatro giros, no el largo del video. Un valor **mayor** que el piso sí se respeta, y es lo
 > recomendable si tus usuarios usan el flujo por primera vez: de los 7 s, el sostenimiento de las poses ya
 > consume ~2,4 s.
+
+#### Marcas de agua del desafío de giros (`challengeImages`)
+
+Una silueta de cabeza sobre la cámara que le indica al usuario hacia dónde girar, en lugar de —o
+además de— la consigna escrita.
+
+**El camino más corto**, con las siluetas que ya trae el SDK:
+
+```kotlin
+VideoCameraConfig(
+    // ...
+    challengeImages = VideoChallengeImages.DEFAULT,
+)
+```
+
+**Con tus propias imágenes**, fase por fase:
+
+```kotlin
+challengeImages = VideoChallengeImages(
+    lookLeftImage = ImageAsset(context, R.drawable.cabeza_izquierda),
+    lookFrontImage = ImageAsset(context, R.drawable.cabeza_frente),
+    lookRightImage = ImageAsset(context, R.drawable.cabeza_derecha),
+    opacity = 0.45f,
+)
+```
+
+```swift
+challengeImages: VideoChallengeImages(
+    lookLeftImage: ImageAsset(assetName: "cabeza_izquierda"),
+    lookFrontImage: ImageAsset(assetName: "cabeza_frente"),
+    lookRightImage: ImageAsset(assetName: "cabeza_derecha"),
+    opacity: 0.45,
+    tintColor: nil
+)
+```
+
+**Ojo con el respaldo, que es todo o nada.** Si definís al menos una imagen propia, el SDK deja de
+aportar las suyas y las fases sin imagen no dibujan nada. Mezclar una silueta del SDK con una
+ilustración tuya en la misma secuencia se ve como un error, no como un respaldo.
+
+##### Textos e imágenes a la vez
+
+Los dos parámetros son independientes y no compiten por el mismo lugar en pantalla: el texto se
+dibuja **encima** del borde superior del marco y la silueta **adentro**. Las cuatro combinaciones:
+
+| `challengeTexts` | `challengeImages` | Qué se ve durante la grabación |
+|---|---|---|
+| `null` | `null` | solo el marco |
+| definido | `null` | la consigna escrita |
+| `null` | definido | la silueta |
+| definido | definido | las dos, cambiando juntas al avanzar la fase |
+
+##### Invertir el lado del primer giro
+
+```kotlin
+lookSequenceConfig = LookSequenceConfig(startSide = LookSequenceSide.RIGHT)
+```
+
+Los textos y las imágenes **no se reordenan**: siguen indexados por lado. Lo único a revisar es el
+contenido de los textos — uno que numere el paso a mano ("Paso 1: girá a la izquierda") deja de
+coincidir. El número lo pone el SDK y sale del orden real, así que no hace falta repetirlo.
+
+Ver [VideoChallengeImages](#videochallengeimages) y [LookSequenceConfig](#looksequenceconfig) para
+todos los campos.
+
+---
 
 #### Texto de ayuda debajo del óvalo
 

@@ -15,6 +15,143 @@ resuelve Swift Package Manager, y en **Android** a los artefactos `com.roshka:di
 
 ---
 
+## [2.2.0] — 2026-09-02
+
+Dos frentes independientes. **Atestación de capturas**: el SDK ahora acompaña cada imagen y cada video
+con evidencia de que el archivo lo produjo una app legítima en un dispositivo real. Y **marcas de agua
+en el desafío de movimiento de cabeza**: una silueta sobre la cámara que le indica al usuario hacia
+dónde girar.
+
+Nada de lo agregado rompe compilación. Hay dos cosas opcionales que conviene configurar para que la
+atestación aporte todo lo que puede, y están en "Notas para quien integra".
+
+### Agregado
+
+- **Atestación de capturas.** El SDK registra **una clave por dispositivo** al arrancar la app y firma
+  con ella cada archivo que sube. La evidencia viaja junto a la subida, separada de la verificación de
+  origen que ya existía desde la 2.0.2: son dos controles distintos y el backend los evalúa por
+  separado.
+
+  El registro ocurre **al arrancar la app y no dentro de un DIA**, por costo: en iOS atestiguar exige
+  un viaje a los servidores de Apple y es sensiblemente más lento que en Android, donde es local.
+  Dentro de un DIA esa espera caería sobre una subida que el usuario está mirando.
+
+  **No hace falta hacer nada y nunca falla hacia afuera.** Un equipo viejo, sin Play Services, sin red
+  o al que todavía no se le registró la clave captura y sube igual: la evidencia queda vacía y el
+  backend decide qué significa su ausencia. Se intenta una vez por arranque, sin reintentos dentro de
+  la sesión.
+
+- **Android: `DigiyoIntegrity.configure(context, cloudProjectNumber)`.** Habilita el token de Play
+  Integrity, que se adjunta atado a cada captura. Es **opcional**: sin llamarlo, la atestación funciona
+  y simplemente no se adjunta token.
+
+  ```kotlin
+  utils.DigiyoIntegrity.configure(
+      context = applicationContext,
+      cloudProjectNumber = 123456789012L, // el NÚMERO del proyecto de Google Cloud, no el id
+  )
+  ```
+
+  No es un campo de `DigiYoConfig` a propósito: necesita un `Context` y el número de proyecto, que son
+  propiedades de tu aplicación y no del SDK, y agregarle un parámetro a esa clase rompería la
+  compilación de los clientes iOS —que además no usan Play Integrity—.
+
+- **`VideoCameraConfig.challengeImages`** (`VideoChallengeImages`): marca de agua con silueta de cabeza
+  sobre la cámara durante el desafío de `look_left_right`. Una imagen por fase, con opacidad, tinte y
+  tamaño configurables.
+
+  **Convive con `challengeTexts`, no lo reemplaza.** Se pueden usar uno, el otro o los dos: la consigna
+  escrita se dibuja encima del borde superior del marco y la silueta adentro, y las dos cambian juntas
+  al avanzar la fase.
+
+  `VideoChallengeImages()` sin argumentos usa las siluetas del propio SDK, así que activar la marca de
+  agua no obliga a diseñar nada:
+
+  ```kotlin
+  challengeImages = VideoChallengeImages.DEFAULT
+  ```
+
+  Si definís **al menos una** imagen propia, el SDK deja de aportar las suyas y las fases sin imagen no
+  dibujan nada. Es deliberado: mezclar una silueta del SDK con una ilustración tuya en la misma
+  secuencia se lee como un error, no como un respaldo.
+
+- **`VideoCameraConfig.lookSequenceConfig`** (`LookSequenceConfig`): comportamiento y marco del desafío
+  de giros.
+
+  - `startSide`: hacia qué lado se pide el **primer** giro. **No es cosmético** — cambia el orden que
+    el SDK espera. Con `RIGHT` la secuencia es derecha → frente → izquierda → frente.
+  - `frameShape`: óvalo (por defecto) o rectángulo redondeado durante la grabación.
+  - `frameStrokeWidth` y `frameColor`: el trazo del marco.
+  - `showStepNumber`, `stepNumberColor`, `stepNumberFontSize`: el "1." al "4." dentro del marco.
+
+  **Los textos y las imágenes siguen indexados por LADO, no por orden**, así que invertir `startSide`
+  no te obliga a reordenar nada: `lookRightInstructionText` es el texto del giro a la derecha, sea el
+  primero o el segundo. Lo único a revisar es el contenido: un texto que numera el paso a mano
+  —"Paso 1: girá a la izquierda"— deja de coincidir al invertir el orden. El número lo dibuja el SDK y
+  es la posición real en la secuencia —1, 2, 3 y 4, con las dos vueltas al frente en 2 y 4—, así que no
+  hace falta repetirlo.
+
+- **`DigiYoIcons.HeadLateralViewLeft`**: el perfil de `HeadLateralView` espejado, disponible como
+  cualquier otro ícono del SDK.
+
+### Cambiado
+
+- **El marco del desafío de giros se agranda al arrancar la grabación**, para no quedar pegado al
+  contorno de la silueta. **No toca el óvalo de encuadre**: el que se compara contra tu rostro para
+  habilitar el botón y hacer desaparecer el "ALÉJESE" conserva su tamaño y su exigencia. Durante la
+  grabación lo que se valida es la secuencia de giros y no la contención en el marco, así que
+  agrandarlo no afloja ningún criterio.
+
+  Las medidas del marco no son configurables: están atadas entre sí y a la silueta, y elegirlas desde
+  afuera rompe esa relación en silencio. Lo que sí se configura es el trazo.
+
+- **iOS: el identificador de dispositivo ahora persiste en el Keychain.** El `identifierForVendor` de
+  Apple se reinicia al desinstalar la última app del mismo vendor, que con una sola app es simplemente
+  reinstalar. Guardándolo la primera vez, el identificador sobrevive la reinstalación.
+
+### Corregido
+
+- **iOS: el video podía grabarse acostado.** La orientación se fijaba en la salida que alimenta al
+  detector pero no en la que escribe el archivo, así que el detector veía vertical y el video salía
+  horizontal si el usuario acostaba el equipo. Ahora se fija en las tres salidas, en las tres cámaras.
+
+- **Android: después de un desafío rechazado, el botón de grabar no se volvía a habilitar.** Al tocar
+  el botón del diálogo de rechazo, la etiqueta del óvalo no desaparecía y el disparador quedaba
+  deshabilitado, sin más salida que cerrar la cámara.
+
+  La causa era una fuga de detectores faciales: se construía uno nuevo en cada redibujado de la vista y
+  ninguno se cerraba. Con este desafío es grave, porque la detección corre **dentro** de la grabación y
+  cada muestra de rostro redibuja. En el camino feliz no se notaba —la pantalla se cierra enseguida—,
+  pero después de un rechazo hay que seguir detectando y ahí aparecía.
+
+  Además, el reintento ahora descarta el rostro detectado para reevaluar el encuadre con una muestra
+  nueva, y la secuencia vuelve al primer giro.
+
+### Notas para quien integra
+
+- **Android, Play Integrity**: llamá a `DigiyoIntegrity.configure(...)` **antes** de inicializar el SDK.
+  La preparación del API es costosa y se hace una sola vez; cuanto antes arranque, más chance de que el
+  token esté listo en la primera captura.
+
+- **iOS, App Attest**: tu app necesita estos dos entitlements. Sin ellos funciona igual, pero no se
+  adjunta la evidencia de iOS.
+
+  ```xml
+  <key>com.apple.developer.devicecheck.app-attest-opt-in</key>
+  <array>
+      <string>CDhash</string>
+  </array>
+  <key>com.apple.developer.devicecheck.appattest-environment</key>
+  <string>production</string>
+  ```
+
+- **Android, dependencia transitiva nueva**: el SDK ahora usa `io.github.roshkamobile:signet`, que se
+  publica en **Maven Central**. No hay que declarar ningún repositorio adicional: el `mavenCentral()`
+  que tu proyecto ya tiene alcanza, y no pide credenciales. Vas a verla aparecer en el árbol de
+  dependencias.
+
+---
+
 ## [2.1.3] — 2026-08-28
 
 Apaga el certificate pinning por defecto, corrige un rechazo de subida que afectaba capturas **hechas
