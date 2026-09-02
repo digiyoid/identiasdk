@@ -300,21 +300,31 @@ lo produjo una app legítima en un dispositivo real. Es un control adicional al 
 2.0.2 —que verifica que el archivo salió de una cámara del SDK—: son dos cosas distintas y el backend
 las evalúa por separado.
 
-**No hay que hacer nada para que funcione, y nunca bloquea una captura.** El SDK registra una clave
-por dispositivo al arrancar la app y firma con ella cada subida. Un equipo viejo, sin Play Services,
-sin red, o al que todavía no se le registró la clave captura y sube igual: la evidencia queda vacía y
-el backend decide qué significa su ausencia.
+El SDK registra una clave por dispositivo al arrancar la app y firma con ella cada subida.
 
-El registro ocurre **al arrancar la app y no dentro de un DIA**. En iOS atestiguar exige un viaje a
-los servidores de Apple y es sensiblemente más lento que en Android, donde es local; dentro de un DIA
-esa espera caería sobre una subida que el usuario está mirando.
+#### Habilitación inicial, una sola vez
 
-Hay dos cosas **opcionales** que conviene configurar para que la evidencia sea completa.
+Para que la atestación reúna evidencia, el backend de Digiyo tiene que tener registrada la identidad
+de tu aplicación. Necesitamos de tu lado tres datos:
+
+- el **application id** de tu app,
+- el **digest del certificado de firma** con el que la publicás,
+- y la **credencial de Play Integrity** de tu proyecto de Google Cloud (solo Android).
+
+Coordinalo con el equipo de Digiyo por el canal que ya usás para tu integración. **La credencial no va
+por correo ni en un issue**: te vamos a indicar cómo entregarla.
+
+**El flujo de tu app no depende de esta habilitación.** Podés integrar la versión antes de
+completarla, y en un dispositivo que no pueda atestiguar —por antigüedad o por su configuración—
+capturar y subir también siguen su curso normal. No hace falta ninguna contención para esos casos.
+
+El registro de la clave ocurre una sola vez, al arrancar la app, y no agrega espera a ninguna subida.
+Si monitoreás el tráfico de tu app vas a ver ese intercambio al inicio y no durante un DIA.
 
 #### Android: Play Integrity
 
-Habilita el token de Play Integrity, que se adjunta atado a cada captura. Sin esto la atestación
-funciona igual, solo que no se adjunta token.
+Una vez hecha la habilitación, esta llamada es la que hace que el token de Play Integrity se adjunte
+a cada captura.
 
 ```kotlin
 class MyApplication : Application() {
@@ -331,8 +341,9 @@ class MyApplication : Application() {
 }
 ```
 
-`cloudProjectNumber` es el **número** del proyecto de Google Cloud vinculado a tu app en Play
-Console, no el id.
+`cloudProjectNumber` es el **número** —no el id— del proyecto de Google Cloud vinculado a tu app en
+Play Console: **el mismo del que sale la credencial que nos entregaste**. Si no coinciden, el token no
+se puede validar.
 
 **Llamalo antes de inicializar el SDK.** La preparación del API de Play Integrity es costosa y se hace
 una sola vez; cuanto antes arranque, más chance de que el token esté listo cuando llegue la primera
@@ -344,8 +355,8 @@ compilación de los clientes iOS —que además no usan Play Integrity—.
 
 #### iOS: entitlements de App Attest
 
-Tu app necesita estos dos entitlements. Sin ellos funciona igual, pero no se adjunta la evidencia de
-iOS.
+Tu app necesita estos dos entitlements. A diferencia de Android, acá no hay credencial ni proyecto de
+por medio: App Attest es de Apple y de tu app.
 
 ```xml
 <key>com.apple.developer.devicecheck.app-attest-opt-in</key>

@@ -22,8 +22,8 @@ con evidencia de que el archivo lo produjo una app legítima en un dispositivo r
 en el desafío de movimiento de cabeza**: una silueta sobre la cámara que le indica al usuario hacia
 dónde girar.
 
-Nada de lo agregado rompe compilación. Hay dos cosas opcionales que conviene configurar para que la
-atestación aporte todo lo que puede, y están en "Notas para quien integra".
+Nada de lo agregado rompe compilación. La atestación **necesita una habilitación de tu app en el
+backend de Digiyo**, una sola vez; el detalle está en "Notas para quien integra".
 
 ### Agregado
 
@@ -32,18 +32,19 @@ atestación aporte todo lo que puede, y están en "Notas para quien integra".
   origen que ya existía desde la 2.0.2: son dos controles distintos y el backend los evalúa por
   separado.
 
-  El registro ocurre **al arrancar la app y no dentro de un DIA**, por costo: en iOS atestiguar exige
-  un viaje a los servidores de Apple y es sensiblemente más lento que en Android, donde es local.
-  Dentro de un DIA esa espera caería sobre una subida que el usuario está mirando.
+  El registro de la clave ocurre una sola vez, al arrancar la app, y no agrega espera a ninguna
+  subida.
 
-  **No hace falta hacer nada y nunca falla hacia afuera.** Un equipo viejo, sin Play Services, sin red
-  o al que todavía no se le registró la clave captura y sube igual: la evidencia queda vacía y el
-  backend decide qué significa su ausencia. Se intenta una vez por arranque, sin reintentos dentro de
-  la sesión.
+  **Requiere una habilitación inicial de tu app**, una sola vez: el backend de Digiyo tiene que tener
+  registrada su identidad. Ver "Notas para quien integra".
 
-- **Android: `DigiyoIntegrity.configure(context, cloudProjectNumber)`.** Habilita el token de Play
-  Integrity, que se adjunta atado a cada captura. Es **opcional**: sin llamarlo, la atestación funciona
-  y simplemente no se adjunta token.
+  **El flujo de tu app no depende de ella.** Podés integrar la 2.2.0 antes de completar la
+  habilitación, y en un dispositivo que no pueda atestiguar —por antigüedad o por su configuración—
+  capturar y subir también siguen su curso normal. No hace falta ninguna contención para esos casos.
+
+- **Android: `DigiyoIntegrity.configure(context, cloudProjectNumber)`.** Adjunta el token de Play
+  Integrity a cada captura. Va junto con la habilitación de tu app: el número tiene que ser el de **tu**
+  proyecto de Google Cloud, el mismo del que sale la credencial que nos entregaste.
 
   ```kotlin
   utils.DigiyoIntegrity.configure(
@@ -129,9 +130,19 @@ atestación aporte todo lo que puede, y están en "Notas para quien integra".
 
 ### Notas para quien integra
 
-- **Android, Play Integrity**: llamá a `DigiyoIntegrity.configure(...)` **antes** de inicializar el SDK.
-  La preparación del API es costosa y se hace una sola vez; cuanto antes arranque, más chance de que el
-  token esté listo en la primera captura.
+- **Habilitación de tu app (una sola vez).** Para que la atestación reúna evidencia, necesitamos de tu
+  lado el **application id**, el **digest del certificado de firma** con el que publicás la app, y la
+  **credencial de Play Integrity** de tu proyecto de Google Cloud (solo Android). Coordinalo con el
+  equipo de Digiyo por el canal que ya usás para tu integración; **la credencial no va por correo ni en
+  un issue**.
+
+- **Android, Play Integrity**: el `cloudProjectNumber` es el número —no el id— de **tu** proyecto de
+  Google Cloud, el mismo del que sale la credencial que nos entregaste. Si no coinciden, el token no se
+  puede validar.
+
+  Llamá a `DigiyoIntegrity.configure(...)` **antes** de inicializar el SDK: la preparación del API es
+  costosa y se hace una sola vez, así que cuanto antes arranque, más chance de que el token esté listo
+  en la primera captura.
 
 - **iOS, App Attest**: tu app necesita estos dos entitlements. Sin ellos funciona igual, pero no se
   adjunta la evidencia de iOS.
