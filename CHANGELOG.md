@@ -15,6 +15,116 @@ resuelve Swift Package Manager, y en **Android** a los artefactos `com.roshka:di
 
 ---
 
+## [2.3.0] — 2026-09-08
+
+**Consignas habladas** durante la grabación de video. Un parámetro nuevo y opcional decide si los
+textos que ya configura tu app se dibujan, se pronuncian, o las dos cosas.
+
+**Nada de lo que tengas hoy deja de compilar, y sin ese parámetro el comportamiento es idéntico al de
+la 2.2.0.** No hay ningún paso de actualización.
+
+### Agregado
+
+- **`VideoCameraConfig.challengeVoiceConfig`**, del tipo `VideoChallengeVoiceConfig`:
+
+  ```kotlin
+  VideoCameraConfig(
+      // ...
+      challengeTexts = VideoChallengeTexts(
+          ovalLabelText = "Colocá tu rostro dentro del círculo y presioná Iniciar",
+          lookLeftInstructionText = "Ahora girá lentamente hacia la izquierda",
+          lookFrontInstructionText = "Mirá al frente",
+          lookRightInstructionText = "Ahora girá lentamente hacia la derecha",
+          lookSequenceCompletedText = "¡Verificación completada!",
+      ),
+      challengeVoiceConfig = VideoChallengeVoiceConfig(
+          mode = ChallengeDeliveryMode.TEXT_AND_VOICE,
+          languageTag = "es-419",
+      ),
+  )
+  ```
+
+  `ChallengeDeliveryMode` tiene tres valores: `TEXT` (el de siempre, y el default), `VOICE` —se
+  pronuncia y **no** se dibuja— y `TEXT_AND_VOICE`.
+
+  El caso que justifica la funcionalidad es `live_validations.look_left_right`: **mientras el usuario
+  gira la cabeza no puede leer la pantalla**, así que la consigna dibujada en ese momento no la ve
+  nadie.
+
+  Qué se pronuncia y cuándo:
+
+  | Texto de `challengeTexts` | Momento |
+  |---|---|
+  | `lookLeft` / `lookFront` / `lookRight` / `lookSequenceCompleted` | en cada cambio de fase, **solo mientras se graba** |
+  | el texto de grabación del desafío (`fingerRecordingText` y compañía) | al arrancar a grabar, **excepto** en la secuencia de giros |
+  | `ovalLabelText` | cada vez que la etiqueta de encuadre aparece en pantalla |
+
+  El texto de grabación se excluye en la secuencia de giros porque ahí la consigna es la de cada fase,
+  y decir las dos a la vez haría que la primera fase corte a la general en el mismo instante.
+
+  **El SDK no lee la pantalla.** Pronuncia únicamente los textos que tu app definió en
+  `challengeTexts`; si un texto no está definido, tampoco se pronuncia nada. **No reemplaza a TalkBack
+  ni a VoiceOver.**
+
+- **`languageTag`** (BCP-47) y **`speechRate`**. Sin definir usan el default del sistema, que es lo que
+  respeta las preferencias de accesibilidad que el usuario ya tenga configuradas.
+
+  Conviene fijar el idioma: un texto en español leído con la voz por defecto de un equipo configurado
+  en inglés sale ininteligible. Si el dispositivo no tiene esa voz instalada, el SDK **avisa en el log
+  y usa la del sistema** — no falla ni bloquea la captura. En iOS tené en cuenta que el sistema trae
+  `es-ES`, `es-MX`, `es-AR` y `es-419`, pero **no `es-PY`**.
+
+- **`speakOvalLabel`**, `true` por defecto, y solo con efecto cuando el modo ya pide voz. Controla si
+  la etiqueta de encuadre se pronuncia. Se pronuncia **cada vez que aparece**, no solo la primera: si
+  el usuario se sale del encuadre y la consigna vuelve, vuelve también hablada.
+
+  A diferencia del texto dibujado, la voz lee la etiqueta **completa**: el recorte a 40 caracteres
+  existe por el espacio disponible sobre el óvalo y no tiene sentido al hablar, así que con una
+  etiqueta larga es normal escuchar más de lo que se ve.
+
+- **Un tipo de onboarding nuevo en `OnboardingDiaType`**, de desafío de movimiento de cabeza.
+
+### Notas de plataforma
+
+- **La voz no queda dentro del archivo de video.** La grabación va sin pista de audio en las dos
+  plataformas, así que la consigna hablada no se graba.
+
+- **iOS: el SDK configura la sesión de audio, y solo cuando tu app pide voz.** Sin eso la voz no se
+  escucha en absoluto: la categoría por defecto de una app es `soloAmbient`, que el interruptor de
+  silencio silencia, y una app que nunca activó una sesión tampoco tiene garantizada la reproducción
+  mientras corre una `AVCaptureSession`.
+
+  Se eligió lo menos invasivo que resuelve el problema: categoría `Playback` —la única que se escucha
+  con el interruptor de silencio activado, que es el punto de tener consigna hablada— con
+  `MixWithOthers` para **no cortar** el audio de tu app ni lo que el usuario esté escuchando, y
+  `DuckOthers` para bajarlo mientras hablamos. La sesión se activa en el primer texto pronunciado y se
+  libera al cerrar la cámara con `NotifyOthersOnDeactivation`, así que el efecto queda confinado al
+  tiempo que la cámara está en pantalla. **Con `challengeVoiceConfig` en `null` el SDK no la toca
+  nunca.**
+
+- **Android: no hay nada que agregar de tu lado.** El SDK declara en su propio manifiesto la consulta
+  de visibilidad del motor de texto a voz (`android.intent.action.TTS_SERVICE`), que desde Android 11
+  es obligatoria para que `TextToSpeech` encuentre un motor. Llega por fusión de manifiestos.
+
+### Compatibilidad
+
+**Nada deja de compilar.** El parámetro es opcional y en iOS se agregó el `init` de compatibilidad con
+la firma completa de la 2.2.0 (hasta `lookSequenceConfig`).
+
+En Swift las variantes del enum son `.text`, `.voice` y `.textAndVoice`, y `VideoChallengeVoiceConfig`
+expone tres `init`: `init(mode:)`, `init(mode:languageTag:)` y el completo
+`init(mode:languageTag:speechRate:speakOvalLabel:)`.
+
+### Corregido en la documentación
+
+- **El README documentaba un `init` de `VideoCameraConfig` que no existe.** La tabla de firmas de iOS
+  listaba una variante que terminaba en `challengeImages`; verificado contra el header del binario
+  publicado, esa variante nunca existió. Una app Swift que enumerara hasta `challengeImages` y se
+  detuviera ahí no compilaba, con el mensaje habitual de *"Missing argument for parameter"*. La tabla
+  ahora refleja los nueve `init` reales.
+
+---
+
 ## [2.2.0] — 2026-09-02
 
 Dos frentes independientes. **Atestación de capturas**: el SDK ahora acompaña cada imagen y cada video

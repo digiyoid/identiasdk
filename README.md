@@ -66,6 +66,7 @@ Este SDK emplea inteligencia artificial para la detección precisa y eficiente d
 - [VideoChallengeTexts](#videochallengetexts)
 - [VideoChallengeImages](#videochallengeimages)
 - [LookSequenceConfig](#looksequenceconfig)
+- [VideoChallengeVoiceConfig](#videochallengevoiceconfig)
 - [DigiYoRGB](#digiyorgb)
 ### [Personalización y estilos](#personalización-y-estilos)
 - [DigiyoColorScheme](#digiyocolorscheme)
@@ -90,6 +91,7 @@ Este SDK emplea inteligencia artificial para la detección precisa y eficiente d
   - [Estilo de los textos sobre el óvalo](#estilo-de-los-textos-sobre-el-óvalo)
   - [Secuencia de giros de cabeza (`look_left_right`)](#secuencia-de-giros-de-cabeza-look_left_right)
   - [Marcas de agua del desafío de giros (`challengeImages`)](#marcas-de-agua-del-desafío-de-giros-challengeimages)
+  - [Consignas habladas (`challengeVoiceConfig`)](#consignas-habladas-challengevoiceconfig)
   - [Texto de ayuda debajo del óvalo](#texto-de-ayuda-debajo-del-óvalo)
   - [Colores del óvalo y de la etiqueta](#colores-del-óvalo-y-de-la-etiqueta)
 - [HelpScreenView](#helpscreenview)
@@ -112,8 +114,8 @@ Este SDK emplea inteligencia artificial para la detección precisa y eficiente d
 El SDK requiere un mínimo de **API 24**. Para instalar la librería en una aplicación Android, agrega la siguiente dependencia en el archivo `build.gradle` o `build.gradle.kts` de tu módulo App:
 
 ```groovy
-implementation "com.roshka:digiyocore:2.2.0"
-implementation "com.roshka:digiyo:2.2.0"
+implementation "com.roshka:digiyocore:2.3.0"
+implementation "com.roshka:digiyo:2.3.0"
 ```
 
 > Ver el historial de versiones y los cambios de cada una en [CHANGELOG.md](CHANGELOG.md).
@@ -1462,6 +1464,7 @@ Configuración para la grabación de video.
 - **`closeButtonConfig`** (*CloseButtonConfig?*): Texto, ícono y ubicación del botón de cerrar. `null` = el botón de siempre. Ver [Botón de cerrar](#botón-de-cerrar-closebuttonconfig).
 - **`challengeImages`** (*VideoChallengeImages?*): Marca de agua con silueta de cabeza sobre la cámara durante el desafío de `look_left_right`. `null` = no se dibuja ninguna. **Convive con `challengeTexts`**: se pueden usar uno, el otro o los dos. Ver [Marcas de agua del desafío de giros](#marcas-de-agua-del-desafío-de-giros-challengeimages).
 - **`lookSequenceConfig`** (*LookSequenceConfig?*): Por qué lado empieza el giro, forma y trazo del marco de la grabación, y el número de paso. `null` = `LookSequenceConfig.DEFAULT`. Ver [LookSequenceConfig](#looksequenceconfig).
+- **`challengeVoiceConfig`** (*VideoChallengeVoiceConfig?*): Si las consignas de `challengeTexts` además de dibujarse se pronuncian, o se pronuncian en lugar de dibujarse. `null` = solo texto, el comportamiento de las versiones anteriores a la 2.3.0. Ver [Consignas habladas](#consignas-habladas-challengevoiceconfig).
 
 ---
 
@@ -1654,6 +1657,32 @@ que se corte la grabación; para cambiarlo, el lugar es `colorScheme.onSuccessCo
 
 **En Swift**, los enums de Kotlin llegan en minúsculas: `LookSequenceSide.left`, `.right`,
 `LookSequenceFrameShape.oval`, `.roundedSquare`.
+
+---
+
+### VideoChallengeVoiceConfig
+
+Entrega **hablada** de las consignas de `VideoChallengeTexts`. Se pasa en
+`VideoCameraConfig.challengeVoiceConfig`; en `null` las consignas solo se dibujan, que es el
+comportamiento de todas las versiones anteriores a la 2.3.0.
+
+- **`mode`** (*ChallengeDeliveryMode*): `TEXT` (por defecto), `VOICE` o `TEXT_AND_VOICE`. En `VOICE` el
+  texto **no se dibuja**.
+- **`languageTag`** (*String?*): idioma de la voz en BCP-47 (`"es-419"`, `"es-AR"`, `"pt-BR"`). `null` =
+  el idioma del dispositivo.
+- **`speechRate`** (*Float?*): velocidad del habla. `null` = la del sistema, que es la que respeta la
+  preferencia de accesibilidad del usuario.
+- **`speakOvalLabel`** (*Boolean*): si la etiqueta de encuadre se pronuncia. **`true` por defecto**, y
+  solo tiene efecto cuando `mode` ya pide voz.
+
+Derivadas: **`showsText`** y **`speaks`**.
+
+**No reemplaza a TalkBack ni a VoiceOver.** El SDK no lee la pantalla: pronuncia únicamente los textos
+que la app definió en `challengeTexts`, y un texto no definido tampoco se pronuncia.
+
+**En Swift**, las variantes del enum llegan en minúsculas: `ChallengeDeliveryMode.text`, `.voice`,
+`.textAndVoice`. Y hay tres `init`: `init(mode:)`, `init(mode:languageTag:)` y el completo
+`init(mode:languageTag:speechRate:speakOvalLabel:)`.
 
 ---
 
@@ -2607,10 +2636,14 @@ Hoy son estos:
 | `overlayDimAlpha` | idem, desde `challengeTexts` |
 | `challengeTexts` | `lowLightBoostEnabled = true` y `requireFaceFraming = true` |
 | `lowLightBoostEnabled` | `requireFaceFraming = true` |
-| `requireFaceFraming` | `closeButtonConfig`, `challengeImages` y `lookSequenceConfig` en `nil` |
-| `closeButtonConfig` | `challengeImages` y `lookSequenceConfig` en `nil` |
-| `challengeImages` | `lookSequenceConfig` en `nil` |
-| `lookSequenceConfig` | ninguno: es la firma completa |
+| `requireFaceFraming` | `closeButtonConfig`, `challengeImages`, `lookSequenceConfig` y `challengeVoiceConfig` en `nil` |
+| `closeButtonConfig` | `challengeImages`, `lookSequenceConfig` y `challengeVoiceConfig` en `nil` |
+| `lookSequenceConfig` | `challengeVoiceConfig` en `nil` |
+| `challengeVoiceConfig` | ninguno: es la firma completa |
+
+> **Corregido en la 2.3.0:** esta tabla listaba una variante que terminaba en `challengeImages`, y esa
+> variante **no existe**. Una llamada que enumere hasta `challengeImages` y se detenga ahí no compila.
+> Para pasar `challengeImages` hay que enumerar también `lookSequenceConfig`.
 
 **Solo se puede omitir un sufijo, no parámetros sueltos.** Es decir, se puede pasar hasta
 `lowLightBoostEnabled` y dejar afuera `requireFaceFraming`, pero **no** al revés: para llegar a
@@ -2905,6 +2938,56 @@ coincidir. El número lo pone el SDK y sale del orden real, así que no hace fal
 
 Ver [VideoChallengeImages](#videochallengeimages) y [LookSequenceConfig](#looksequenceconfig) para
 todos los campos.
+
+---
+
+#### Consignas habladas (`challengeVoiceConfig`)
+
+Desde la **2.3.0**, las consignas de `challengeTexts` pueden además pronunciarse.
+
+```kotlin
+challengeVoiceConfig = VideoChallengeVoiceConfig(
+    mode = ChallengeDeliveryMode.TEXT_AND_VOICE,   // TEXT (default) | VOICE | TEXT_AND_VOICE
+    languageTag = "es-419",
+)
+```
+
+El caso que lo justifica es el desafío de giros: **mientras el usuario gira la cabeza no puede leer la
+pantalla**, así que una consigna dibujada en ese momento no la ve nadie. Con `mode = VOICE` el texto no
+se dibuja y la consigna va solo por audio.
+
+Qué se pronuncia y cuándo:
+
+| Texto | Momento |
+|---|---|
+| `lookLeftInstructionText` y sus hermanos | en cada cambio de fase, **solo mientras se graba** |
+| el texto de grabación del desafío | al arrancar a grabar, **excepto** en la secuencia de giros |
+| `ovalLabelText` | cada vez que la etiqueta de encuadre aparece (`speakOvalLabel`) |
+
+Las consignas **se interrumpen entre sí** en lugar de encolarse: si la fase avanzó, lo que importa es
+la consigna nueva y no terminar de leer la anterior.
+
+Dos detalles que conviene conocer antes de activarlo:
+
+**El idioma conviene fijarlo.** Un texto en español leído con la voz por defecto de un equipo
+configurado en inglés sale ininteligible. Si el dispositivo no tiene la voz del idioma pedido, el SDK
+avisa en el log y usa la del sistema; no falla ni bloquea la captura. En iOS el sistema trae `es-ES`,
+`es-MX`, `es-AR` y `es-419`, pero **no `es-PY`**.
+
+**La voz lee el texto completo, el dibujado sigue recortado a 40 caracteres.** El recorte existe por el
+espacio disponible sobre el óvalo, así que con una etiqueta larga es normal escuchar más de lo que se
+ve.
+
+Y dos cosas que **no** tenés que hacer: la consigna hablada **no queda dentro del archivo de video**
+—la grabación va sin pista de audio en las dos plataformas— y en Android no hay que declarar nada en tu
+manifiesto, porque la consulta de visibilidad del motor de texto a voz que Android 11 exige la declara
+el SDK y llega por fusión de manifiestos.
+
+En **iOS**, cuando tu app pide voz el SDK configura la sesión de audio compartida en `Playback` con
+`MixWithOthers` y `DuckOthers`: `Playback` es la única categoría que se escucha con el interruptor de
+silencio activado, y las dos opciones evitan cortar el audio de tu app o lo que el usuario esté
+escuchando. La sesión se libera al cerrar la cámara. Con `challengeVoiceConfig` en `null` el SDK no la
+toca nunca.
 
 ---
 
