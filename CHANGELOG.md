@@ -15,6 +15,69 @@ resuelve Swift Package Manager, y en **Android** a los artefactos `com.roshka:di
 
 ---
 
+## [2.3.1] — 2026-09-11
+
+Dos correcciones en la subida de capturas. **No cambia ninguna firma y no hay nada que tocar del lado
+del integrador.**
+
+### Corregido
+
+- **El timeout de subida de imágenes se había reducido a la mitad, en contra de lo que decía su propio
+  comentario.** El bloque `timeout {}` de `sendImage` existe, según su documentación, para *ampliar* el
+  timeout de las subidas respecto del global "pensado para llamadas JSON". Pero fijaba 60 s cuando el
+  default del cliente es 120 s, así que para toda app que no definiera
+  `DigiYoConfig.requestTimeoutInMillis` lo **reducía** a la mitad.
+
+  Tampoco había forma de compensarlo desde la app: el `timeout {}` por request pisa la configuración
+  del cliente, así que pedir más en `requestTimeoutInMillis` no tenía ningún efecto sobre las subidas.
+
+  La constante se introdujo en la **1.5.0**, así que el salto se sintió al actualizar desde cualquier
+  versión anterior a esa. El síntoma era `HttpRequestTimeoutException` con `request_timeout=60000 ms`,
+  y en las apps que lanzan varias subidas en paralelo aparecía disfrazado, como tareas incompletas en
+  `verifyTasksAndCommit`.
+
+  Ahora las constantes son un **piso**: el timeout efectivo es el mayor entre el piso y el que el
+  cliente tenga configurado, así que una app que pida más lo obtiene. El piso de imagen sube de 60 s a
+  **120 s**, que es el valor con el que estas subidas funcionaban antes de que la constante existiera.
+  El de video ya estaba en 120 s y no cambia.
+
+- **El timeout de socket estaba atado al total.** Son cosas distintas: el total mide cuánto puede durar
+  una subida que sí avanza, y el de socket cuánta inactividad se tolera antes de dar la conexión por
+  muerta. Igualados, una conexión caída tardaba el tiempo total en detectarse; con reintentos encima,
+  minutos antes de que el usuario se enterara.
+
+  La inactividad tolerada queda en **60 s** y gobierna la detección de fallos, mientras el total
+  gobierna la duración. Gracias a esto, subir el techo de 60 a 120 s no empeoró el tiempo de detección
+  de un enlace caído.
+
+- **iOS escribía las capturas en PNG.** Un PNG de una foto de sensor completo pesa decenas de MB, con
+  el costo correspondiente en tiempo de subida y en datos del usuario. Las tres capturas de iOS
+  —cédula recortada, cédula completa y selfie— pasan a JPEG con calidad 0.9, el equivalente del
+  `JPEG, 90` que Android usa desde julio. iOS había quedado sin migrar.
+
+  De paso corrige una incoherencia: los nombres de archivo del SDK siempre fueron `.jpg`, así que iOS
+  venía escribiendo bytes PNG en archivos `.jpg`.
+
+  **No afecta la atestación ni la firma de capturas.** El registro de origen hashea los bytes tal como
+  se escribieron y la verificación compara contra los bytes que se suben: los dos ven el mismo archivo,
+  así que el formato les es indiferente. Tampoco cambia el `content-type` del multipart, que declara
+  `image/png` para las dos plataformas — Android ya venía enviando JPEG con esa etiqueta desde julio.
+
+### Notas para el integrador
+
+- **`DigiYoConfig.requestTimeoutInMillis` gobierna los tres timeouts del cliente HTTP** —total,
+  conexión y socket—, y de esos el bloque por request de las subidas sobreescribe el total y el de
+  socket, pero **nunca el de conexión**. Un valor chico ahí, pensado para que las llamadas JSON fallen
+  rápido, deja a las subidas con ese mismo plazo para establecer la conexión.
+
+  Recomendación: **no bajarlo de 30 s**, y sin un motivo puntual, no definirlo — el default de 120 s es
+  el valor con el que el SDK se prueba.
+
+- Si tu app definía `requestTimeoutInMillis` **por encima** de 60 s y las subidas no lo respetaban, a
+  partir de esta versión lo respetan. Ese es el único cambio de comportamiento observable.
+
+---
+
 ## [2.3.0] — 2026-09-08
 
 **Consignas habladas** durante la grabación de video. Un parámetro nuevo y opcional decide si los
