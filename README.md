@@ -575,10 +575,28 @@ digiyoSdk.cancelDia(diaId: digiyoSdk.getSavedDia()?.diaId ?? "") { [weak self] r
 
 Sube imágenes capturadas.
 
-> **El archivo tiene que provenir de una vista de cámara del SDK.** Desde la 2.0.2 el SDK verifica que
-> la imagen la haya capturado `DocumentCameraView` o `SelfieCameraView`, y que no se haya modificado
-> después. Una ruta de otro origen —la galería, otra cámara, un archivo descargado— se rechaza por
-> `onError` y no se sube.
+> **El archivo tiene que salir de un wrapper de cámara del SDK.** Desde la 2.0.2 el SDK verifica que la
+> imagen la haya capturado **`getDocumentCameraView`** o **`getSelfieCameraView`** y que no se haya
+> modificado después. Una ruta de otro origen —la galería, otra cámara, un archivo descargado— se
+> rechaza por `onError` y no se sube.
+>
+> **Llamar al composable subyacente (`DocumentCameraView`, `SelfieCameraView`) directamente no
+> registra la captura.** La cámara funciona y la foto sale bien, pero el registro de origen queda
+> vacío y la subida se rechaza igual, aunque el archivo lo haya escrito la propia cámara del SDK. El
+> registro ocurre dentro del `onResult` del wrapper, que es el único punto donde el SDK puede
+> probarlo: después solo recibe rutas.
+>
+> El síntoma en el log del dispositivo es este:
+>
+> ```
+> origen de captura: inData=CROPPED_CI_PY_FRONT no apareció ningún registro en 10000ms de espera
+> origen de captura: inData=CROPPED_CI_PY_FRONT SIN REGISTRO. recibida=… normalizada=…
+>   El archivo no lo produjo una cámara del SDK.
+> ```
+>
+> Subí además **la ruta tal como la devolvió el `onResult`**, sin copiarla, moverla ni recomprimirla:
+> se verifica el hash de los bytes, así que un archivo alterado en el medio se rechaza por
+> modificación en lugar de por origen.
 >
 > Es lo que permite que el backend confíe en el origen de la captura. Si tu flujo necesita capturar por
 > otro medio, escribinos antes de actualizar.
@@ -1715,7 +1733,7 @@ Configuración para facilitar la personalización de colores de algunos elemento
 #### Android
 
 ```kotlin
-digiyoSdk.DocumentCameraView(
+digiyoSdk.getDocumentCameraView(
     config = DocumentCameraConfig(
        ...
         colorScheme = DigiyoColorScheme.fromPrimaryColor(
