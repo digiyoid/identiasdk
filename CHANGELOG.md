@@ -15,6 +15,86 @@ resuelve Swift Package Manager, y en **Android** a los artefactos `com.roshka:di
 
 ---
 
+## [2.4.0] — 2026-09-30
+
+Corrige dos fallas que se manifestaban como **subidas que dejan de funcionar sin ningún error** y
+como **commits sobre un DIA equivocado**. La única firma que cambia es la del contenido que devuelve
+`onTaskNotCompleted`; el resto de la API queda igual y nada deja de compilar.
+
+### Corregido
+
+- **Un fallo en cualquier operación auxiliar mataba todas las subidas, para siempre.** El scope de
+  corrutinas del core se creaba con un `Job` común, y de él cuelgan 18 operaciones independientes
+  —subidas, logging remoto, atestación, cancelación de DIAs abandonados—. En un `Job` común el fallo
+  de un hijo cancela al padre, y el padre a todos los hermanos: una excepción en un log remoto
+  abortaba una subida en curso a mitad de la escritura.
+
+  Y un `Job` cancelado **nunca vuelve a estar activo**. A partir de ese momento toda operación
+  posterior terminaba sin ejecutar nada, **sin excepción y sin log**, hasta que el usuario matara la
+  app. Desde la app eso se ve como una promesa que no resuelve nunca: una pantalla de "verificando"
+  que se queda para siempre con la consola limpia.
+
+  Peor todavía, el logging remoto cuelga del mismo scope, así que lo primero que deja de funcionar es
+  justamente lo que tendría que reportar la falla.
+
+  La medición que lo delató: una subida fallando a los 60.079 ms por timeout real y la siguiente
+  muriendo a los **246 ms** con `JobCancellationException: Parent job is Cancelling`.
+
+  Ahora el scope usa `SupervisorJob`: el fallo de una operación deja de propagarse a las demás. La
+  cancelación hacia abajo no cambia.
+
+- **`ensureRegistered()` de la atestación podía lanzar, contra lo que decía su contrato.** El
+  `try/catch` cubría el núcleo del registro, pero la comprobación de soporte, el acceso al keystore y
+  el pedido del desafío quedaban afuera. Como corre dentro del scope del core, cualquier excepción
+  ahí era exactamente el disparador del punto anterior. El cuerpo entero quedó protegido y el log
+  registra ahora la **clase** de la excepción, que es lo que faltaba para identificar la causa.
+
+- **`verifyTasksAndCommit` commiteaba con subidas en vuelo, y podía commitear un DIA anterior.** La
+  decisión se tomaba mirando una foto instantánea de un registro local que solo conoce lo que la app
+  encoló en ese proceso: no sabe qué `in_data` exige el `dia_type` ni qué falta por llegar. De ahí
+  salían cuatro problemas —commit temprano, reintento parcial, contaminación entre DIAs y un colector
+  que nunca terminaba— y los cuatro desembocaban en
+  `400 "does not have all of the required data for commiting"`.
+
+  El colector que no terminaba era el más grave: después de commitear seguía suscrito con el `diaId`
+  viejo atrapado en su closure, así que cuando un DIA **nuevo** terminaba de subir sus capturas,
+  volvía a disparar y commiteaba el anterior. El backend respondía `400 "has commited already"`, y en
+  iOS ese segundo callback llegaba a una promesa ya resuelta: reanudar dos veces una
+  `CheckedContinuation` es `fatalError` en Swift, así que **la app moría**.
+
+  Ahora la decisión se toma contra el DIA: se espera a que no queden subidas encoladas, se pide el
+  DIA al backend y se commitea solo si ningún `in_data` quedó sin valor, con reintentos para cubrir la
+  consistencia eventual y un tope total para no esperar indefinidamente. La corrutina termina después
+  de un único desenlace.
+
+### Cambiado
+
+- **`onTaskNotCompleted` devuelve otra cosa.** La firma de `verifyTasksAndCommit` no cambia, así que
+  nada deja de compilar, pero el contenido de la lista sí:
+
+  | | antes | ahora |
+  |---|---|---|
+  | qué lista | tareas del registro **local** en estado ERROR | `in_data` que el **servidor** reporta sin valor |
+  | se subió todo, falló el video | `["POL_VIDEO"]` | `["POL_VIDEO"]` |
+  | se llamó a verify antes de encolar el video | `[]` **y commiteaba** | `["POL_VIDEO"]` |
+  | nunca se subió el dorso | `[]` **y commiteaba** | `["CI_PY_BACK", "CROPPED_CI_PY_BACK"]` |
+
+### Notas para el integrador
+
+- **Revisá cómo mapeás `onTaskNotCompleted` a pasos de reintento.** Ahora la lista puede traer
+  nombres que no son capturas —`ID_NUMBER`, `ADDITIONAL_INFO`—. Un mapeo que descarte lo desconocido
+  puede quedarse sin ningún paso al que mandar al usuario, y el usuario sin salida.
+
+- **Si tu app tenía un timeout propio alrededor de `verifyTasksAndCommit` para no colgarse, ya no
+  hace falta.** Podés dejarlo como red de seguridad, pero a partir de esta versión el método termina
+  siempre.
+
+- **Limitación conocida:** el scope del core **nunca se cancela** —no hay `close()` ni `dispose()`—,
+  así que una subida en curso no se puede abortar cuando el usuario abandona el flujo. Cancelarlo es
+  irreversible, así que la forma de esa API queda para definir en una versión futura.
+
+---
+
 ## [2.3.1] — 2026-09-11
 
 Dos correcciones en la subida de capturas. **No cambia ninguna firma y no hay nada que tocar del lado
