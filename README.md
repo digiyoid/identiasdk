@@ -1435,7 +1435,7 @@ Objeto estandarizado para la gestión de excepciones.
 Configuración para la captura de documentos.
 - **`cameraTitle`** (*String*): Título de la pantalla de la cámara.
 - **`cameraSubtitle`** (*String?*): Subtítulo opcional de la pantalla de la cámara.
-- **`documentType`** (*DocumentType*): Tipo de documento a capturar.
+- **`documentType`** (*DocumentType*): Tipo de documento a capturar. **Además de los textos de la pantalla, determina el nombre de los archivos que el SDK escribe.** Por eso cada paso de captura debe usar un valor distinto: dos pasos con el mismo `documentType` escriben la misma ruta, el segundo pisa los archivos del primero, y si la subida del primero todavía está en vuelo se rechaza por procedencia. Un paso, un `DocumentType`.
 - **`colorScheme`** (*DigiyoColorScheme?*): Configuración de colores personalizada.
 - **`successAlertConfig`** (*SuccessAlertConfig?*): Configuración de la alerta de éxito. **Con `null` el SDK no pide confirmación**: entrega el resultado por `onResult` en cuanto la captura se valida. Configurándolo, el resultado se entrega recién cuando el usuario toca el botón del diálogo, lo que además le da la oportunidad de revisar lo capturado.
 - **`showCloseButton`** (*Boolean?*): Indica si se debe mostrar el botón de cerrar.
