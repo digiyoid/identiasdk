@@ -15,6 +15,76 @@ resuelve Swift Package Manager, y en **Android** a los artefactos `com.roshka:di
 
 ---
 
+## [2.4.1] — 2026-10-01
+
+Corrige cinco fallas con un mismo síntoma visible: **capturas que el backend nunca recibe y un
+`verifyTasksAndCommit` que las reporta como faltantes**. No cambia ninguna firma y no hay nada que
+tocar del lado del integrador para actualizar.
+
+Tres de las cinco solo se manifiestan con subidas **asincrónicas** —`sendImageAsynchronously` /
+`sendVideoAsynchronously`—, que es como las usan las apps reales. Si tu integración sube de forma
+bloqueante y espera cada `onSuccess`, es muy probable que no las hayas visto.
+
+### Corregido
+
+- **`ADDITIONAL_INFO` nunca se guardó, en ninguna versión.** El SDK manda esa información por su
+  cuenta apenas crea el DIA —sistema operativo, modelo, versión del SDK, geolocalización si la
+  proveés, métricas del video y la señal de root/jailbreak—, pero la armaba con un formato de cuerpo
+  que el backend aceptaba con `200` sin llegar a guardar nada. Como nadie leía el resultado, el dato
+  se venía perdiendo desde que el método existe.
+
+  La 2.4.0 no lo rompió: lo destapó, porque su verify nuevo sí consulta el servidor y empezó a
+  reportar `ADDITIONAL_INFO` como faltante en todos los DIAs —correctamente: nunca había llegado—.
+
+- **`verifyTasksAndCommit` reclamaba `in_data` que el `dia_type` nunca pidió.** El `in_data` de un
+  DIA **crece**: un `PATCH` da de alta la clave si no existía. El propio envío de `ADDITIONAL_INFO`
+  creaba esa entrada, vacía por el punto anterior, y después el verify la leía y la reportaba. El
+  SDK se estaba leyendo a sí mismo, y como esa clave no sale de ninguna captura, la app se quedaba
+  sin ningún paso al que mandar al usuario.
+
+  Ahora el juego de claves a verificar es **el que devolvió `createDia`**, no el que devuelve el
+  `GET` de verificación.
+
+- **Con varias subidas en vuelo se perdían entradas del registro interno de tareas.** El verify
+  espera a que ninguna subida siga pendiente antes de consultar el DIA, y por una actualización no
+  atómica una subida podía desaparecer de ese registro. El verify no la esperaba, consultaba el DIA
+  con esa subida todavía viajando y la reportaba como faltante. Desde la app se ve como "se perdió
+  la foto", cuando en realidad estaba subiendo.
+
+- **Recapturar una foto hacía fallar su subida.** Si el usuario tocaba "volver a tomar", la segunda
+  captura escribía la misma ruta que la primera y durante un instante el registro de procedencia
+  todavía correspondía a la anterior. La subida se rechazaba con `CONTENT_MODIFIED` —el error
+  reservado para un archivo sustituido— sobre una captura perfectamente legítima. Según el momento,
+  el usuario veía un diálogo de contenido modificado o, más adelante, la captura reportada como
+  faltante.
+
+- **En iOS, las capturas se escribían de forma no atómica**, así que el cálculo de procedencia podía
+  leer un JPEG a medias. Las tres escrituras de iOS —cédula recortada, cédula completa y selfie—
+  pasan a escritura atómica.
+
+### Notas para el integrador
+
+- **No reutilices el mismo `documentType` en dos pasos.** `documentType` no elige solo los textos de
+  la cámara: **nombra los archivos que el SDK escribe**. Dos pasos con el mismo valor escriben la
+  misma ruta, el segundo pisa al primero, y si la subida del primero todavía está en vuelo se
+  rechaza. Un paso, un `DocumentType`.
+
+- **Si guardabas la información de dispositivo o la detección de root, tus DIAs históricos la tienen
+  vacía.** Nunca llegó. A partir de esta versión sí, sin cambios del lado de la app.
+
+- **`ADDITIONAL_INFO` ya no aparece en `onTaskNotCompleted`.** Si lo agregaste a tu mapeo de
+  reintentos a raíz de la 2.4.0, podés sacarlo.
+
+- **Agregá este caso a tus pruebas**: capturar, tocar "volver a tomar", recapturar y continuar. Es lo
+  que ningún recorrido limpio ejercita y lo que cualquier usuario hace la primera vez que le sale
+  movida la foto.
+
+- **Limitación conocida (sin cambios desde 2.4.0):** la espera previa del verify se da por cumplida
+  cuando el registro de tareas está vacío. Si llamás a `verifyTasksAndCommit` antes de registrar la
+  primera subida, no espera nada.
+
+---
+
 ## [2.4.0] — 2026-09-30
 
 Corrige dos fallas que se manifestaban como **subidas que dejan de funcionar sin ningún error** y
