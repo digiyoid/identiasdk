@@ -15,6 +15,78 @@ resuelve Swift Package Manager, y en **Android** a los artefactos `com.roshka:di
 
 ---
 
+## [2.5.0] — 2026-10-06
+
+La cámara de cédula **vuelve a capturar** después de que el usuario cierra el diálogo de éxito para
+repetir la foto. Hasta acá, cerrarlo con la ✕ dejaba la pantalla viva pero muerta: el marco en
+verde, el disparador gris y ningún camino salvo cerrar la cámara y volver a entrar.
+
+No cambia ninguna firma y no hay nada que tocar del lado del integrador para actualizar.
+
+### Corregido
+
+- **La cámara de documentos quedaba sin poder capturar tras cerrar el diálogo de éxito (Android).**
+  Con `successAlertConfig` configurado y `displayDefaultActivityIndicator` en `false`, el diálogo que
+  confirma la captura trae su botón ✕ —la salida pensada para "esta foto no sirve, saco otra"—.
+  Cerrarlo devolvía la cámara a la pantalla de captura, pero esa pantalla ya no tomaba otra foto
+  nunca más.
+
+  La protección interna contra la doble captura se encendía al tomar la primera foto y no se apagaba
+  nunca: era un candado de por vida de la pantalla. Cada pedido posterior se descartaba en silencio.
+
+  **Afecta a cualquier integración que deje la vista montada después de `onResult`**, que es el
+  comportamiento por defecto: el SDK no cierra su propia cámara. Quien la desmonta en `onResult`
+  nunca lo vio.
+
+- **El disparador manual se apagaba cuando más se lo necesitaba (cámara de documentos).** Con
+  `captureModeConfig.buttonBehavior = DisableButtonOnShoot`, el botón se deshabilitaba apenas el
+  detector veía algo —incluidos los estados "centrá el documento" y "ajustá la distancia"—, que son
+  justo los dos momentos en que el usuario quiere disparar a mano porque el encuadre automático no
+  termina de cerrar.
+
+  Ahora se apaga **solo mientras hay una captura en curso**: detección válida con el contador ya
+  corriendo, o foto ya tomada. Es lo que el nombre del modo promete y lo que esta documentación ya
+  describía. Selfie y video no cambian.
+
+- **Un pedido de captura descartado no dejaba rastro en el log.** Cuando el SDK ignoraba un disparo,
+  no escribía ninguna línea: desde afuera se veía una pantalla que simplemente no hacía nada. Ahora
+  queda registrado con el `dia_id`, el número de intento y la causa.
+
+### Agregado
+
+- **`POL1` / `video-face-validation` ("Movimiento de cabeza") en `ValidationDiaType`.** Se suma a
+  `video-frame-validation` (`POL`) y `video-validation-pol-depth` (`POL2`). Es aditivo: nada de lo
+  que ya resolvía cambia.
+
+- **Con el logging del SDK activo, la ruta del archivo queda en la consola antes de cada envío**
+  (`sendImage`, `sendVideo` y sus variantes asincrónicas):
+
+  ```
+  envio -> sendImageAsynchronously | inData=CI_FRONT | archivo=/data/user/0/…/ci_front_cropped.jpg
+  ```
+
+  Sirve sobre todo para un caso mudo: si la ruta no existe o no se puede leer, **el envío no ocurre
+  y tampoco llama a `onError`**; en el log se ve el "voy a enviar" sin el "enviado" que debería
+  seguirlo. La línea se queda en la consola del dispositivo, no viaja a ningún servidor, y solo
+  aparece con `loggingEnabled = true` o en una app anfitriona debuggable.
+
+### Notas para el integrador
+
+- **No hay acción requerida.** Ninguna firma cambia, en Android ni en iOS.
+
+- **Limitación conocida en iOS:** el mismo callejón sin salida sigue abierto en la cámara de
+  **documentos de iOS**. Si usás `successAlertConfig` ahí, no confiés en la ✕ para que el usuario
+  repita la foto: desmontá la vista después de `onResult` y volvé a presentarla.
+
+- **Agregá este caso a tus pruebas**: capturar la cédula, cerrar el diálogo de éxito con la ✕ y
+  volver a capturar. Es lo que ningún recorrido limpio ejercita y lo primero que hace cualquier
+  usuario al que le salió movida la foto.
+
+- **Si configuraste `DisableButtonOnShoot` en la cámara de documentos**, vas a ver el disparador
+  habilitado en dos estados donde antes estaba gris. Es el arreglo, no una regresión.
+
+---
+
 ## [2.4.1] — 2026-10-01
 
 Corrige cinco fallas con un mismo síntoma visible: **capturas que el backend nunca recibe y un
