@@ -1439,7 +1439,7 @@ Configuración para la captura de documentos.
 - **`colorScheme`** (*DigiyoColorScheme?*): Configuración de colores personalizada.
 - **`successAlertConfig`** (*SuccessAlertConfig?*): Configuración de la alerta de éxito. **Con `null` el SDK no pide confirmación**: entrega el resultado por `onResult` en cuanto la captura se valida. Configurándolo, el resultado se entrega recién cuando el usuario toca el botón del diálogo, lo que además le da la oportunidad de revisar lo capturado. Con `displayDefaultActivityIndicator` en `false` el diálogo además trae su botón ✕, que lo descarta y devuelve la cámara al estado inicial para repetir la foto.
 
-  > **En iOS, repetir la foto con la ✕ deja la cámara sin poder capturar.** La guarda interna de una sola captura no se libera al descartar el diálogo, así que la pantalla vuelve pero ya no toma otra foto. Si usás `successAlertConfig` en la cámara de documentos de iOS, desmontá la vista después de `onResult` y volvé a presentarla en lugar de confiar en la ✕. En **Android** esto quedó resuelto en la 2.5.0.
+  > **Repetir la foto con la ✕ funciona en ambas plataformas** desde la 2.6.0 en iOS y desde la 2.5.0 en Android. En versiones anteriores de iOS la pantalla volvía pero ya no tomaba otra foto: si estás en 2.5.x o menor, desmontá la vista después de `onResult` y volvé a presentarla en lugar de confiar en la ✕.
 - **`showCloseButton`** (*Boolean?*): Indica si se debe mostrar el botón de cerrar.
 - **`captureModeConfig`** (*CaptureModeConfig*): Configuración del modo de captura.
 - **`showDetectedObjectRect`** (*Boolean*): Activa el dibujado de un rectángulo sobre el objeto detectado.
@@ -1905,7 +1905,7 @@ digiyoSdk.getDocumentCameraViewController(
 **Parámetros**
 
 - **`automaticReadingEnabled`** (*Boolean*): Activa o desactiva el modo de captura automática.
-- **`automaticModeTimeoutMillis`** (*Long?*): Si no es nulo, define el tiempo en milisegundos en que la captura automática estará activada antes de pasar a modo manual.
+- **`automaticModeTimeoutMillis`** (*Long?*): Si no es nulo, define el tiempo en milisegundos en que la captura automática estará activada antes de pasar a modo manual. Solo tiene efecto con `automaticReadingEnabled = true`, y no se aplica si al vencer el plazo ya hay una captura en curso o resuelta: en ese caso la captura sigue su camino.
 - **`cameraButtonConfig`** (*ButtonConfig?*): Corresponde a la configuración de personalización del botón, incluyendo el título.
 - **`buttonType`** (*CaptureButtonType?*): Corresponde al tipo de botón: `DefaultButton` (rectangular con texto), `ShutterButtonType1` o `ShutterButtonType2` (obturadores circulares, sin texto). Aplica en las tres cámaras: documento, selfie y video.
 - **`buttonBehavior`** (*CaptureButtonBehavior?*): Corresponde al comportamiento del botón al capturar la foto o el video. Por defecto, el botón queda desactivado.

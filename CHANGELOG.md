@@ -15,6 +15,67 @@ resuelve Swift Package Manager, y en **Android** a los artefactos `com.roshka:di
 
 ---
 
+## [2.6.0] — 2026-10-13
+
+El **timeout del modo automático deja de arruinar una captura ya lograda**. Si configurabas
+`captureModeConfig.automaticModeTimeoutMillis` y el plazo vencía justo cuando la foto estaba en
+vuelo o el diálogo de éxito ya estaba abierto, el diálogo se cerraba solo y la cámara quedaba
+trabada: la captura resuelta, pero sin forma de continuar ni de repetirla.
+
+Además, **la cámara de documentos de iOS ya puede repetir la captura desde la ✕**. Es la
+limitación conocida que la 2.5.0 documentó como pendiente del lado de iOS.
+
+Ninguna firma cambia y no hay nada que tocar para actualizar.
+
+### Corregido
+
+- **El timeout del modo automático cerraba el diálogo de éxito y dejaba la cámara trabada**
+  (documento y selfie, Android e iOS). Al vencer el plazo, el SDK devolvía el detector a su estado
+  inicial sin fijarse en que ya había una captura en curso o terminada. Desde afuera se veía como
+  un diálogo que se cerraba solo y una cámara que después no respondía.
+
+  Ahora el timeout no hace nada si al vencer hay una captura en vuelo o resuelta: la captura sigue
+  su camino.
+
+  **Afecta a cualquier integración con `automaticModeTimeoutMillis` distinto de `null`.** Cuanto
+  más corto el plazo, más fácil de reproducir: alcanza con que el usuario encuadre el documento
+  cerca del vencimiento.
+
+- **El timeout también corría en modo manual.** Con `automaticReadingEnabled = false` el
+  temporizador vencía igual, aunque no tuviera nada que desactivar —el botón manual ya está
+  visible desde el inicio—, y lo único que lograba era el reseteo descrito arriba. Ahora, en modo
+  manual, `automaticModeTimeoutMillis` se ignora.
+
+- **La cámara de documentos de iOS devolvía la foto anterior al repetir la captura.** Cerrar el
+  diálogo de éxito con la ✕ volvía a la pantalla de captura, pero la foto previa seguía en memoria:
+  el siguiente disparo daba por capturada una imagen que nunca se tomó y el diálogo mostraba la
+  anterior. Ahora el cierre con la ✕ descarta la captura vieja y sus rutas.
+
+  Con esto, **la limitación conocida que la 2.5.0 dejó abierta en iOS queda resuelta**: ya no hace
+  falta desmontar la vista y volver a presentarla para que el usuario repita la foto.
+
+- **La cámara de iOS seguía corriendo después de cerrarse.** Al destruir la vista no se detenía la
+  `AVCaptureSession` ni se soltaba su delegado: la sesión quedaba viva hasta que el sistema
+  liberase el objeto y podía solaparse con la de la instancia siguiente. Se nota en integraciones
+  que abren y cierran la cámara varias veces seguidas —previsualización congelada, primer frame
+  demorado, consumo de batería—. Ahora se cierra al desmontar.
+
+### Notas para el integrador
+
+- **No hay acción requerida.** Ninguna firma cambia, en Android ni en iOS.
+
+- **Si configurás `automaticModeTimeoutMillis` en modo manual** y esperabas algún efecto, ya no
+  ocurre. Era un comportamiento no documentado.
+
+- **Agregá este caso a tus pruebas:** con un timeout corto configurado, capturar el documento
+  justo antes de que venza y confirmar que el diálogo de éxito se queda abierto hasta que el
+  usuario decida.
+
+- **En iOS, volvé a probar el camino de repetir la foto con la ✕** si lo habías evitado por la
+  limitación de la 2.5.0.
+
+---
+
 ## [2.5.1] — 2026-10-09
 
 Versión de mantenimiento. **No hay cambios funcionales en el SDK, ni en Android ni en iOS.**
