@@ -15,6 +15,29 @@ resuelve Swift Package Manager, y en **Android** a los artefactos `com.roshka:di
 
 ---
 
+## [2.5.1] — 2026-10-09
+
+Versión de mantenimiento. **No hay cambios funcionales en el SDK, ni en Android ni en iOS.**
+Lo único que cambia respecto de la 2.5.0 es el número que el SDK reporta en runtime
+(`DIGIYO_VERSION`): el código publicado es idéntico, línea por línea.
+
+Se libera para que las dos plataformas vuelvan a quedar en el mismo número y para que el historial
+de versiones no tenga huecos.
+
+### Notas para el integrador
+
+- **Si ya estás en 2.5.0, actualizar no te cambia nada.** Podés saltear esta versión sin perderte
+  ningún arreglo, o tomarla para quedar alineado con el número que publica Android.
+
+- Ninguna firma cambia, ningún comportamiento cambia y no se agrega ni se quita ninguna
+  dependencia transitiva.
+
+- **Todo lo de la 2.5.0 sigue vigente tal cual**, incluida la limitación conocida de la cámara de
+  documentos en iOS: si usás `successAlertConfig` ahí, no confíes en la ✕ para que el usuario
+  repita la foto; desmontá la vista después de `onResult` y volvé a presentarla.
+
+---
+
 ## [2.5.0] — 2026-10-06
 
 La cámara de cédula **vuelve a capturar** después de que el usuario cierra el diálogo de éxito para
