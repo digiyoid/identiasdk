@@ -17,13 +17,27 @@ resuelve Swift Package Manager, y en **Android** a los artefactos `com.roshka:di
 
 ## [2.7.0] — 2026-10-14
 
-Tres cosas, todas de iOS. **El SDK ya se puede recorrer entero en el simulador**, sin necesidad de
-un equipo físico. La cámara de documentos **arranca más rápido**. Y se cierra el último agujero del
-ciclo capturar → repetir.
+Todo iOS. **El paquete ya trae el slice de simulador arm64**, así que compila en simuladores de
+Mac con Apple Silicon. Además el SDK se puede recorrer entero en el simulador sin un equipo físico,
+la cámara de documentos arranca más rápido, y se cierra el último agujero del ciclo
+capturar → repetir.
 
 Ninguna firma cambia y no hay nada que tocar para actualizar.
 
 ### Agregado
+
+- **Slice `ios-arm64_x86_64-simulator`.** Hasta la 2.6.0 el `.xcframework` traía el simulador solo
+  en `x86_64`. En una Mac con Apple Silicon el simulador corre en **arm64**, así que al integrar el
+  SDK el link fallaba con `Undefined symbol` —un error que no menciona la arquitectura y manda a
+  buscar el problema a cualquier otro lado—. Ahora las dos arquitecturas van en un único slice de
+  simulador, que es la forma canónica:
+
+  ```
+  "LibraryIdentifier" => "ios-arm64_x86_64-simulator"
+  "SupportedArchitectures" => [ "arm64", "x86_64" ]
+  ```
+
+  Los Mac Intel siguen funcionando igual; el slice de dispositivo no cambia.
 
 - **Cámara simulada en el simulador de iOS.** El simulador no expone ninguna cámara, así que hasta
   ahora cualquier vista de captura del SDK mostraba el diálogo de "sin cámara" y se cerraba:
