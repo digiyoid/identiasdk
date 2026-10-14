@@ -177,6 +177,31 @@ En iOS, puedes instalar Digiyo SDK utilizando **Swift Package Manager**. Para el
 git@github.com:Digiyoid/identiasdk.git
 ```
 
+No hace falta nada más. `Package.swift` declara el SDK como `binaryTarget(url:checksum:)`, así que
+SPM descarga el `.xcframework` del release correspondiente, verifica su checksum y lo descomprime
+en su propia caché de artefactos —`DerivedData/<proyecto>/SourcePackages/artifacts/` en Xcode—.
+El binario **no** está versionado en este repositorio.
+
+#### Obtener el `.xcframework` suelto
+
+Solo hace falta para inspeccionar el binario o para integrarlo por ruta en lugar de por URL. Se
+descarga del release:
+
+```bash
+curl -L -o Digiyo.zip \
+  https://github.com/digiyoid/identiasdk/releases/download/v2.7.0/DigiyoSwiftPackage.xcframework.zip
+ditto -x -k Digiyo.zip .
+```
+
+Queda `DigiyoSwiftPackage.xcframework/` en el directorio actual. Cambiá el tag de la URL por la
+versión que necesites.
+
+Para comprobar qué arquitecturas trae:
+
+```bash
+plutil -p DigiyoSwiftPackage.xcframework/Info.plist | grep -i -A4 simulator
+```
+
 ### Usar una versión pre-release
 
 De vez en cuando se publica una versión **pre-release** —por ejemplo `2.0.0-beta.1`— para poder
@@ -294,6 +319,40 @@ let digiyoConfig = DigiyocoreDigiyoConfig(
     requestTimeoutInMillis: nil
 )
 ```
+
+#### Precalentado de la cámara de documentos (desde 2.7.0)
+
+Vision y CoreImage tardan en su primer uso: el detector compila su modelo y el contexto de imagen
+compila su pipeline de Metal. Sin adelantarlo, ese costo cae justo cuando el usuario abre la cámara.
+
+**El SDK ya lo hace solo al inicializarse**, en segundo plano. No hay nada que agregar.
+
+Si tu app prefiere calentar en un momento puntual —por ejemplo, al entrar a la pantalla previa a la
+cámara—, podés adelantarlo:
+
+```swift
+digiyoSDK.prewarmDocumentCamera()
+```
+
+Es idempotente y no bloqueante: después de la primera vez es una operación vacía.
+
+#### Probar en el simulador (desde 2.7.0)
+
+El simulador de iOS no expone ninguna cámara. Antes de la 2.7.0 eso hacía que cualquier vista de
+captura mostrara el diálogo de "sin cámara" y se cerrara, así que probar el flujo exigía un equipo
+físico.
+
+Desde la 2.7.0 el SDK dibuja su overlay real sobre un fondo simulado y entrega un archivo generado
+en el momento. **No hay que configurar nada**, y en un equipo físico el comportamiento es el de
+siempre: la detección del simulador es en tiempo de ejecución, no por target de compilación.
+
+> **Lo que no se puede probar así.** Con la cámara simulada, el inventario de cámaras y el permiso
+> informan una cámara utilizable, o sea que esas dos salvaguardas no se ejercitan. Para recorrer el
+> camino real de "sin cámara", definí esta variable de entorno en el scheme de Xcode:
+>
+> ```
+> DIGIYO_DISABLE_CAMERA_MOCK = 1
+> ```
 
 ### Atestación de capturas
 

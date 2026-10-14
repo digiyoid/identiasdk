@@ -7,3 +7,14 @@
 # al build ni a la resolución del paquete.
 .swiftpm/
 xcuserdata/
+
+# El binario del SDK NO se versiona. `Package.swift` usa `binaryTarget(url:checksum:)`, o sea que
+# SPM descarga el .zip adjunto al release de GitHub: la carpeta acá no la consumía nadie.
+#
+# Desde la 2.7.0 el slice del simulador trae arm64 y x86_64 en un binario universal y supera los
+# 100 MB, el límite por archivo de GitHub, así que versionarla además rompe el push.
+#
+# Para probar en local con `path:` en lugar de `url:`, se genera con
+# `./gradlew :digiyo:assembleDigiyoReleaseXCFramework` en digiyo-mp-sdk y se copia acá; este
+# ignore la mantiene fuera del control de versiones.
+DigiyoSwiftPackage.xcframework/

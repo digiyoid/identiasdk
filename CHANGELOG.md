@@ -15,6 +15,68 @@ resuelve Swift Package Manager, y en **Android** a los artefactos `com.roshka:di
 
 ---
 
+## [2.7.0] — 2026-10-14
+
+Tres cosas, todas de iOS. **El SDK ya se puede recorrer entero en el simulador**, sin necesidad de
+un equipo físico. La cámara de documentos **arranca más rápido**. Y se cierra el último agujero del
+ciclo capturar → repetir.
+
+Ninguna firma cambia y no hay nada que tocar para actualizar.
+
+### Agregado
+
+- **Cámara simulada en el simulador de iOS.** El simulador no expone ninguna cámara, así que hasta
+  ahora cualquier vista de captura del SDK mostraba el diálogo de "sin cámara" y se cerraba:
+  probar el flujo exigía un dispositivo real. Desde esta versión, al correr en el simulador el SDK
+  dibuja su overlay real sobre un fondo simulado y entrega un archivo generado en el momento. **No
+  hay que configurar nada.**
+
+  La detección es en tiempo de ejecución, no por target de compilación: en un equipo físico el
+  comportamiento es exactamente el de siempre.
+
+  Con la cámara simulada activa, el inventario de cámaras y el permiso informan una cámara
+  utilizable, así que esas dos salvaguardas no se ejercitan. Para recorrer en el simulador el
+  camino real de "sin cámara", definí `DIGIYO_DISABLE_CAMERA_MOCK=1` en las variables de entorno
+  del scheme.
+
+- **`prewarmDocumentCamera()`.** Adelanta la carga de Vision y CoreImage. El SDK ya lo hace solo al
+  inicializarse; el método existe para las apps que prefieren calentar en un momento puntual, como
+  la pantalla previa a la cámara. Es idempotente: llamarlo de más no cuesta nada.
+
+### Cambiado
+
+- **La cámara de documentos de iOS arranca antes.** El detector de Vision compila su modelo en la
+  primera invocación y el contexto de CoreImage compila su pipeline de Metal; los dos costos se
+  pagaban al abrir la cámara, en el hilo que procesa los frames. Ahora el contexto se construye una
+  sola vez —antes era uno por captura— y el calentamiento corre en segundo plano al inicializar el
+  SDK. Se nota más en equipos con sensores grandes, de iPhone 14 en adelante.
+
+### Corregido
+
+- **La cámara de documentos de iOS entregaba una foto equivocada al repetir la captura.** Después de
+  descartar una captura con la ✕ y volver a capturar, "Continuar" podía entregar una imagen tomada
+  en otro momento en lugar de la que el usuario acababa de confirmar.
+
+  Se reproducía recién en el segundo ciclo: capturar, cerrar con la ✕, capturar de nuevo, mover el
+  teléfono y recién entonces tocar "Continuar". **Afecta a cualquier integración con
+  `successAlertConfig` configurado en la cámara de documentos de iOS.**
+
+- **"Continuar" no cerraba el diálogo de éxito (documentos, iOS).** El diálogo quedaba vivo detrás
+  de la pantalla a la que navegaba la app, y reaparecía encima al volver para repetir la foto.
+
+### Notas para el integrador
+
+- **No hay acción requerida.** Ninguna firma cambia.
+
+- **Volvé a probar el ciclo completo en iOS:** capturar, descartar con la ✕, capturar de nuevo,
+  mover el teléfono y tocar "Continuar". La foto entregada tiene que ser la del momento en que el
+  marco se puso verde.
+
+- **Pendiente:** el diálogo de éxito sigue sin cerrarse al tocar "Continuar" en la selfie de iOS y
+  en las dos cámaras de Android. Es el mismo hueco; se resuelve en una versión próxima.
+
+---
+
 ## [2.6.0] — 2026-10-13
 
 El **timeout del modo automático deja de arruinar una captura ya lograda**. Si configurabas
