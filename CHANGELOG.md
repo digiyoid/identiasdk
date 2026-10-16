@@ -15,6 +15,90 @@ resuelve Swift Package Manager, y en **Android** a los artefactos `com.roshka:di
 
 ---
 
+## [2.7.1] — 2026-10-16
+
+Las dos plataformas. Se cierra el congelamiento de la app al terminar de grabar el video en iOS
+—un ANR que se venía viendo hace tiempo sin diagnosticar— y se termina de cerrar el ciclo
+**capturar → descartar → repetir** en las cámaras que todavía lo tenían roto.
+
+Hay **un cambio de comportamiento** al repetir una captura con la ✕; está descrito abajo en
+*Cambiado*. Ninguna firma cambia y no hay nada que tocar para actualizar.
+
+### Corregido
+
+- **La app quedaba congelada al terminar de grabar el video (iOS).** Al cortarse la grabación la
+  pantalla de cámara se quedaba fija, el botón "Cerrar" no respondía y Sentry reportaba
+  `ANR detected`. No había crash: el proceso seguía vivo pero la interfaz no volvía a dibujar
+  nunca, y la única salida era matar la app.
+
+  Era un bloqueo mutuo a tres bandas entre la cámara, el recolector de basura de Kotlin/Native y
+  el hilo que dibuja la interfaz. Se cerraba solo si entraban cuadros de la cámara mientras había
+  trabajo de memoria en curso, y ese trabajo lo provocaba la propia app al arrancar la subida del
+  video apenas recibía el resultado. **Es decir que lo disparaba el uso normal**: cuanto más
+  rápido subía la app, más probable era.
+
+  Ahora el SDK corta la entrega de cuadros al analizador en cuanto la captura se da por buena, sin
+  esperar a que la app desmonte la pantalla. La sesión de cámara sigue viva, así que la
+  previsualización no se congela ni parpadea.
+
+  Se reproducía con más frecuencia en redes lentas, porque alargan la ventana de subida. **Afecta
+  a cualquier integración de iOS que suba el video mientras la pantalla de cámara sigue montada.**
+
+- **La ✕ del diálogo de éxito no hacía nada en la selfie de iOS.** El diálogo no se cerraba ni con
+  la ✕ ni de ninguna otra forma: el único camino era "Continuar". Ahora descarta la captura y
+  devuelve la cámara al estado inicial, igual que en la cámara de documentos.
+
+- **La ✕ dejaba el botón de captura inhabilitado en el video de iOS.** Después de descartar una
+  grabación con la ✕, la pantalla volvía pero el botón quedaba muerto y no se podía grabar de
+  nuevo sin salir y volver a entrar.
+
+- **La ✕ entraba en un bucle con captura automática (selfie y documentos, Android).** Al tocar la
+  ✕, el detector volvía a validar el rostro o el documento —que seguían en cuadro— y disparaba una
+  captura nueva al instante, que reabría el diálogo. Desde afuera parecía que la ✕ no funcionaba:
+  la única manera de cerrarlo era apuntar la cámara lejos del sujeto.
+
+- **La cámara de documentos de Android dejaba de capturar después de la ✕.** Ocurría
+  aproximadamente **una de cada cinco veces**: el detector seguía funcionando y el marco cambiaba
+  de color al encuadrar la cédula, pero la foto no se sacaba nunca. La única salida era cerrar la
+  pantalla y volver a abrirla.
+
+  El reinicio del ciclo de captura dependía de observar una transición de estado que podía perderse
+  cuando el documento seguía en cuadro, y en ese caso la pantalla quedaba marcada como "ya capturó"
+  para siempre. Ahora el reinicio es explícito al descartar.
+
+### Cambiado
+
+- **Al repetir una captura con la ✕, hay que sacar el sujeto del encuadre antes de que la captura
+  automática vuelva a dispararse.** Es decir: descartás con la ✕, alejás la cámara del rostro o del
+  documento, volvés a encuadrar, y recién ahí captura.
+
+  Antes de este cambio esa regla no existía y el resultado era el bucle descrito arriba: con el
+  sujeto todavía en cuadro, la captura se disparaba sola en el mismo instante en que se cerraba el
+  diálogo. Se eligió exigir la re-adquisición en lugar de poner una espera por tiempo porque una
+  espera corta deja volver el bucle y una larga hace sentir la cámara trabada.
+
+  **Solo aplica a la captura automática y solo después de la ✕.** El disparador manual no está
+  afectado: tocar el botón ya es intención explícita y captura de inmediato. Y si no configurás
+  `successAlertConfig`, no hay ✕ y no hay cambio alguno.
+
+### Notas para el integrador
+
+- **No hay acción requerida.** Ninguna firma cambia.
+
+- **Volvé a probar el ciclo de la ✕ en las cuatro cámaras**, y en Android hacelo con captura
+  automática, que es donde estaban los dos bugs. La secuencia: capturar, ✕, sacar la cámara del
+  sujeto, volver a encuadrar, capturar de nuevo, "Continuar".
+
+- **En iOS, probá el video dejando que la subida corra.** El congelamiento era una carrera: un solo
+  pase no prueba nada. Repetilo unas cuantas veces, y si podés con la red limitada a 3G, que
+  alarga la ventana donde ocurría.
+
+- **Pendiente, sin cambios respecto de la 2.7.0:** el diálogo de éxito sigue sin cerrarse al tocar
+  "Continuar" en la selfie de iOS y en las dos cámaras de Android. Es un hueco distinto del de la
+  ✕ y se resuelve en una versión próxima.
+
+---
+
 ## [2.7.0] — 2026-10-14
 
 Todo iOS. **El paquete ya trae el slice de simulador arm64**, así que compila en simuladores de

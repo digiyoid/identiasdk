@@ -1499,6 +1499,9 @@ Configuración para la captura de documentos.
 - **`successAlertConfig`** (*SuccessAlertConfig?*): Configuración de la alerta de éxito. **Con `null` el SDK no pide confirmación**: entrega el resultado por `onResult` en cuanto la captura se valida. Configurándolo, el resultado se entrega recién cuando el usuario toca el botón del diálogo, lo que además le da la oportunidad de revisar lo capturado. Con `displayDefaultActivityIndicator` en `false` el diálogo además trae su botón ✕, que lo descarta y devuelve la cámara al estado inicial para repetir la foto.
 
   > **Repetir la foto con la ✕ funciona en ambas plataformas** desde la 2.6.0 en iOS y desde la 2.5.0 en Android. En versiones anteriores de iOS la pantalla volvía pero ya no tomaba otra foto: si estás en 2.5.x o menor, desmontá la vista después de `onResult` y volvé a presentarla en lugar de confiar en la ✕.
+  >
+  > En **Android** la ✕ dejaba de capturar aproximadamente una de cada cinco veces —el marco cambiaba de color pero la foto no salía nunca— hasta la **2.7.1**.
+  > **Al repetir con la ✕, hay que sacar el sujeto del encuadre** antes de que la captura automática vuelva a dispararse: descartás, alejás la cámara, volvés a encuadrar, y recién ahí captura. Es así **desde la 2.7.1**; antes la captura se disparaba sola en el mismo instante en que se cerraba el diálogo y el diálogo reaparecía en bucle. Solo aplica a la captura automática: el disparador manual captura de inmediato.
 - **`showCloseButton`** (*Boolean?*): Indica si se debe mostrar el botón de cerrar.
 - **`captureModeConfig`** (*CaptureModeConfig*): Configuración del modo de captura.
 - **`showDetectedObjectRect`** (*Boolean*): Activa el dibujado de un rectángulo sobre el objeto detectado.
@@ -1513,7 +1516,10 @@ Configuración para la captura de documentos.
 Configuración para la captura de selfies.
 - **`cameraTitle`** (*String*): Título de la pantalla de selfie.
 - **`colorScheme`** (*DigiyoColorScheme?*): Configuración de colores personalizada.
-- **`successAlertConfig`** (*SuccessAlertConfig?*): Configuración de la alerta de éxito. **Con `null` el SDK no pide confirmación**: entrega el resultado por `onResult` en cuanto la captura se valida. Configurándolo, el resultado se entrega recién cuando el usuario toca el botón del diálogo, lo que además le da la oportunidad de revisar lo capturado.
+- **`successAlertConfig`** (*SuccessAlertConfig?*): Configuración de la alerta de éxito. **Con `null` el SDK no pide confirmación**: entrega el resultado por `onResult` en cuanto la captura se valida. Configurándolo, el resultado se entrega recién cuando el usuario toca el botón del diálogo, lo que además le da la oportunidad de revisar lo capturado. Con `displayDefaultActivityIndicator` en `false` el diálogo además trae su botón ✕, que lo descarta y devuelve la cámara al estado inicial para repetir la selfie.
+
+  > **La ✕ funciona desde la 2.7.1.** Antes, en iOS no hacía absolutamente nada —el diálogo solo se cerraba con "Continuar"—, y en Android entraba en un bucle con captura automática: el rostro seguía en cuadro, se capturaba de nuevo al instante y el diálogo reaparecía.
+  > **Al repetir con la ✕, hay que sacar el sujeto del encuadre** antes de que la captura automática vuelva a dispararse: descartás, alejás la cámara, volvés a encuadrar, y recién ahí captura. Es así **desde la 2.7.1**; antes la captura se disparaba sola en el mismo instante en que se cerraba el diálogo y el diálogo reaparecía en bucle. Solo aplica a la captura automática: el disparador manual captura de inmediato.
 - **`showCloseButton`** (*Boolean?*): Indica si se debe mostrar el botón de cerrar.
 - **`captureModeConfig`** (*CaptureModeConfig*): Configuración del modo de captura.
 - **`shutterSoundEnabled`** (*Boolean*): Indica si el sonido del obturador está activado.
@@ -1527,7 +1533,11 @@ Configuración para la captura de selfies.
 Configuración para la grabación de video.
 - **`cameraTitle`** (*String*): Título de la pantalla de video.
 - **`colorScheme`** (*DigiyoColorScheme?*): Configuración de colores personalizada.
-- **`successAlertConfig`** (*SuccessAlertConfig?*): Configuración de la alerta de éxito. **Con `null` el SDK no pide confirmación**: entrega el resultado por `onResult` en cuanto la captura se valida. Configurándolo, el resultado se entrega recién cuando el usuario toca el botón del diálogo, lo que además le da la oportunidad de revisar lo capturado.
+- **`successAlertConfig`** (*SuccessAlertConfig?*): Configuración de la alerta de éxito. **Con `null` el SDK no pide confirmación**: entrega el resultado por `onResult` en cuanto la captura se valida. Configurándolo, el resultado se entrega recién cuando el usuario toca el botón del diálogo, lo que además le da la oportunidad de revisar lo capturado. Con `displayDefaultActivityIndicator` en `false` el diálogo además trae su botón ✕, que descarta la grabación y habilita de nuevo el botón de captura.
+
+  > **La ✕ funciona desde la 2.7.1.** Antes, en iOS la pantalla volvía con el botón de captura inhabilitado y no se podía grabar otra vez sin salir y volver a entrar.
+  >
+  > Descartar con la ✕ es seguro porque el video descartado **todavía no se entregó**: `onResult` se llama al tocar "Continuar", no antes. La grabación nueva sobreescribe el archivo de la anterior, así que descartá con la ✕ **antes** de "Continuar", nunca después de haber empezado a subir.
 - **`errorAlertConfig`** (*ErrorAlertConfig?*): Configuración de la alerta de error.
 - **`showCloseButton`** (*Boolean?*): Indica si se debe mostrar el botón de cerrar.
 - **`captureModeConfig`** (*CaptureModeConfig*): Configuración del modo de captura.
