@@ -590,6 +590,64 @@ digiyoSdk.getDia(diaId: digiyoSdk.getSavedDia()?.diaId ?? "") { [weak self] res 
     "is_cedula_temporal" | `isDocumentTemporary`
 
 
+**Motivo del rechazo (`errorCodes`, desde 2.8.0)**
+
+Cuando el DIA termina en un estado no exitoso, `errorCodes` trae los códigos que explican **por
+qué**. Es `List<Int>?`: viene `null` en un DIA exitoso.
+
+```kotlin
+digiyoSdk.getDia(
+    diaId = digiyoSdk.getSavedDia()?.diaId ?: "",
+    onSuccess = { dia ->
+        val causa = dia?.errorCodes?.firstOrNull()   // p. ej. 1252
+    },
+    onError = { /* ... */ }
+)
+```
+
+```swift
+digiyoSdk.getDia(diaId: digiyoSdk.getSavedDia()?.diaId ?? "") { dia in
+    // Kotlin exporta List<Int> como lista de cajas: hay que desempaquetar.
+    let causa = (dia?.errorCodes as? [KotlinInt])?.first?.intValue   // p. ej. 1252
+} onError: { _ in }
+```
+
+El mismo campo llega por [checkEnrollment](#checkenrollment), dentro de `EnrollmentData.dia`.
+
+**Leé el primero del array.** Vienen ordenados de menor a mayor, y la numeración va de la etapa más
+temprana del flujo a la más tardía: el primero es la causa raíz y el resto suele ser consecuencia.
+En un rechazo como `[1252, 1656, 1657, 1755, 1852, 1999]`, el número de cédula que el usuario
+tecleó no coincidía con el extraído de la foto (`1252`), y todo lo que compara contra esa cédula
+cae por arrastre. Mostrarle los seis al usuario es ruido; mostrarle el último —*"rechazo por
+evaluación de riesgo"*— no le dice qué corregir.
+
+**El SDK no traduce los códigos a texto.** El mensaje que ve el usuario depende del producto, del
+idioma y del tono de cada app. La tabla código → mensaje la mantiene la app integradora, contra el
+catálogo que publica Identia.
+
+Para armarla sirve saber cómo están numerados. Esto describe el catálogo actual y **no es un
+contrato**: pueden aparecer códigos fuera del patrón, así que la tabla de la app siempre necesita
+un mensaje genérico de último recurso.
+
+| Rango | Etapa |
+|---|---|
+| `10xx` | sistema |
+| `11xx` | solicitud |
+| `12xx` | cédula, frente |
+| `13xx` | cédula, dorso |
+| `14xx` | selfie |
+| `15xx` | selfie con cédula |
+| `16xx` | video / prueba de vida |
+| `17xx` | comparaciones entre capturas |
+| `18xx` | fuentes externas |
+| `19xx` | política de riesgo |
+
+Dentro de cada etapa, los terminados en `01`–`49` acompañan a `status = FAILURE` —problema técnico
+o de calidad de la captura, en general recapturable— y los terminados en `50`–`99` a
+`status = REJECTED` —la validación se hizo y dio que no—. Esa diferencia decide qué ofrecerle al
+usuario: repetir la captura, o cortar el flujo.
+
+
 ---
 
 ### cancelDia
@@ -1373,6 +1431,7 @@ Representa el estado completo de un proceso de Documento de Identificación y Au
 - **`status`** (*String*): Estado del proceso (ej. "STARTED", "PENDING", "COMPLETED").
 - **`meta`** (*MetaModel*): Información de auditoría y del socio.
 - **`inDataList`** (*List<InDataEntryModel>*): Lista de todos los requisitos de datos para este flujo.
+- **`errorCodes`** (*List<Int>?*): Códigos que explican el rechazo cuando `status` no es exitoso, ordenados de menor a mayor. `null` en un DIA que salió bien. Se lee **el primero**: es la causa raíz y el resto suele ser consecuencia. El SDK no los traduce a texto; la tabla código → mensaje la mantiene la app. Ver [getDia](#getdia).
 
 ---
 

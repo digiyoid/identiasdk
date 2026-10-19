@@ -15,6 +15,101 @@ resuelve Swift Package Manager, y en **Android** a los artefactos `com.roshka:di
 
 ---
 
+## [2.8.0] — 2026-10-19
+
+Las dos plataformas. El DIA ahora dice **por qué** fue rechazado: `DiaModel` expone `errorCodes`,
+una lista de códigos que el backend ya venía devolviendo y que el SDK no entregaba.
+
+Ninguna firma cambia y no hay nada que tocar para actualizar. El único punto a revisar, solo para
+quienes construyen un `DiaModel` a mano en Swift, está al final de esta entrada.
+
+### Agregado
+
+- **`DiaModel.errorCodes`** (*List\<Int\>?*) — códigos que explican el rechazo cuando el DIA termina
+  en un estado no exitoso. Vienen ordenados de menor a mayor. Es `null` en un DIA que salió bien.
+
+  Hasta ahora, con un DIA rechazado la app sabía **que** falló —por `status`— pero no **qué** falló.
+  Los `validationFlags` daban una pista de grano grueso y no cubrían todas las causas, así que el
+  único mensaje posible para el usuario era genérico: *"no se pudo validar tu identidad, intentá de
+  nuevo"*. Con los códigos, la app puede decirle qué corregir.
+
+  **Android**
+
+  ```kotlin
+  digiyoSdk.getDia(
+      diaId = digiyoSdk.getSavedDia()?.diaId ?: "",
+      onSuccess = { dia ->
+          val causa = dia?.errorCodes?.firstOrNull()   // p. ej. 1252
+      },
+      onError = { /* ... */ }
+  )
+  ```
+
+  **iOS**
+
+  ```swift
+  digiyoSdk.getDia(diaId: digiyoSdk.getSavedDia()?.diaId ?? "") { dia in
+      // Kotlin exporta List<Int> como lista de cajas: hay que desempaquetar.
+      let causa = (dia?.errorCodes as? [KotlinInt])?.first?.intValue   // p. ej. 1252
+  } onError: { _ in }
+  ```
+
+  El mismo campo llega por [`checkEnrollment`](#checkenrollment), dentro de `EnrollmentData.dia`.
+
+### Cómo usarlos
+
+**Leé el primero del array.** Los códigos vienen ordenados y la numeración va de la etapa más
+temprana del flujo a la más tardía, así que el primero es la causa raíz y el resto suele ser
+consecuencia de esa. Un rechazo real:
+
+```json
+"error_codes": [1252, 1656, 1657, 1755, 1852, 1999]
+```
+
+El número de cédula que el usuario tecleó no coincidía con el que se extrajo de la foto (`1252`), y
+todo lo que viene después compara contra esa cédula, así que cae por arrastre. Mostrarle los seis
+al usuario es ruido; mostrarle el último —*"rechazo por evaluación de riesgo"*— no le dice qué
+corregir.
+
+**El SDK no traduce los códigos a texto.** Un código es un identificador estable; el mensaje que ve
+el usuario depende del producto, del idioma y del tono de cada app, y esa decisión no le
+corresponde al SDK. La tabla código → mensaje la mantiene la app integradora, contra el catálogo
+que publica Identia.
+
+Para armar esa tabla sirve saber cómo están numerados. Lo que sigue describe el catálogo actual y
+**no es un contrato**: pueden aparecer códigos que no sigan el patrón, así que la tabla de la app
+siempre necesita un mensaje genérico de último recurso para un código que no reconoce.
+
+| Rango | Etapa |
+|---|---|
+| `10xx` | sistema |
+| `11xx` | solicitud |
+| `12xx` | cédula, frente |
+| `13xx` | cédula, dorso |
+| `14xx` | selfie |
+| `15xx` | selfie con cédula |
+| `16xx` | video / prueba de vida |
+| `17xx` | comparaciones entre capturas |
+| `18xx` | fuentes externas |
+| `19xx` | política de riesgo |
+
+Dentro de cada etapa, los códigos terminados en `01`–`49` acompañan a un `status = FAILURE`
+—problema técnico o de calidad de la captura, en general recapturable— y los terminados en
+`50`–`99` a un `status = REJECTED` —la validación se hizo y dio que no—. La distinción importa para
+decidir qué ofrecerle al usuario: repetir la captura, o cortar el flujo.
+
+### A revisar — solo si construís un `DiaModel` a mano en Swift
+
+`DiaModel` es una `data class` y este release le agrega un campo. Kotlin toma el valor por defecto,
+pero **Swift no**: exige enumerar todos los campos del inicializador. Si en algún lado —un test, un
+mock, un preview de SwiftUI— armás un `DiaModel` desde Swift, ese código deja de compilar hasta que
+agregues `errorCodes: nil`.
+
+En el uso normal no aplica: `DiaModel` es un modelo de respuesta, se recibe, no se arma. Si solo lo
+obtenés de `getDia` o de `checkEnrollment`, actualizar no te pide nada.
+
+---
+
 ## [2.7.1] — 2026-10-16
 
 Las dos plataformas. Se cierra el congelamiento de la app al terminar de grabar el video en iOS
