@@ -15,32 +15,136 @@ resuelve Swift Package Manager, y en **Android** a los artefactos `com.roshka:di
 
 ---
 
-## [2.8.0] — 2026-10-19
+## [2.9.0] — 2026-10-19
 
-Las dos plataformas. El DIA ahora dice **por qué** fue rechazado: `DiaModel` expone `errorCodes`,
-una lista de códigos que el backend ya venía devolviendo y que el SDK no entregaba.
+El DIA ahora dice **por qué** fue rechazado, y lo dice en castellano: `DiaModel` expone los códigos
+de rechazo ya traducidos al mensaje que corresponde mostrarle al usuario.
 
-Ninguna firma cambia y no hay nada que tocar para actualizar. El único punto a revisar, solo para
-quienes construyen un `DiaModel` a mano en Swift, está al final de esta entrada.
+Hasta acá, un DIA rechazado solo traía el `status`. La app sabía *que* la validación falló, pero no
+*qué* falló: los `validationFlags` daban una pista de grano grueso y no cubrían todas las causas,
+así que el único mensaje posible para el usuario era genérico —*"no se pudo validar tu identidad,
+intentá de nuevo"*—. Ahora la app puede decirle qué corregir.
+
+Ninguna firma cambia y no hay nada que revisar en Swift.
+
+> Completa lo que empezó la [2.8.0](#280--2026-10-19), que entregaba los códigos sin traducir.
+> **Actualizar desde ahí no rompe nada**; ver *Obsoleto*.
 
 ### Agregado
 
-- **`DiaModel.errorCodes`** (*List\<Int\>?*) — códigos que explican el rechazo cuando el DIA termina
-  en un estado no exitoso. Vienen ordenados de menor a mayor. Es `null` en un DIA que salió bien.
+- **`DiaModel.primaryError`** (*ErrorCodeModel?*) — la causa del rechazo, ya resuelta. Es lo que se
+  usa para armar el mensaje. `null` si el DIA no trae códigos.
+- **`DiaModel.errorDetails`** (*List\<ErrorCodeModel\>*) — todos los códigos resueltos. **Conserva
+  exactamente el orden en que vinieron de la API**: no se reordena ni se deduplica. Para
+  investigar, y para una integración con capa intermedia —el bridge de una app React Native, por
+  ejemplo—: se pasan todos hacia arriba y el filtrado queda del otro lado.
+- **`ErrorCodeModel`** — el modelo de cada uno.
 
-  Hasta ahora, con un DIA rechazado la app sabía **que** falló —por `status`— pero no **qué** falló.
-  Los `validationFlags` daban una pista de grano grueso y no cubrían todas las causas, así que el
-  único mensaje posible para el usuario era genérico: *"no se pudo validar tu identidad, intentá de
-  nuevo"*. Con los códigos, la app puede decirle qué corregir.
+  | Campo | Qué es |
+  |---|---|
+  | `code` | El número que mandó el backend. **Siempre tiene valor.** |
+  | `message` | El texto para el usuario final. |
+  | `slug` | Identificador estable de la causa. Para agrupar en analítica, no para mostrar. |
+  | `category` | Etapa del flujo donde se originó el rechazo. |
+  | `status` | `FAILURE` o `REJECTED`. **No es el status del DIA.** `FAILURE` es un problema técnico o de calidad de la captura, en general recapturable; `REJECTED` es una validación que se hizo y dio que no. |
+  | `isUnknown` | `true` cuando esta versión del SDK no conoce el código. |
+
+**Android**
+
+```kotlin
+digiyoSdk.getDia(
+    diaId = digiyoSdk.getSavedDia()?.diaId ?: "",
+    onSuccess = { dia ->
+        mostrarPopup(dia?.primaryError?.message ?: "No se pudo validar tu identidad.")
+    },
+    onError = { /* ... */ }
+)
+```
+
+**iOS**
+
+```swift
+digiyoSdk.getDia(diaId: digiyoSdk.getSavedDia()?.diaId ?? "") { dia in
+    mostrarPopup(dia?.primaryError?.message ?? "No se pudo validar tu identidad.")
+} onError: { _ in }
+```
+
+El mismo `DiaModel` llega por [`checkEnrollment`](#checkenrollment), dentro de `EnrollmentData.dia`.
+
+### Obsoleto
+
+- **`DiaModel.errorCodes`** queda marcada con `@Deprecated`. Sigue siendo pública y sigue
+  funcionando igual: si integraste la 2.8.0, tu código compila con una **advertencia** y corre sin
+  cambios.
+
+  La migración directa es `errorDetails.map { it.code }` —el IDE la aplica solo desde el
+  `ReplaceWith`—, pero si lo que querías era el mensaje, `primaryError.message` reemplaza a toda tu
+  tabla.
+
+  Se mantiene en lugar de quitarse porque quitarla rompería la compilación de quien integró la
+  2.8.0. Se retira en la próxima versión MAYOR.
+
+### No hace falta que mantengas tu propia tabla
+
+La tabla de código → mensaje la trae el SDK. Si ya tenías una armada contra el catálogo de Identia,
+podés borrarla y leer `primaryError.message`.
+
+El contrapeso es que **cada código nuevo de Identia requiere actualizar el SDK**. Hasta que eso
+pase, el código igual te llega, con `isUnknown = true`.
+
+### Por qué solo el primero
+
+El backend los manda del paso más temprano del flujo al más tardío, así que el primero es la causa
+raíz y los que siguen suelen ser consecuencia de esa: si falla una verificación temprana, todo lo
+que depende de ella cae por arrastre.
+
+Mostrarle al usuario la lista entera es ruido, y mostrarle el último lo deja sin saber qué
+corregir. Por eso `primaryError` devuelve uno solo, y `errorDetails` queda disponible para cuando
+haga falta ver el cuadro completo.
+
+### Códigos que esta versión no conoce
+
+Si Identia agrega un código después de esta publicación, el código **no se descarta**: llega igual
+en `errorDetails` con su `code`, con `message`, `slug`, `category` y `status` en `null`, y
+`isUnknown = true`.
+
+Conviene que la app registre ese caso en su herramienta de errores. "El DIA no trajo ningún código"
+y "trajo uno que el SDK no conoce" son dos problemas distintos: el primero es una pregunta para
+Identia, el segundo avisa que conviene actualizar el SDK.
+
+### Compatibilidad
+
+`primaryError` y `errorDetails` son propiedades calculadas, no parámetros del constructor de
+`DiaModel`, así que el inicializador no cambia y ningún código Swift deja de compilar por esto.
+
+Los mensajes están en español.
+
+---
+
+## [2.8.0] — 2026-10-19
+
+Primer paso para poder explicarle al usuario **por qué** se rechazó un DIA: `DiaModel` entrega los
+códigos de rechazo que el backend ya venía mandando y el SDK descartaba.
+
+Ninguna firma cambia.
+
+> La **[2.9.0](#290--2026-10-19)** completa el trabajo y resuelve esos códigos a un mensaje listo
+> para mostrar. `errorCodes` sigue funcionando ahí, marcado como obsoleto: **actualizar no rompe
+> nada** y te ahorra escribir la tabla de mensajes.
+
+### Agregado
+
+- **`DiaModel.errorCodes`** (*List\<Int\>?*) — los códigos de rechazo, en el orden en que los manda
+  la API. `null` en un DIA que salió bien. El SDK no los traduce: los entrega y la app decide.
+
+  Llega también por [`checkEnrollment`](#checkenrollment), dentro de `EnrollmentData.dia`.
 
   **Android**
 
   ```kotlin
   digiyoSdk.getDia(
       diaId = digiyoSdk.getSavedDia()?.diaId ?: "",
-      onSuccess = { dia ->
-          val causa = dia?.errorCodes?.firstOrNull()   // p. ej. 1252
-      },
+      onSuccess = { dia -> val causa = dia?.errorCodes?.firstOrNull() },
       onError = { /* ... */ }
   )
   ```
@@ -50,63 +154,24 @@ quienes construyen un `DiaModel` a mano en Swift, está al final de esta entrada
   ```swift
   digiyoSdk.getDia(diaId: digiyoSdk.getSavedDia()?.diaId ?? "") { dia in
       // Kotlin exporta List<Int> como lista de cajas: hay que desempaquetar.
-      let causa = (dia?.errorCodes as? [KotlinInt])?.first?.intValue   // p. ej. 1252
+      let causa = (dia?.errorCodes as? [KotlinInt])?.first?.intValue
   } onError: { _ in }
   ```
 
-  El mismo campo llega por [`checkEnrollment`](#checkenrollment), dentro de `EnrollmentData.dia`.
+### Por qué faltaba
 
-### Cómo usarlos
+Hasta acá, un DIA rechazado solo traía el `status`: la app sabía *que* la validación falló, pero no
+*qué* falló. Los `validationFlags` daban una pista de grano grueso y no cubrían todas las causas,
+así que el único mensaje posible para el usuario era genérico.
 
-**Leé el primero del array.** Los códigos vienen ordenados y la numeración va de la etapa más
-temprana del flujo a la más tardía, así que el primero es la causa raíz y el resto suele ser
-consecuencia de esa. Un rechazo real:
-
-```json
-"error_codes": [1252, 1656, 1657, 1755, 1852, 1999]
-```
-
-El número de cédula que el usuario tecleó no coincidía con el que se extrajo de la foto (`1252`), y
-todo lo que viene después compara contra esa cédula, así que cae por arrastre. Mostrarle los seis
-al usuario es ruido; mostrarle el último —*"rechazo por evaluación de riesgo"*— no le dice qué
-corregir.
-
-**El SDK no traduce los códigos a texto.** Un código es un identificador estable; el mensaje que ve
-el usuario depende del producto, del idioma y del tono de cada app, y esa decisión no le
-corresponde al SDK. La tabla código → mensaje la mantiene la app integradora, contra el catálogo
-que publica Identia.
-
-Para armar esa tabla sirve saber cómo están numerados. Lo que sigue describe el catálogo actual y
-**no es un contrato**: pueden aparecer códigos que no sigan el patrón, así que la tabla de la app
-siempre necesita un mensaje genérico de último recurso para un código que no reconoce.
-
-| Rango | Etapa |
-|---|---|
-| `10xx` | sistema |
-| `11xx` | solicitud |
-| `12xx` | cédula, frente |
-| `13xx` | cédula, dorso |
-| `14xx` | selfie |
-| `15xx` | selfie con cédula |
-| `16xx` | video / prueba de vida |
-| `17xx` | comparaciones entre capturas |
-| `18xx` | fuentes externas |
-| `19xx` | política de riesgo |
-
-Dentro de cada etapa, los códigos terminados en `01`–`49` acompañan a un `status = FAILURE`
-—problema técnico o de calidad de la captura, en general recapturable— y los terminados en
-`50`–`99` a un `status = REJECTED` —la validación se hizo y dio que no—. La distinción importa para
-decidir qué ofrecerle al usuario: repetir la captura, o cortar el flujo.
-
-### A revisar — solo si construís un `DiaModel` a mano en Swift
+### Acción requerida — solo si construís un `DiaModel` a mano en Swift
 
 `DiaModel` es una `data class` y este release le agrega un campo. Kotlin toma el valor por defecto,
 pero **Swift no**: exige enumerar todos los campos del inicializador. Si en algún lado —un test, un
 mock, un preview de SwiftUI— armás un `DiaModel` desde Swift, ese código deja de compilar hasta que
 agregues `errorCodes: nil`.
 
-En el uso normal no aplica: `DiaModel` es un modelo de respuesta, se recibe, no se arma. Si solo lo
-obtenés de `getDia` o de `checkEnrollment`, actualizar no te pide nada.
+En el uso normal no aplica: `DiaModel` es un modelo de respuesta, se recibe, no se arma.
 
 ---
 

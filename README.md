@@ -45,6 +45,7 @@ Este SDK emplea inteligencia artificial para la detección precisa y eficiente d
 - [CameraAvailability](#cameraavailability)
 - [DigiYoConfig](#digiyoconfig)
 - [DiaModel](#diamodel)
+- [ErrorCodeModel](#errorcodemodel)
 - [InDataEntryModel](#indataentrymodel)
 - [DataRequireModel](#datarequiremodel)
 - [InDataConfigModel](#indataconfigmodel)
@@ -590,16 +591,25 @@ digiyoSdk.getDia(diaId: digiyoSdk.getSavedDia()?.diaId ?? "") { [weak self] res 
     "is_cedula_temporal" | `isDocumentTemporary`
 
 
-**Motivo del rechazo (`errorCodes`, desde 2.8.0)**
+**Motivo del rechazo (desde 2.9.0)**
 
-Cuando el DIA termina en un estado no exitoso, `errorCodes` trae los códigos que explican **por
-qué**. Es `List<Int>?`: viene `null` en un DIA exitoso.
+Cuando el DIA termina en un estado no exitoso, `DiaModel` dice **por qué**, con el mensaje ya
+traducido:
+
+| Propiedad | Para qué |
+|---|---|
+| `primaryError` | `ErrorCodeModel?` con la causa raíz ya resuelta. **Es la que se usa para armar el mensaje.** |
+| `errorDetails` | `List<ErrorCodeModel>` con todos, resueltos y en el orden de la API. Para investigar, y para una capa intermedia —el bridge de una app React Native, por ejemplo— que los pase enteros y deje el filtrado del otro lado. |
+
+Existe además `errorCodes` (`List<Int>?`), la lista cruda que publicó la 2.8.0, pero está
+**obsoleta**: `errorDetails` ya trae el `code` de cada uno. Se mantiene solo para no romper a quien
+la haya integrado y se retira en la próxima MAYOR. En código nuevo no se usa.
 
 ```kotlin
 digiyoSdk.getDia(
     diaId = digiyoSdk.getSavedDia()?.diaId ?: "",
     onSuccess = { dia ->
-        val causa = dia?.errorCodes?.firstOrNull()   // p. ej. 1252
+        mostrarPopup(dia?.primaryError?.message ?: "No se pudo validar tu identidad.")
     },
     onError = { /* ... */ }
 )
@@ -607,45 +617,26 @@ digiyoSdk.getDia(
 
 ```swift
 digiyoSdk.getDia(diaId: digiyoSdk.getSavedDia()?.diaId ?? "") { dia in
-    // Kotlin exporta List<Int> como lista de cajas: hay que desempaquetar.
-    let causa = (dia?.errorCodes as? [KotlinInt])?.first?.intValue   // p. ej. 1252
+    mostrarPopup(dia?.primaryError?.message ?? "No se pudo validar tu identidad.")
 } onError: { _ in }
 ```
 
-El mismo campo llega por [checkEnrollment](#checkenrollment), dentro de `EnrollmentData.dia`.
+El mismo `DiaModel` llega por [checkEnrollment](#checkenrollment), dentro de `EnrollmentData.dia`.
 
-**Leé el primero del array.** Vienen ordenados de menor a mayor, y la numeración va de la etapa más
-temprana del flujo a la más tardía: el primero es la causa raíz y el resto suele ser consecuencia.
-En un rechazo como `[1252, 1656, 1657, 1755, 1852, 1999]`, el número de cédula que el usuario
-tecleó no coincidía con el extraído de la foto (`1252`), y todo lo que compara contra esa cédula
-cae por arrastre. Mostrarle los seis al usuario es ruido; mostrarle el último —*"rechazo por
-evaluación de riesgo"*— no le dice qué corregir.
+**El orden se respeta tal cual.** `errorDetails` no reordena ni deduplica: entrega los códigos en
+la misma secuencia en que los mandó la API.
 
-**El SDK no traduce los códigos a texto.** El mensaje que ve el usuario depende del producto, del
-idioma y del tono de cada app. La tabla código → mensaje la mantiene la app integradora, contra el
-catálogo que publica Identia.
+**Por qué `primaryError` devuelve uno solo.** El backend los manda del paso más temprano del flujo
+al más tardío, así que el primero es la causa raíz y los que siguen suelen ser consecuencia de esa:
+si falla una verificación temprana, todo lo que depende de ella cae por arrastre. Mostrarle al
+usuario la lista entera es ruido, y mostrarle el último lo deja sin saber qué corregir. Si
+necesitás el cuadro completo para diagnosticar, está en `errorDetails`.
 
-Para armarla sirve saber cómo están numerados. Esto describe el catálogo actual y **no es un
-contrato**: pueden aparecer códigos fuera del patrón, así que la tabla de la app siempre necesita
-un mensaje genérico de último recurso.
+**Códigos que el SDK no conoce.** Si Identia agrega un código después de la publicación del SDK,
+ese código no se descarta: llega igual en `errorDetails` con su `code` y con el resto de los campos
+en `null`, y `isUnknown = true`. Mostrale al usuario tu mensaje genérico, pero registrá el caso:
+avisa que conviene actualizar el SDK. Ver [ErrorCodeModel](#errorcodemodel).
 
-| Rango | Etapa |
-|---|---|
-| `10xx` | sistema |
-| `11xx` | solicitud |
-| `12xx` | cédula, frente |
-| `13xx` | cédula, dorso |
-| `14xx` | selfie |
-| `15xx` | selfie con cédula |
-| `16xx` | video / prueba de vida |
-| `17xx` | comparaciones entre capturas |
-| `18xx` | fuentes externas |
-| `19xx` | política de riesgo |
-
-Dentro de cada etapa, los terminados en `01`–`49` acompañan a `status = FAILURE` —problema técnico
-o de calidad de la captura, en general recapturable— y los terminados en `50`–`99` a
-`status = REJECTED` —la validación se hizo y dio que no—. Esa diferencia decide qué ofrecerle al
-usuario: repetir la captura, o cortar el flujo.
 
 
 ---
@@ -1431,7 +1422,20 @@ Representa el estado completo de un proceso de Documento de Identificación y Au
 - **`status`** (*String*): Estado del proceso (ej. "STARTED", "PENDING", "COMPLETED").
 - **`meta`** (*MetaModel*): Información de auditoría y del socio.
 - **`inDataList`** (*List<InDataEntryModel>*): Lista de todos los requisitos de datos para este flujo.
-- **`errorCodes`** (*List<Int>?*): Códigos que explican el rechazo cuando `status` no es exitoso, ordenados de menor a mayor. `null` en un DIA que salió bien. Se lee **el primero**: es la causa raíz y el resto suele ser consecuencia. El SDK no los traduce a texto; la tabla código → mensaje la mantiene la app. Ver [getDia](#getdia).
+- **`errorCodes`** (*List<Int>?*): **Obsoleta desde 2.9.0.** Los códigos en crudo, en el orden de la API. Se mantiene por compatibilidad con la 2.8.0 y se retira en la próxima MAYOR; usá `errorDetails`.
+- **`primaryError`** (*ErrorCodeModel?*): La causa raíz del rechazo, ya resuelta a texto (desde 2.9.0). Es el primer código que mandó la API. `null` si el DIA no trae ninguno. Ver [getDia](#getdia).
+- **`errorDetails`** (*List<ErrorCodeModel>*): Todos los códigos resueltos, en el mismo orden en que vinieron de la API (desde 2.9.0). Lista vacía si no hay ninguno.
+
+---
+
+### ErrorCodeModel
+Un `error_code` de Identia ya resuelto contra el catálogo del SDK. Lo devuelven [DiaModel.primaryError](#diamodel) y `DiaModel.errorDetails`.
+- **`code`** (*Int*): El número que mandó el backend. **Siempre tiene valor.**
+- **`message`** (*String?*): El texto para el usuario final.
+- **`slug`** (*String?*): Identificador estable de la causa. Pensado para agrupar en analítica o en tu herramienta de errores, no para mostrárselo al usuario.
+- **`category`** (*String?*): Etapa del flujo donde se originó el rechazo.
+- **`status`** (*String?*): `FAILURE` o `REJECTED`. **No es el status del DIA.** `FAILURE` es un problema técnico o de calidad de la captura, en general recapturable; `REJECTED` es una validación que se hizo y dio que no.
+- **`isUnknown`** (*Boolean*): `true` cuando esta versión del SDK no conoce el código. Los cuatro campos anteriores vienen en `null` y el `code` sigue estando: registralo, avisa que conviene actualizar el SDK.
 
 ---
 
