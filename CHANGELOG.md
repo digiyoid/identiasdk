@@ -15,6 +15,101 @@ resuelve Swift Package Manager, y en **Android** a los artefactos `com.roshka:di
 
 ---
 
+## [2.9.2] — 2026-10-23
+
+Corrige un crash al abrir la cámara de video en iOS. **Si tu app se cerraba al entrar a esa
+pantalla en algunas versiones de iOS y en otras no, es esto, y no era tu integración.**
+
+Es **PARCHE**: no cambia ninguna API y no hay nada que ajustar en tu código. Alcanza con actualizar
+la versión.
+
+### Corregido
+
+- **Crash al abrir la cámara de video en iOS: `EXC_BAD_ACCESS (code=1, address=0x0)`.**
+
+  El binario del SDK resolvía cinco funciones de CoreMedia contra la librería del runtime de Swift
+  (`@rpath/libswiftCoreMedia.dylib`) en lugar de contra `CoreMedia.framework` del sistema. Al ir
+  por `@rpath`, esa librería tiene que estar disponible en tiempo de ejecución; donde no lo está,
+  el símbolo queda sin resolver y la llamada salta a la dirección 0.
+
+  Las cinco funciones están en el camino de la cámara de video, así que el crash ocurría apenas se
+  abría esa pantalla, antes de que la cámara arrancara. Ninguna otra parte del SDK estaba afectada.
+
+  Desde esta versión los cinco símbolos resuelven contra `CoreMedia.framework`, que es una ruta
+  absoluta del sistema y existe en todas las versiones de iOS.
+
+- **`dyld: missing symbol called`.** Si viste ese mensaje integrando la 2.8.0 o la 2.9.x, es el
+  mismo defecto con otra manifestación. También queda resuelto acá.
+
+### Notas para quien integra
+
+- **Actualizá a 2.9.2.** No hay cambios de código. Si estás en 2.9.1 o anterior y usás la cámara de
+  video en iOS, esta actualización es necesaria.
+
+- **Si ya aplicaste una solución temporal de tu lado** —enlazar `CoreMedia.framework` en tu target,
+  o poner `Always Embed Swift Standard Libraries` en `Yes`— podés revertirla después de actualizar.
+  Dejarla puesta tampoco molesta.
+
+- **El SDK no cambió su versión mínima de iOS.** Sigue siendo la de siempre; el problema no era de
+  compatibilidad declarada sino de cómo quedaba enlazado el binario.
+
+## [2.9.1] — 2026-10-21
+
+Se separan los dos textos que hasta ahora estaban mezclados en uno solo, y se actualiza el catálogo
+con la redacción definitiva de los mensajes de usuario.
+
+**Hay un cambio de comportamiento:** lo que devuelve `ErrorCodeModel.message` cambió. Si venís de
+la 2.9.0 y lo mostrabas directamente, leé *Cambiado* antes de actualizar.
+
+### Agregado
+
+- **`ErrorCodeModel.messageUser`** (*String?*) — el texto para el usuario final, solo, sin ningún
+  prefijo. **Es el que corresponde mostrar en un popup.**
+
+### Cambiado
+
+- **`ErrorCodeModel.message` ahora devuelve `(code) + messageUser`.** Antes devolvía un mensaje
+  técnico que describía la causa en términos internos.
+
+  | | 2.9.0 | 2.9.1 |
+  |---|---|---|
+  | `messageUser` | — | el texto para la persona |
+  | `message` | el texto técnico de la causa | `(código) ` + el texto para la persona |
+
+  El prefijo con el código es **para soporte**: con una captura de pantalla del error alcanza para
+  saber qué validación falló, sin pedirle a la persona que reproduzca el caso. Si no lo querés a la
+  vista del usuario, usá `messageUser`.
+
+  **Qué hacer al actualizar:** si mostrabas `message`, cambialo por `messageUser`. El mensaje
+  técnico ya no se expone —es jerga interna del SDK— y no tiene reemplazo en la API.
+
+- **Catálogo de mensajes actualizado.** Redacción definitiva, escrita para que la persona sepa qué
+  hacer. Varios códigos distintos comparten el mismo texto a propósito: al usuario no le sirve
+  saber cuál de las comparaciones falló, le sirve saber si tiene que repetir una captura o
+  contactar a soporte. El `code` y el `slug` conservan el detalle para analítica.
+
+**Android**
+
+```kotlin
+digiyoSdk.getDia(
+    diaId = digiyoSdk.getSavedDia()?.diaId ?: "",
+    onSuccess = { dia ->
+        mostrarPopup(dia?.primaryError?.messageUser ?: "No se pudo validar tu identidad.")
+    },
+    onError = { /* ... */ }
+)
+```
+
+**iOS**
+
+```swift
+digiyoSdk.getDia(diaId: digiyoSdk.getSavedDia()?.diaId ?? "") { dia in
+    mostrarPopup(dia?.primaryError?.messageUser ?? "No se pudo validar tu identidad.")
+} onError: { _ in }
+```
+
+---
+
 ## [2.9.0] — 2026-10-19
 
 El DIA ahora dice **por qué** fue rechazado, y lo dice en castellano: `DiaModel` expone los códigos

@@ -183,6 +183,12 @@ SPM descarga el `.xcframework` del release correspondiente, verifica su checksum
 en su propia caché de artefactos —`DerivedData/<proyecto>/SourcePackages/artifacts/` en Xcode—.
 El binario **no** está versionado en este repositorio.
 
+> **Usá 2.9.2 o posterior.** Las versiones anteriores tienen un defecto de enlazado que hace que la
+> app se cierre al abrir la cámara de video —`EXC_BAD_ACCESS` en la dirección 0, o
+> `dyld: missing symbol called`— en algunas versiones de iOS y no en otras. No es un problema de la
+> integración y no requiere cambios de código: alcanza con actualizar. Ver la entrada de la
+> [2.9.2](CHANGELOG.md) en el CHANGELOG.
+
 #### Obtener el `.xcframework` suelto
 
 Solo hace falta para inspeccionar el binario o para integrarlo por ruta en lugar de por URL. Se
@@ -609,7 +615,7 @@ la haya integrado y se retira en la próxima MAYOR. En código nuevo no se usa.
 digiyoSdk.getDia(
     diaId = digiyoSdk.getSavedDia()?.diaId ?: "",
     onSuccess = { dia ->
-        mostrarPopup(dia?.primaryError?.message ?: "No se pudo validar tu identidad.")
+        mostrarPopup(dia?.primaryError?.messageUser ?: "No se pudo validar tu identidad.")
     },
     onError = { /* ... */ }
 )
@@ -617,7 +623,7 @@ digiyoSdk.getDia(
 
 ```swift
 digiyoSdk.getDia(diaId: digiyoSdk.getSavedDia()?.diaId ?? "") { dia in
-    mostrarPopup(dia?.primaryError?.message ?? "No se pudo validar tu identidad.")
+    mostrarPopup(dia?.primaryError?.messageUser ?? "No se pudo validar tu identidad.")
 } onError: { _ in }
 ```
 
@@ -631,6 +637,14 @@ al más tardío, así que el primero es la causa raíz y los que siguen suelen s
 si falla una verificación temprana, todo lo que depende de ella cae por arrastre. Mostrarle al
 usuario la lista entera es ruido, y mostrarle el último lo deja sin saber qué corregir. Si
 necesitás el cuadro completo para diagnosticar, está en `errorDetails`.
+
+**Dos textos, una frase.** `messageUser` es el mensaje para la persona; `message` es el mismo con
+el código adelante. Mostrá el que te sirva: el prefijo ayuda a soporte, pero si preferís que el
+usuario no vea números, `messageUser` viene limpio.
+
+Varios códigos distintos comparten el mismo `messageUser`, a propósito: al usuario no le sirve
+saber cuál de las comparaciones internas falló, le sirve saber si tiene que repetir una captura o
+contactar a soporte. El `code` y el `slug` conservan el detalle para analítica.
 
 **Códigos que el SDK no conoce.** Si Identia agrega un código después de la publicación del SDK,
 ese código no se descarta: llega igual en `errorDetails` con su `code` y con el resto de los campos
@@ -1431,7 +1445,8 @@ Representa el estado completo de un proceso de Documento de Identificación y Au
 ### ErrorCodeModel
 Un `error_code` de Identia ya resuelto contra el catálogo del SDK. Lo devuelven [DiaModel.primaryError](#diamodel) y `DiaModel.errorDetails`.
 - **`code`** (*Int*): El número que mandó el backend. **Siempre tiene valor.**
-- **`message`** (*String?*): El texto para el usuario final.
+- **`messageUser`** (*String?*): El texto para el usuario final, solo. **Es el que corresponde mostrar en un popup.**
+- **`message`** (*String?*): El mismo texto con el código entre paréntesis adelante. El prefijo es para soporte: con una captura de pantalla alcanza para saber qué validación falló. Si no lo querés a la vista del usuario, usá `messageUser`.
 - **`slug`** (*String?*): Identificador estable de la causa. Pensado para agrupar en analítica o en tu herramienta de errores, no para mostrárselo al usuario.
 - **`category`** (*String?*): Etapa del flujo donde se originó el rechazo.
 - **`status`** (*String?*): `FAILURE` o `REJECTED`. **No es el status del DIA.** `FAILURE` es un problema técnico o de calidad de la captura, en general recapturable; `REJECTED` es una validación que se hizo y dio que no.
