@@ -15,6 +15,46 @@ resuelve Swift Package Manager, y en **Android** a los artefactos `com.roshka:di
 
 ---
 
+## [2.9.4] — 2026-10-26
+
+Corrige el formato con el que se guarda `ADDITIONAL_INFO`. **Si leés ese campo desde tu base de
+datos o desde la API, revisá esta entrada: cambia la forma del dato.**
+
+Es **PARCHE**: no cambia ninguna API del SDK y no hay que tocar código de integración.
+
+### Corregido
+
+- **`ADDITIONAL_INFO` se guardaba como cadena escapada en lugar de como objeto.**
+
+  Desde la **2.4.1** (01/10/2026) hasta la **2.9.3**, la información del dispositivo —`os`,
+  `model`, `digiyo_version`, `rooted`, geolocalización y métricas del video— quedaba guardada así:
+
+  ```json
+  "ADDITIONAL_INFO": {
+    "value": "{\"os\":\"android\",\"model\":\"Pixel 6a\",\"rooted\":false,...}",
+    "content_type": "application/json"
+  }
+  ```
+
+  Es decir, el JSON entero metido como texto dentro de `value`, lo que obliga a un segundo parseo
+  para leer cualquier campo. Desde esta versión vuelve a guardarse como objeto, igual que en la
+  2.4.0 y anteriores.
+
+### Notas para quien integra
+
+- **Los DIAs viejos no se migran.** Los creados entre el 01/10/2026 y esta versión siguen con el
+  dato como cadena. Si consultás ese campo, por un tiempo vas a tener las dos formas conviviendo y
+  conviene contemplarlo. En PostgreSQL, para leer la forma vieja:
+
+  ```sql
+  SELECT (in_data -> 'ADDITIONAL_INFO' ->> 'value')::jsonb FROM <tabla>;
+  ```
+
+- No requiere cambios en el código de tu app: el SDK arma y envía ese campo por su cuenta.
+- Afecta a **ambas plataformas**, Android e iOS.
+
+---
+
 ## [2.9.3] — 2026-10-26
 
 Corrige un congelamiento de la pantalla de grabación de video en iOS. **Si la app se te quedaba

@@ -183,7 +183,7 @@ SPM descarga el `.xcframework` del release correspondiente, verifica su checksum
 en su propia caché de artefactos —`DerivedData/<proyecto>/SourcePackages/artifacts/` en Xcode—.
 El binario **no** está versionado en este repositorio.
 
-> **Usá 2.9.3 o posterior.** Las versiones anteriores arrastran dos defectos de iOS que no son de
+> **Usá 2.9.4 o posterior.** Las versiones anteriores arrastran dos defectos de iOS que no son de
 > tu integración y no requieren cambios de código: hasta la 2.9.1, un problema de enlazado que
 > cierra la app al abrir la cámara de video —`EXC_BAD_ACCESS` en la dirección 0, o
 > `dyld: missing symbol called`— en unas versiones de iOS y en otras no; y hasta la 2.9.2, un
