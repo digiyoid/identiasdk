@@ -15,6 +15,40 @@ resuelve Swift Package Manager, y en **Android** a los artefactos `com.roshka:di
 
 ---
 
+## [2.9.3] — 2026-10-26
+
+Corrige un congelamiento de la pantalla de grabación de video en iOS. **Si la app se te quedaba
+clavada a mitad de la grabación del desafío de profundidad, sin cerrarse y sin responder al botón
+de cerrar, es esto.**
+
+Es **PARCHE**: no cambia ninguna API y no hay nada que ajustar en tu código. Alcanza con actualizar
+la versión.
+
+### Corregido
+
+- **La pantalla de grabación se congelaba durante el desafío de profundidad (solo iOS).**
+
+  A los pocos segundos de empezar a grabar, la interfaz dejaba de responder: el contador de
+  duración se detenía, el botón de cerrar no reaccionaba y la app no se recuperaba sola. No era un
+  crash —el proceso seguía vivo— así que no aparecía en los reportes de cierre; en apps con Sentry
+  se veía como `ANR detected`.
+
+  Era un bloqueo entre el recolector de memoria de Kotlin/Native y el manejo de referencias
+  débiles de Objective-C, que se disparaba cuando la detección de rostro seguía corriendo durante
+  la grabación. Afectaba a los flujos con desafío de profundidad, que son los que mantienen la
+  detección activa mientras se graba, y arrastraba también al hilo de JavaScript en apps React
+  Native: por eso la app quedaba enteramente inutilizable y no solo la pantalla del SDK.
+
+### Notas para quien integra
+
+- Afecta **solo a iOS**. En Android no se reproduce.
+- No requiere cambios de código ni de configuración: solo actualizar la versión.
+- Si tenías algún *workaround* —reducir la duración del video, evitar el desafío de profundidad,
+  reiniciar la cámara— podés revertirlo.
+- La versión mínima de iOS no cambia.
+
+---
+
 ## [2.9.2] — 2026-10-23
 
 Corrige un crash al abrir la cámara de video en iOS. **Si tu app se cerraba al entrar a esa

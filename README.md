@@ -183,11 +183,13 @@ SPM descarga el `.xcframework` del release correspondiente, verifica su checksum
 en su propia caché de artefactos —`DerivedData/<proyecto>/SourcePackages/artifacts/` en Xcode—.
 El binario **no** está versionado en este repositorio.
 
-> **Usá 2.9.2 o posterior.** Las versiones anteriores tienen un defecto de enlazado que hace que la
-> app se cierre al abrir la cámara de video —`EXC_BAD_ACCESS` en la dirección 0, o
-> `dyld: missing symbol called`— en algunas versiones de iOS y no en otras. No es un problema de la
-> integración y no requiere cambios de código: alcanza con actualizar. Ver la entrada de la
-> [2.9.2](CHANGELOG.md) en el CHANGELOG.
+> **Usá 2.9.3 o posterior.** Las versiones anteriores arrastran dos defectos de iOS que no son de
+> tu integración y no requieren cambios de código: hasta la 2.9.1, un problema de enlazado que
+> cierra la app al abrir la cámara de video —`EXC_BAD_ACCESS` en la dirección 0, o
+> `dyld: missing symbol called`— en unas versiones de iOS y en otras no; y hasta la 2.9.2, un
+> bloqueo que congela la pantalla a mitad de la grabación del desafío de profundidad, sin cerrar
+> la app y sin recuperarse. Ver las entradas de la [2.9.2 y la 2.9.3](CHANGELOG.md) en el
+> CHANGELOG.
 
 #### Obtener el `.xcframework` suelto
 
