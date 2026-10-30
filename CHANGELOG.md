@@ -15,6 +15,46 @@ resuelve Swift Package Manager, y en **Android** a los artefactos `com.roshka:di
 
 ---
 
+## [2.9.5] — 2026-10-30
+
+Corrige un congelamiento de la app **después** de capturar la cédula. **Si tu app se quedaba
+clavada al volver de la cámara de documentos, mientras la imagen se subía, es esto.**
+
+Es **PARCHE**: no cambia ninguna API y no hay nada que ajustar en tu código. Alcanza con actualizar
+la versión.
+
+### Corregido
+
+- **La app quedaba congelada al terminar la captura del documento (solo iOS).**
+
+  El síntoma: la cámara se cierra normalmente, la captura se dio por buena, y un par de segundos
+  después —mientras la imagen se sube— la pantalla deja de responder a cualquier toque. No se
+  cierra, no muestra error, y no se recupera sola: hay que matar la app.
+
+  No es un crash, así que **no aparece en los reportes de cierre**. Si usás Sentry, se ve como
+  `ANR detected`. Y como el bloqueo alcanza también al hilo de JavaScript, en apps React Native se
+  congela la aplicación entera y no solo la pantalla del SDK.
+
+  La causa es un bloqueo entre el recolector de memoria de Kotlin/Native y el manejo de
+  referencias débiles de Objective-C, que se dispara cuando la cámara todavía está entregando
+  cuadros mientras la subida genera presión de memoria. Se corrigió haciendo que AVFoundation ya
+  no resuelva un objeto Kotlin en ese punto.
+
+### Notas para quien integra
+
+- Afecta **solo a iOS**. En Android no se reproduce.
+- No requiere cambios de código ni de configuración.
+- La versión mínima de iOS no cambia.
+- Si tenías algún *workaround* —demorar la navegación tras la captura, o la subida— podés
+  revertirlo.
+
+> **Alcance, dicho con todas las letras.** Esta versión lleva el arreglo definitivo en la **cámara
+> de documentos**, que es donde se venía reproduciendo. Las cámaras de **video** y de **selfie**
+> llevan una mitigación que cubre el caso más frecuente, y recibirán el mismo arreglo en una
+> versión próxima. Si te congela en alguna de esas dos, reportalo: sirve para priorizarlo.
+
+---
+
 ## [2.9.4] — 2026-10-26
 
 Corrige el formato con el que se guarda `ADDITIONAL_INFO`. **Si leés ese campo desde tu base de
