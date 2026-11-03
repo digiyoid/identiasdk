@@ -115,11 +115,35 @@ Este SDK emplea inteligencia artificial para la detección precisa y eficiente d
 El SDK requiere un mínimo de **API 24**. Para instalar la librería en una aplicación Android, agrega la siguiente dependencia en el archivo `build.gradle` o `build.gradle.kts` de tu módulo App:
 
 ```groovy
-implementation "com.roshka:digiyocore:2.3.0"
-implementation "com.roshka:digiyo:2.3.0"
+implementation "com.roshka:digiyocore:2.10.0"
+implementation "com.roshka:digiyo:2.10.0"
 ```
 
 > Ver el historial de versiones y los cambios de cada una en [CHANGELOG.md](CHANGELOG.md).
+
+#### Si tu app usa Ktor 2
+
+Desde la **2.10.0** hay una variante publicada para apps Android que todavía dependen de Ktor 2.
+Se declara igual, con el sufijo `-ktor2` en el número:
+
+```groovy
+implementation "com.roshka:digiyocore:2.10.0-ktor2"
+implementation "com.roshka:digiyo:2.10.0-ktor2"
+```
+
+Ktor 2 y Ktor 3 no son compatibles en binario, y Ktor aparece en la API pública del core, así que
+no alcanza con una resolución de dependencias: hace falta un build aparte. Por eso la variante.
+
+Tres cosas que conviene saber antes de elegirla:
+
+- **Es sólo Android.** No se publica `.xcframework` para iOS con Ktor 2.
+- **Usala sólo si tu app no puede migrar a Ktor 3.** La versión sin sufijo es la principal; la
+  variante existe para destrabar, no como alternativa permanente.
+- **No mezcles las dos.** Los dos módulos, `digiyo` y `digiyocore`, tienen que llevar el mismo
+  sufijo.
+
+El SDK reporta al backend la versión con el sufijo (`2.10.0-ktor2`), así que en los registros se
+distingue cuál de las dos está corriendo.
 
 En el `build.gradle` (`settings.gradle` o `settings.gradle.kts`) del proyecto, se configura el repositorio Maven apuntando a GithubPackages de la siguiente manera:
 
@@ -370,7 +394,7 @@ lo produjo una app legítima en un dispositivo real. Es un control adicional al 
 2.0.2 —que verifica que el archivo salió de una cámara del SDK—: son dos cosas distintas y el backend
 las evalúa por separado.
 
-El SDK registra una clave por dispositivo al arrancar la app y firma con ella cada subida.
+El SDK registra una clave por dispositivo y firma con ella cada subida.
 
 #### Habilitación inicial, una sola vez
 
@@ -388,8 +412,14 @@ por correo ni en un issue**: te vamos a indicar cómo entregarla.
 completarla, y en un dispositivo que no pueda atestiguar —por antigüedad o por su configuración—
 capturar y subir también siguen su curso normal. No hace falta ninguna contención para esos casos.
 
-El registro de la clave ocurre una sola vez, al arrancar la app, y no agrega espera a ninguna subida.
-Si monitoreás el tráfico de tu app vas a ver ese intercambio al inicio y no durante un DIA.
+El registro de la clave ocurre **una sola vez por dispositivo**, y no agrega espera a ninguna subida.
+Desde la **2.10.0** lo dispara el primer `createDia` —antes ocurría al arrancar la app— y corre en
+segundo plano: el `createDia` no espera por él. Si monitoreás el tráfico vas a ver ese intercambio
+junto al primer `createDia` de la sesión, no al inicio de la app.
+
+El cambio es para que el registro ocurra cuando el SDK ya tiene todo lo que necesita, y para que una
+app que construye dos instancias del SDK siga registrando una sola vez. No hay nada que ajustar de
+tu lado.
 
 #### Android: Play Integrity
 

@@ -15,6 +15,86 @@ resuelve Swift Package Manager, y en **Android** a los artefactos `com.roshka:di
 
 ---
 
+## [2.10.0] — 2026-11-03
+
+Atestación del dispositivo reescrita, una variante Android para apps que siguen en **Ktor 2**, y
+dos agregados en las subidas. **No hay nada que cambiar en tu código**: alcanza con actualizar la
+versión.
+
+Es **MENOR**: hay funcionalidad nueva compatible hacia atrás y cambios de comportamiento que
+conviene conocer, sobre todo si monitoreás el tráfico de tu app.
+
+### Agregado
+
+- **Variante Android para apps en Ktor 2: `2.10.0-ktor2`.**
+
+  Si tu app todavía depende de Ktor 2 y no puede migrar, ahora hay un artefacto compilado contra
+  Ktor 2.3.13. Se declara con el sufijo en el número, en los dos módulos:
+
+  ```groovy
+  implementation "com.roshka:digiyocore:2.10.0-ktor2"
+  implementation "com.roshka:digiyo:2.10.0-ktor2"
+  ```
+
+  Es **sólo Android** —no hay `.xcframework` con Ktor 2— y no hay que mezclar sufijos entre los
+  dos módulos. La versión sin sufijo sigue siendo la principal y usa Ktor 3. Ver
+  [Si tu app usa Ktor 2](README.md#si-tu-app-usa-ktor-2).
+
+- **Header `X-App-Id` en cada subida de imagen y video**, con el `packageName` en Android o el
+  `bundleIdentifier` en iOS. Si tenés un proxy o un WAF que filtra headers, agregalo a la lista
+  permitida.
+
+- **Reemisión automática del desafío vencido.** Si el desafío de una captura venció o nunca llegó,
+  el SDK pide uno nuevo y sigue, en lugar de subir sin firma. Contra un backend que todavía no
+  tenga el endpoint, el comportamiento es el de antes.
+
+- **El token de Play Integrity viaja aunque la captura no se haya podido firmar.** En ese caso la
+  evidencia incluye `X-timestamp`, `X-device-id` y `X-Challenge-Id` para que el backend pueda
+  recomponer la validación.
+
+### Cambiado
+
+- **El registro de la clave ahora lo dispara el primer `createDia`, no el arranque de la app.**
+
+  Antes el intercambio con el servidor de atestación ocurría al inicializar el SDK. Ahora arranca
+  con el primer `createDia` y corre en segundo plano, sin demorarlo. **Si monitoreás el tráfico de
+  tu app, vas a ver ese intercambio en otro momento que antes.** Es el único efecto visible.
+
+  Además, el registro pasó a ser uno por proceso: una app que construye dos instancias del SDK
+  antes registraba dos veces —en iOS, dos viajes a Apple de casi 4 segundos cada uno—.
+
+- **Los dispositivos registrados por versiones anteriores se registran de nuevo, una vez.**
+
+  Versiones previas daban por registrada la clave ante cualquier respuesta exitosa del backend,
+  incluso cuando el backend no había creado el registro. Eso dejó equipos firmando contra una clave
+  que el backend no conocía. La 2.10.0 distingue los dos casos y repite el registro una sola vez en
+  los equipos afectados. **No hay acción de tu lado**, y mientras tanto el equipo sigue operando.
+
+- **Reintentos más prolijos.** Un fallo de red o un error 5xx se reintenta en el siguiente
+  `createDia`. Un rechazo del backend no se reintenta antes de 24 horas, para no gastar el cupo
+  diario ni sumar segundos a cada DIA sin cambiar el resultado.
+
+- **`resetAttestation()` borra el estado de forma asincrónica.** Antes, si había un registro en
+  curso, ese registro terminaba **después** del borrado y volvía a marcar el dispositivo como
+  registrado: el reset no reparaba nada. Ahora primero se cancela el registro en curso y recién
+  después se limpia el estado. La firma del método no cambia, pero **retorna antes de que el estado
+  esté efectivamente limpio**; si dependís de leerlo inmediatamente después, tenélo en cuenta.
+
+### Notas para quien integra
+
+- **No requiere cambios de código** en ninguna de las dos plataformas.
+- La versión mínima de iOS y el `minSdk` de Android no cambian.
+- Si tenés un proxy que filtra headers, sumá `X-App-Id` a la lista permitida.
+- La habilitación inicial de atestación —application id, digest del certificado y credencial de
+  Play Integrity— no cambia. Si ya la hiciste, no hay que repetirla.
+
+> **Sigue pendiente de la 2.9.5.** El arreglo definitivo del congelamiento vive por ahora sólo en la
+> cámara de **documentos**. Las cámaras de **video** y de **selfie** siguen con la mitigación que
+> cubre el caso más frecuente, y reciben el mismo arreglo en una versión próxima. Si te congela en
+> alguna de esas dos, reportálo.
+
+---
+
 ## [2.9.5] — 2026-10-30
 
 Corrige un congelamiento de la app **después** de capturar la cédula. **Si tu app se quedaba
